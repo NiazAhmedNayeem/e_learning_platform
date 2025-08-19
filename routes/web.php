@@ -18,4 +18,4 @@ Route::get('admin/student/create', [StudentController::class, 'create'])->name('
 Route::post('admin/student/store', [StudentController::class, 'store'])->name('admin.student.store');
 Route::get('admin/student/edit/{id}', [StudentController::class, 'edit'])->name('admin.student.edit');
 Route::post('admin/student/update/{id}', [StudentController::class, 'update'])->name('admin.student.update');
-Route::post('admin/student/delete/{id}', [StudentController::class, 'delete'])->name('admin.student.delete');
+Route::delete('admin/student/delete/{id}', [StudentController::class, 'delete'])->name('admin.student.delete');
