@@ -17,7 +17,7 @@ return new class extends Migration
             }
 
             if(!Schema::hasColumn('users', 'role')){
-                $table->string('role')->default('user')->after('password');
+                $table->string('role')->default('student')->after('password');
             }
         });
     }

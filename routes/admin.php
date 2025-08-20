@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 //Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
 //Admin middleware Route Start
-Route::middleware(['auth', AdminMiddleware::class])->group(function(){
+Route::middleware([AdminMiddleware::class])->group(function(){
 
 
     //Admin Dashboard Route

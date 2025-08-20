@@ -4,6 +4,7 @@ namespace App\Http\Controllers\backend\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Student;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -45,7 +46,15 @@ class StudentController extends Controller
         DB::beginTransaction();
 
         try{
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = bcrypt('123456');
+            $user->role = 'student';
+            $user->save();
+
             $student = new Student();
+            $student->user_id = $user->id;
             $student->name = $request->name;
             $student->email = $request->email;
             $student->phone = $request->phone;
@@ -106,6 +115,18 @@ class StudentController extends Controller
         DB::beginTransaction();
 
         try{
+
+            if($student->user_id){
+                $user = User::find($student->user_id);
+                if($user){
+                    $user->name = $request->name;
+                    $user->email = $request->email;
+                    $user->role = 'student';
+                    $user->save();
+                }
+                
+            }
+
             $student->name = $request->name;
             $student->email = $request->email;
             $student->phone = $request->phone;
