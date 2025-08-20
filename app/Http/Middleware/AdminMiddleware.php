@@ -19,6 +19,6 @@ class AdminMiddleware
             return $next($request);
         }
         
-        return redirect('/inactive/dashboard')->with('error', 'You are not authorized to access this page.');
+        return redirect('/login')->with('error', 'You are not authorized to access admin panel.');
     }   
 }

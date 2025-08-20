@@ -7,7 +7,7 @@
                    
 
             {{-- Admin Dashboard sidebar start here --}}
-                            @if(auth()->user()->role == 'admin' && auth()->user()->status == 1)
+                            @if(auth()->check() && auth()->user()->role == 'admin' && auth()->user()->status == 1)
                                 <a class="nav-link" href="{{ route('admin.dashboard') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                     Dashboard
@@ -104,7 +104,7 @@
                             
                             
 
-                            @if (auth()->user()->status == 0)
+                            @if (auth()->check() && auth()->user()->status == 0)
                                  <a class="nav-link" href="{{ route('inactive.dashboard') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                     Dashboard
