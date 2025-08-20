@@ -1,83 +1,73 @@
 @extends('backend.layouts.master')
-@section('title', 'All Students')
+@section('title', 'All admins User')
 @section('main-content')
 
 <div class="container mt-4">
-    <h2>Student List</h2>
+    <h2>Admin User List</h2>
      <div class="d-flex justify-content-end mb-3">
-        <a href="{{ route('admin.student.create') }}" class="btn btn-primary">Add Student</a>
+        <a href="{{ route('user.admin.create') }}" class="btn btn-primary">Add admin</a>
     </div>
 
     <div class="d-flex justify-content-end mb-3">
-        <form class="d-flex" method="GET" action="{{ route('admin.student.index') }}">
+        <form class="d-flex" method="GET" action="{{ route('user.admin.index') }}">
             <input class="form-control" type="text" name="search" value="{{ $search }}" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
             <button class="btn btn-primary" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
         </form>
     </div>
-
-    {{-- Success Message
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    {{-- Error Message --}}
-    {{-- @if(session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif  --}}
 
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
             <tr>
                 <th>SL</th>
                 <th>Image</th>
-                <th>Student ID</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
-                <th>Class</th>
-                <th>Section</th>
-                <th>Gender</th>
-                <th>Date of Birth</th>
+                <th>Role</th>
+                <th>Status</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            @forelse ($students as $student)
+            @forelse ($admins as $admin)
             <tr>
-                {{-- <td>{{ $student->id }}</td> --}}
-                <td>{{ $loop->iteration + ($students->currentPage()-1)*$students->perPage() }}</td>
+                {{-- <td>{{ $admin->id }}</td> --}}
+                <td>{{ $loop->iteration + ($admins->currentPage()-1)*$admins->perPage() }}</td>
 
                 <td>
-                    @if($student->image)
-                        <img src="{{ $student->image_show }}" alt="Student Image" width="50" height="50">
+                    @if($admin->image)
+                        <img src="{{ $admin->image_show }}" alt="admin Image" width="50" height="50">
                     @else
                         N/A
                     @endif
                 </td>
-                <td>{{ $student->student_id }}</td>
-                <td>{{ $student->name }}</td>
-                <td>{{ $student->email }}</td>
-                <td>{{ $student->phone }}</td>
-                <td>{{ $student->class }}</td>
-                <td>{{ $student->section }}</td>
-                <td>{{ ucfirst($student->gender) }}</td>
-                <td>{{ $student->dob }}</td>
+                <td>{{ $admin->name }}</td>
+                <td>{{ $admin->email }}</td>
+                <td>{{ $admin->phone }}</td>
                 <td>
-                    <a href="{{ route('admin.student.edit', $student->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                    <form action="{{ route('admin.student.delete', $student->id) }}" method="POST" style="display:inline-block;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure to delete?')">Delete</button>
-                    </form>
+                     <span class="badge bg-primary">{{ ucfirst($admin->role) }}</span>
+                </td>
+                <td>
+                     <span class="badge {{ $admin->status == 1 ? 'bg-success' : 'bg-secondary' }}">
+                        {{ $admin->status == 1 ? 'Active' : 'Inactive' }}
+                    </span>
+                </td>
+                <td>
+                    <a href="{{ route('user.admin.edit', $admin->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                    @if(auth()->user()->id != $admin->id)
+                        <form action="{{ route('user.admin.delete', $admin->id) }}" method="POST" style="display:inline-block;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure to delete?')">
+                                Delete
+                            </button>
+                        </form>
+                    @endif
                 </td>
             </tr>
             @empty
             <tr>
-                <td colspan="10" class="text-center">No Students Found</td>
+                <td colspan="10" class="text-center">No Admin Found</td>
             </tr>
             @endforelse
         </tbody>
@@ -85,7 +75,7 @@
 
     {{-- Pagination Links --}}
     <div class="d-flex justify-content-end">
-        {{ $students->appends(['search' => $search])->links('pagination::bootstrap-5') }}
+        {{ $admins->appends(['search' => $search])->links('pagination::bootstrap-5') }}
     </div>
 </div>
 @endsection
@@ -110,22 +100,22 @@
 
 
 @extends('backend.layouts.master')
-@section('title', 'All Students')
+@section('title', 'All admins')
 @section('main-content')
 
 
     <div class="col-md-12 d-flex justify-content-between align-items-center">
         <div>
-            <h1 class="mt-4">All Students Information</h1>
+            <h1 class="mt-4">All admins Information</h1>
         </div>
         <div>
-            <a href="{{ route('admin.student.create') }}" class="mt-4 btn btn-primary">Add New Student</a>
+            <a href="{{ route('admin.admin.create') }}" class="mt-4 btn btn-primary">Add New admin</a>
         </div>
     </div>
 
     
         <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item active">Students List</li>
+            <li class="breadcrumb-item active">admins List</li>
         </ol>
         <div class="row">
             <div class="col-xl-3 col-md-6">

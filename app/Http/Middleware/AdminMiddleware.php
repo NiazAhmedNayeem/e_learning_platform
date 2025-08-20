@@ -15,10 +15,10 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth()->check() && auth()->user()->role == 'admin'){
+        if(auth()->check() && auth()->user()->role == 'admin' && auth()->user()->status == 1){
             return $next($request);
         }
         
-        return redirect('/')->with('error', 'You are not authorized to access this page.');
+        return redirect('/inactive/dashboard')->with('error', 'You are not authorized to access this page.');
     }   
 }

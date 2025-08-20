@@ -21,7 +21,10 @@ class Student extends Model
         'image',
     ];
 
-    public function getImageShowAttribute(){ return $this->image != "N/A" ? asset('public/upload/students/'. $this?->image) : asset('public/upload/default.jpg'); }
+    public function getImageShowAttribute()
+    { 
+        return $this->image != "N/A" ? asset('public/upload/students/'. $this?->image) : asset('public/upload/default.jpg'); 
+    }
 
     public function user(){
         return $this->belongsTo(User::class);

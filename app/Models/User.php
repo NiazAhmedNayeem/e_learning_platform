@@ -45,4 +45,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function student(){
+        return $this->hasOne(Student::class, 'user_id', 'id');
+    }
+
+     public function getImageShowAttribute()
+    { 
+        return $this->image != "N/A" ? asset('public/upload/admin/'. $this?->image) : asset('public/upload/default.jpg'); 
+    }
 }

@@ -31,10 +31,18 @@ class AuthenticatedSessionController extends Controller
         //return redirect()->intended(route('dashboard', absolute: false));
 
         if(auth()->user()->role == 'admin'){
-            return redirect()->route('admin.dashboard')
+            if(auth()->user()->status == 1){
+                return redirect()->route('admin.dashboard')
                 ->with('success', 'Hello '. auth()->user()->name .'! Welcome to Admin Dashboard.');
-        } else {
-            return redirect()->route('dashboard');
+            }else{
+                return redirect()->route('inactive.dashboard')
+                ->with('warning', 'Hello ' . auth()->user()->name . '! Your account is inactive.');
+            }
+            
+        }else {
+            //return redirect()->route('dashboard');
+            return redirect()->route('inactive.dashboard')
+            ->with('warning', 'Hello ' . auth()->user()->name . '! Your account is inactive.');
         }
 
     }

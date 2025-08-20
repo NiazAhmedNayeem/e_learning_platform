@@ -1,79 +1,67 @@
 @extends('backend.layouts.master')
-@section('title', 'All Students')
+@section('title', 'All Students User')
 @section('main-content')
 
 <div class="container mt-4">
-    <h2>Student List</h2>
+    <h2>Student User List</h2>
      <div class="d-flex justify-content-end mb-3">
-        <a href="{{ route('admin.student.create') }}" class="btn btn-primary">Add Student</a>
+        {{-- <a href="{{ route('admin.student.create') }}" class="btn btn-primary">Add Student</a> --}}
     </div>
 
     <div class="d-flex justify-content-end mb-3">
-        <form class="d-flex" method="GET" action="{{ route('admin.student.index') }}">
+        <form class="d-flex" method="GET" action="{{ route('admin.user.student.index') }}">
             <input class="form-control" type="text" name="search" value="{{ $search }}" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
             <button class="btn btn-primary" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
         </form>
     </div>
 
-    {{-- Success Message
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    {{-- Error Message --}}
-    {{-- @if(session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif  --}}
-
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
             <tr>
-                <th>SL</th>
+                <th>ID</th>
                 <th>Image</th>
                 <th>Student ID</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
-                <th>Class</th>
-                <th>Section</th>
-                <th>Gender</th>
-                <th>Date of Birth</th>
-                <th>Action</th>
+                <th>Role</th>
+                <th>Status</th>
+                {{-- <th>Action</th> --}}
             </tr>
         </thead>
         <tbody>
-            @forelse ($students as $student)
+            @forelse ($users as $student)
             <tr>
                 {{-- <td>{{ $student->id }}</td> --}}
-                <td>{{ $loop->iteration + ($students->currentPage()-1)*$students->perPage() }}</td>
+                <td>{{ $loop->iteration + ($users->currentPage()-1)*$users->perPage() }}</td>
 
                 <td>
-                    @if($student->image)
-                        <img src="{{ $student->image_show }}" alt="Student Image" width="50" height="50">
+                    @if($student->student?->image)
+                        <img src="{{ $student->student?->image_show }}" alt="Student Image" width="50" height="50">
                     @else
                         N/A
                     @endif
                 </td>
-                <td>{{ $student->student_id }}</td>
+                <td>{{ $student->student?->student_id }}</td>
                 <td>{{ $student->name }}</td>
                 <td>{{ $student->email }}</td>
-                <td>{{ $student->phone }}</td>
-                <td>{{ $student->class }}</td>
-                <td>{{ $student->section }}</td>
-                <td>{{ ucfirst($student->gender) }}</td>
-                <td>{{ $student->dob }}</td>
+                <td>{{ $student->student?->phone }}</td>
                 <td>
+                     <span class="badge bg-primary">{{ ucfirst($student->role) }}</span>
+                </td>
+                <td>
+                     <span class="badge {{ $student->status == 1 ? 'bg-success' : 'bg-secondary' }}">
+                        {{ $student->status == 1 ? 'Active' : 'Inactive' }}
+                    </span>
+                </td>
+                {{-- <td>
                     <a href="{{ route('admin.student.edit', $student->id) }}" class="btn btn-warning btn-sm">Edit</a>
                     <form action="{{ route('admin.student.delete', $student->id) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure to delete?')">Delete</button>
                     </form>
-                </td>
+                </td> --}}
             </tr>
             @empty
             <tr>
@@ -85,7 +73,7 @@
 
     {{-- Pagination Links --}}
     <div class="d-flex justify-content-end">
-        {{ $students->appends(['search' => $search])->links('pagination::bootstrap-5') }}
+        {{ $users->appends(['search' => $search])->links('pagination::bootstrap-5') }}
     </div>
 </div>
 @endsection

@@ -15,6 +15,7 @@ class StudentController extends Controller
 
         $students = Student::when($search, function($query, $search){
             return $query->where('name', 'like', "%{$search}%")
+                         ->orWhere('student_id', 'like', "%{$search}%")
                          ->orWhere('email', 'like', "%{$search}%")
                          ->orWhere('phone', 'like', "%{$search}%");
         })->paginate(10);
@@ -72,6 +73,19 @@ class StudentController extends Controller
                 request()->image->move(public_path('upload/students/'),$fileName); 
                 $student->image = $fileName; 
             }
+
+            // Generate unique student ID
+
+            $today = date('Ymd');
+
+            // Count how many students are created today
+            $count = Student::whereDate('created_at', today())->count() + 1;
+            // Format count as 3-digit number
+            $number = str_pad($count, 3, '0', STR_PAD_LEFT);
+            // Combine to make student_id
+            $studentId = 'ST' . $today . $number;
+
+            $student->student_id = $studentId;
 
             //dd($student);
             $student->save();
