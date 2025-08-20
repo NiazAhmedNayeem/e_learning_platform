@@ -15,16 +15,16 @@ class AdminUserSeeder extends Seeder
     {
         User::insert([
             [
-                'name' => 'Sabi',
-                'email' => 'sabi1@gmail.com',
+                'name' => 'admin',
+                'email' => 'admin@gmail.com',
                 'password' => bcrypt('11223344'),
-                'is_admin' => true,
+                'role' => 'admin',
             ],
             [
                 'name' => 'Tonmoy',
                 'email' => 'tonmoy@gmail.com',
                 'password' => bcrypt('11223344'),
-                'is_admin' => false,
+                'role' => 'user',
             ]
         ]);
     }
