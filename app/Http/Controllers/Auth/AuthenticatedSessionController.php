@@ -39,6 +39,14 @@ class AuthenticatedSessionController extends Controller
                 ->with('warning', 'Hello ' . auth()->user()->name . '! Your account is inactive.');
             }
             
+        }elseif(auth()->user()->role == 'teacher'){
+            if(auth()->user()->status == 1){
+                return redirect()->route('teacher.dashboard')
+                ->with('success', 'Hello '. auth()->user()->name .'! Welcome to Teacher Dashboard.');
+            }else{
+                return redirect()->route('inactive.dashboard')
+                ->with('warning', 'Hello ' . auth()->user()->name . '! Your account is inactive.');
+            }
         }else {
             //return redirect()->route('dashboard');
             return redirect()->route('inactive.dashboard')

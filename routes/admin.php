@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('inactive/dashboard', [App\Http\Controllers\backend\admin\DashboardController::class, 'inactive'])->name('inactive.dashboard');
 //Admin middleware Route Start
-Route::middleware([AdminMiddleware::class])->group(function(){
+Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin'])->group(function(){
 
 
     //Admin Dashboard Route
@@ -38,4 +38,27 @@ Route::middleware([AdminMiddleware::class])->group(function(){
     // Route::get('admin/edit/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'edit'])->name('user.admin.edit');
     // Route::post('admin/update/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'update'])->name('user.admin.update');
     // Route::delete('admin/delete/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'delete'])->name('user.admin.delete');
+
+    ///Admin Category management Route
+    Route::get('/admin/all-categories', [App\Http\Controllers\backend\admin\CategoryController::class, 'index'])->name('admin.category.index');
+    Route::get('admin/create/category', [App\Http\Controllers\backend\admin\CategoryController::class, 'create'])->name('admin.category.create');
+    Route::post('admin/store/category', [App\Http\Controllers\backend\admin\CategoryController::class, 'store'])->name('admin.category.store');
+    Route::get('admin/edit/category/{id}', [App\Http\Controllers\backend\admin\CategoryController::class, 'edit'])->name('admin.category.edit');
+    Route::post('admin/update/category/{id}', [App\Http\Controllers\backend\admin\CategoryController::class, 'update'])->name('admin.category.update');
+    Route::delete('admin/delete/category/{id}', [App\Http\Controllers\backend\admin\CategoryController::class, 'delete'])->name('admin.category.delete');
+
+
+    ///Admin Teacher management Route
+    Route::get('/admin/all-teacher', [App\Http\Controllers\backend\users\teacher\TeacherController::class, 'index'])->name('admin.all-teacher');
+    Route::get('admin/create/teacher', [App\Http\Controllers\backend\users\teacher\TeacherController::class, 'create'])->name('admin.create.teacher');
+    Route::post('admin/store/teacher', [App\Http\Controllers\backend\users\teacher\TeacherController::class, 'store'])->name('admin.store.teacher');
+    Route::get('admin/edit/teacher/{id}', [App\Http\Controllers\backend\users\teacher\TeacherController::class, 'edit'])->name('admin.edit.teacher');
+    Route::post('admin/update/teacher/{id}', [App\Http\Controllers\backend\users\teacher\TeacherController::class, 'update'])->name('admin.update.teacher');
+    Route::delete('admin/delete/teacher/{id}', [App\Http\Controllers\backend\users\teacher\TeacherController::class, 'delete'])->name('admin.delete.teacher');
+
+
+
+
+
+
 }); //Admin middleware Route End

@@ -50,8 +50,25 @@ class User extends Authenticatable
         return $this->hasOne(Student::class, 'user_id', 'id');
     }
 
-     public function getImageShowAttribute()
-    { 
-        return $this->image != "N/A" ? asset('public/upload/admin/'. $this?->image) : asset('public/upload/default.jpg'); 
+    public function expertCategory(){
+        return $this->belongsTo(Category::class, 'expertise_category_id', 'id');
+    }
+
+    public function getImageShowAttribute()
+    {
+        $default = asset('public/upload/default.jpg');
+
+        if (!$this->image || $this->image == "N/A") {
+            return $default;
+        }
+
+        switch ($this->role) {
+            case 'admin':
+                return asset('public/upload/admin/' . $this->image);
+            case 'teacher':
+                return asset('public/upload/teacher/' . $this->image);
+            default:
+                return $default;
+        }
     }
 }
