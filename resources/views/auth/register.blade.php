@@ -6,6 +6,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Page</title>
     <link rel="stylesheet" href="{{ asset('public/backend/login_css/style.css') }}">
+
+    <style>
+        .roleBox {
+            display: flex;
+            justify-content: space-between;
+            margin: 1px 0;
+            color: #fff;
+            gap: 20px;
+        }
+
+        .roleOption {
+            position: relative;
+            padding-left: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            user-select: none;
+        }
+
+        /* Hide default radio */
+        .roleOption input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* Custom circle */
+        .customRadio {
+            position: absolute;
+            left: 0;
+            top: 0px;
+            height: 20px;
+            width: 20px;
+            border: 2px solid #00FF00;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        /* Add tick when checked */
+        .customRadio:after {
+            content: "✔";
+            position: absolute;
+            display: none;
+            color: white;
+            font-size: 14px;
+            left: 2px;
+            top: -2px;
+        }
+
+        /* Checked effect */
+        .roleOption input:checked ~ .customRadio {
+            background-color: #00FF00;
+            border-color: #00FF00;
+        }
+
+        .roleOption input:checked ~ .customRadio:after {
+            display: block;
+        }
+
+
+    </style>
 </head>
 <body>
     <section>
@@ -288,16 +348,32 @@
                         @enderror
                     </div>
 
-                    <!-- Links -->
-                    <div class="links">
-                        <p style="color: #fff;">Already have an account?</p>
-                        <a href="{{ route('login') }}" style="color: #0f0;">Login</a>
+                    <!-- Role Selection -->
+                    <div class="roleBox">
+                        <label class="roleOption">
+                            <input type="radio" name="role" value="student" checked>
+                            <span class="customRadio"></span>
+                            Student
+                        </label>
+
+                        <label class="roleOption">
+                            <input type="radio" name="role" value="teacher">
+                            <span class="customRadio"></span>
+                            Teacher
+                        </label>
                     </div>
 
                     <!-- Submit Button -->
                     <div class="inputBx">
                         <button type="submit">Register</button>
                     </div>
+
+                    <!-- Links -->
+                    <div class="links">
+                        <p style="color: #fff;">Already have an account?</p>
+                        <a href="{{ route('login') }}" style="color: #0f0;">Login</a>
+                    </div>
+
                 </form>
 
                 <p class="text">&copy; 2025 All Rights Reserved | Niaz </p>
