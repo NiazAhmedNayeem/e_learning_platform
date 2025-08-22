@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Page</title>
     <link rel="stylesheet" href="{{ asset('public/backend/login_css/style.css') }}">
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
     <style>
         .roleBox {
@@ -350,14 +352,15 @@
 
                     <!-- Role Selection -->
                     <div class="roleBox">
+                    <p style="color: #fff;">Are you?</p>
                         <label class="roleOption">
-                            <input type="radio" name="role" value="student" checked>
+                            <input type="radio" name="role" value="student" required>
                             <span class="customRadio"></span>
                             Student
                         </label>
 
                         <label class="roleOption">
-                            <input type="radio" name="role" value="teacher">
+                            <input type="radio" name="role" value="teacher" required>
                             <span class="customRadio"></span>
                             Teacher
                         </label>
@@ -382,5 +385,28 @@
 
 
     </section>
+
+    <!-- jQuery + Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        @if(session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
+
+        @if(session('error'))
+            toastr.error("{{ session('error') }}");
+        @endif
+
+        @if(session('warning'))
+            toastr.warning("{{ session('warning') }}");
+        @endif
+
+        @if(session('info'))
+            toastr.info("{{ session('info') }}");
+        @endif
+    </script>
+
 </body>
 </html>

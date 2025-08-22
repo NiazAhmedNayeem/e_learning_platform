@@ -30,6 +30,7 @@ class AuthenticatedSessionController extends Controller
 
         //return redirect()->intended(route('dashboard', absolute: false));
 
+        ///For Admin User
         if(auth()->user()->role == 'admin'){
             if(auth()->user()->status == 1){
                 return redirect()->route('admin.dashboard')
@@ -39,7 +40,9 @@ class AuthenticatedSessionController extends Controller
                 ->with('warning', 'Hello ' . auth()->user()->name . '! Your account is inactive.');
             }
             
-        }elseif(auth()->user()->role == 'teacher'){
+        }
+        ///For Teacher User
+        elseif(auth()->user()->role == 'teacher'){
             if(auth()->user()->status == 1){
                 return redirect()->route('teacher.dashboard')
                 ->with('success', 'Hello '. auth()->user()->name .'! Welcome to Teacher Dashboard.');
@@ -47,7 +50,18 @@ class AuthenticatedSessionController extends Controller
                 return redirect()->route('inactive.dashboard')
                 ->with('warning', 'Hello ' . auth()->user()->name . '! Your account is inactive.');
             }
-        }else {
+        }
+        ///For Student User
+        elseif(auth()->user()->role == 'student'){
+            if(auth()->user()->status == 1){
+                return redirect()->route('student.dashboard')
+                ->with('success', 'Hello '. auth()->user()->name .'! Welcome to Student Dashboard.');
+            }else{
+                return redirect()->route('inactive.dashboard')
+                ->with('warning', 'Hello ' . auth()->user()->name . '! Your account is inactive.');
+            }
+        }
+        else {
             //return redirect()->route('dashboard');
             return redirect()->route('inactive.dashboard')
             ->with('warning', 'Hello ' . auth()->user()->name . '! Your account is inactive.');

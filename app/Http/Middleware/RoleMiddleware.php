@@ -28,9 +28,9 @@ class RoleMiddleware
             if ($user->role === 'teacher') {
                 return redirect()->route('teacher.dashboard')->with('error', 'You cannot access admin panel.');
             }
-            // if ($user->role === 'student') {
-            //     return redirect()->route('student.dashboard')->with('error', 'You cannot access admin panel.');
-            // }
+            if ($user->role === 'student') {
+                return redirect()->route('student.dashboard')->with('error', 'You cannot access admin panel.');
+            }
         }
 
         // Teacher route
@@ -41,9 +41,9 @@ class RoleMiddleware
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard')->with('error', 'You cannot access teacher panel.');
             }
-            // if ($user->role === 'student') {
-            //     return redirect()->route('student.dashboard')->with('error', 'You cannot access teacher panel.');
-            // }
+            if ($user->role === 'student') {
+                return redirect()->route('student.dashboard')->with('error', 'You cannot access teacher panel.');
+            }
         }
 
         // Student route

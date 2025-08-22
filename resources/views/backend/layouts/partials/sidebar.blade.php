@@ -98,6 +98,33 @@
             {{-- Teacher Dashboard sidebar end here --}}
 
 
+            
+            {{-- Student Dashboard sidebar start here --}}
+                            @if(auth()->check() && auth()->user()->role == 'student' && auth()->user()->status == 1)
+                                <a class="nav-link" href="{{ route('student.dashboard') }}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                    Dashboard
+                                </a>
+                                
+                                
+            
+                            
+                                <div class="sb-sidenav-menu-heading">Interface</div>
+
+                                <a class="nav-link" href="#">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                    Profile
+                                </a>
+
+                                <a class="nav-link" href="#">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                    My Course
+                                </a>
+
+
+                            @endif
+            {{-- Student Dashboard sidebar end here --}}
+
                             
 
                             @if (auth()->check() && auth()->user()->status == 0)
