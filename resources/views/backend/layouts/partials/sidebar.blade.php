@@ -79,7 +79,7 @@
                             
                                 <div class="sb-sidenav-menu-heading">Interface</div>
 
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="{{ route('teacher.profile') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                     Profile
                                 </a>
