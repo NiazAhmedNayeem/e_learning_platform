@@ -43,6 +43,12 @@
                                         Teachers
                                     </a>
 
+                                {{-- Add Admin --}}
+                                    <a class="nav-link" href="{{ route('user.admin.index') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                        Admin
+                                    </a>
+
                                     
                                 {{-- Add User --}}
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
@@ -53,9 +59,9 @@
 
                                     <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                         <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="{{ route('user.admin.index') }}">Admin</a>
+                                            <a class="nav-link" href="#">Admin</a>
                                             <a class="nav-link" href="#">Teachers</a>
-                                            <a class="nav-link" href="{{ route('admin.user.student.index') }}">Students</a>
+                                            <a class="nav-link" href="#">Students</a>
                                             <a class="nav-link" href="#">Parents</a>
                                         </nav>
                                     </div>

@@ -69,6 +69,8 @@ class User extends Authenticatable
                 return asset('public/upload/admin/' . $this->image);
             case 'teacher':
                 return asset('public/upload/teacher/' . $this->image);
+            case 'student':
+                return asset('public/upload/students/' . $this->image);
             default:
                 return $default;
         }

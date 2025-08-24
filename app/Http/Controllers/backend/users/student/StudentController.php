@@ -5,22 +5,158 @@ namespace App\Http\Controllers\backend\users\student;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
-    public function index(Request $request){
+public function index(Request $request) {
         $search = $request->input('search');
 
-        $users = User::where('role', 'student')
+        $students = User::where('role', 'student')
             ->where(function($query) use ($search){
             $query->where('name', 'like', "%{$search}%")
             ->orWhere('email', 'like', "%{$search}%")
-            ->orWhereHas('student', function($q) use ($search){
-                $q->where('student_id', 'like', "%{$search}%");
-            });
+            ->orWhere('unique_id', 'like', "%{$search}%");
         })->paginate(10);
 
-        return view('backend.users.student.index', compact('users', 'search'));
+
+        return view('backend.users.student.index', compact('students', 'search'));
+    }
+
+    public function create(){
+        return view('backend.users.student.create');
+    }
+
+    public function store(Request $request){
+        $request->validate([
+            'name'        => 'required|string|max:255',
+            'email'       => 'required|email|unique:users,email',
+            'password'    => 'required|string|min:6', 
+            'phone'       => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:11|max:15',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'profession'  => 'required|string|max:255',
+            'gender'      => 'required|in:male,female,other',
+            'bio'         => 'nullable|string|max:255',
+            'address'     => 'nullable|string|max:255',
+        ]);
+
+        DB::beginTransaction();
+
+        try{
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->phone = $request->phone;
+            $user->password = $request->password;
+            $user->role = 'student';
+            $user->gender = $request->gender;
+            $user->profession = $request->profession;
+            $user->bio = $request->bio;
+            $user->address = $request->address;
+            $user->status = $request->status;
+
+            ///Create unique id
+            $today = date('Ymd');
+            if ($user->role === 'student') {
+                $count = User::where('role', 'student')
+                            ->whereDate('created_at', today())
+                            ->count() + 1;
+                $number = str_pad($count, 3, '0', STR_PAD_LEFT);
+                $unique_id = 'S' . $today . $number;
+            }
+            $user->unique_id = $unique_id;
+            
+            if($request->hasFile('image')){ 
+                $fileName = rand().time().'.'.request()->image->getClientOriginalExtension(); 
+                request()->image->move(public_path('upload/students/'),$fileName); 
+                $user->image = $fileName; 
+            }
+            //dd($user);
+            $user->save();
+
+            DB::commit();
+
+            return redirect()->route('admin.student.index')->with('success', 'Student create successfully, Thank you.');
+        
+        } catch (\Exception $e){
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
+            //return back()->with('error', 'Something went wrong while creating student. Please try again.');
+        }
+
+    }
+
+    public function edit($id){
+        $student = User::find($id);
+        return view('backend.users.student.edit', compact('student'));
+    }
+
+    public function update(Request $request, $id){
+        
+        $user = User::find($id);
+
+        $request->validate([
+            'name'        => 'required|string|max:255',
+            'email'       => 'required|email|unique:users,email,'.$user->id,
+            'phone'       => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:11|max:15',
+        ]);
+
+        DB::beginTransaction();
+
+        try{
+
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->phone = $request->phone;
+            if ($request->filled('password')) {
+                $user->password = $request->password;
+            }
+            $user->gender = $request->gender;
+            $user->profession = $request->profession;
+            $user->bio = $request->bio;
+            $user->address = $request->address;
+            $user->status = $request->status;
+
+
+            if($request->hasFile('image')){ 
+                @unlink(public_path("upload/students/".$user->image));
+                $fileName = rand().time().'.'.request()->image->getClientOriginalExtension(); 
+                request()->image->move(public_path('upload/students/'),$fileName); 
+                $user->image = $fileName; 
+            }
+
+            //dd($user);
+            $user->save();
+
+            DB::commit();
+
+            return redirect()->route('admin.student.index')->with('success', 'Student update successfully, Thank you.');
+        
+        } catch (\Exception $e){
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
+            //return back()->with('error', 'Something went wrong while creating student. Please try again.');
+        }
+
+
+
+    }
+
+
+    public function delete($id){
+        $student = User::find($id);
+
+        if(!$student){
+            return redirect()->route('admin.student.index')->with('error', 'Student not found.');
+        }
+
+        if($student->image && file_exists(public_path("upload/students/".$student->image))){
+            unlink(public_path("upload/students/".$student->image));
+        }
+
+        $student->delete();
+
+        return redirect()->route('admin.student.index')->with('success', 'Student deleted successfully.');
     }
 }
 
