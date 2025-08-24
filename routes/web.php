@@ -17,4 +17,21 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+
+
+//Teacher and Student profile Password Change Route
+Route::middleware(['auth'])->group(function () {
+    Route::get('/settings/password',        [App\Http\Controllers\user_change_password\UserChangePasswordController::class, 'showChangeForm'])->name('password.change.form');
+    Route::post('/settings/password/request',[App\Http\Controllers\user_change_password\UserChangePasswordController::class, 'requestChange'])->name('password.change.request');
+
+    Route::get('/settings/password/otp',    [App\Http\Controllers\user_change_password\UserChangePasswordController::class, 'showOtpForm'])->name('password.change.otp');
+    Route::post('/settings/password/verify',[App\Http\Controllers\user_change_password\UserChangePasswordController::class, 'verifyOtp'])->name('password.change.verify');
+    Route::post('/settings/password/resend',[App\Http\Controllers\user_change_password\UserChangePasswordController::class, 'resendOtp'])->name('password.change.resend');
+});
+
+
+
+
+
 require __DIR__.'/auth.php';

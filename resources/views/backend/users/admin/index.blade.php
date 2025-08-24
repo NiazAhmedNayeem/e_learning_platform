@@ -35,11 +35,7 @@
                 <td>{{ $loop->iteration + ($admins->currentPage()-1)*$admins->perPage() }}</td>
 
                 <td>
-                    @if($admin->image)
-                        <img src="{{ $admin->image_show }}" alt="admin Image" width="50" height="50">
-                    @else
-                        N/A
-                    @endif
+                    <img src="{{ $admin->image_show }}" alt="admin Image" width="50" height="50">
                 </td>
                 <td>{{ $admin->name }}</td>
                 <td>{{ $admin->email }}</td>

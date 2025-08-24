@@ -2,7 +2,7 @@
 @section('title', 'Admin | Admin Edit')
 @section('main-content')
 
-
+<div class="card card-body shadow mt-5">
     <h1 class="text-2xl font-bold text-center mt-4">Edit Admin Info</h1>
 
     @if ($errors->any())
@@ -15,7 +15,18 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('user.admin.update', $admin->id) }}" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <div class="row mb-4" style="margin-right: 10px">
+        <div class="col-md-12 text-end">
+            <img src="{{ $admin->image_show }}" 
+                alt="Profile Image" 
+                width="100" 
+                height="100" 
+                class="rounded shadow mb-2">
+            <p class="mb-0">Profile Image</p>
+        </div>
+    </div>
+
+    <form style="padding: 10px" method="POST" action="{{ route('user.admin.update', $admin->id) }}" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         @csrf
 
         <h3 class="text-lg font-semibold mb-3">Admin Information</h3>
@@ -54,13 +65,7 @@
             </div>
 
 
-            @if($admin->image)
-                <div class="col-md-2 mb-4">
-                    <img src="{{ $admin->image_show }}" width="80" height="80" alt="Admin Image">
-                </div>
-            @endif
-
-            <div class="col-md-2 mb-4">
+            <div class="col-md-4 mb-4">
                 <label class="block text-gray-700 text-sm font-bold">Profile Image</label>
                 <input type="file" name="image" class="form-control">
             </div>
@@ -73,5 +78,5 @@
         </div>
 
     </form>
-
+</div>
 @endsection

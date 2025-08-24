@@ -58,7 +58,8 @@ class User extends Authenticatable
 
     public function getImageShowAttribute()
     {
-        $default = asset('public/upload/default.jpg');
+        
+        $default = "https://ui-avatars.com/api/?name=" . urlencode($this->name) . "&size=160";
 
         if (!$this->image || $this->image == "N/A") {
             return $default;

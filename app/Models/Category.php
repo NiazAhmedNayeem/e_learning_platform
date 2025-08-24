@@ -13,8 +13,16 @@ class Category extends Model
         ];
 
 
+
+
     public function getImageShowAttribute()
-    { 
-        return $this->image != "N/A" ? asset('public/upload/category/'. $this?->image) : asset('public/upload/default.jpg'); 
+    {
+        $default = "https://ui-avatars.com/api/?name=" . urlencode($this->name) . "&size=160";
+
+        if (empty($this->image) || $this->image === "N/A") {
+            return $default;
+        }
+
+        return asset('public/upload/category/' . $this->image);
     }
 }

@@ -2,7 +2,7 @@
 @section('title', 'Admin | Admin Update Student')
 @section('main-content')
 
-
+<div class="card card-body shadow mt-5">
     <h1 class="text-2xl font-bold text-center mt-4">Update Student</h1>
 
     @if ($errors->any())
@@ -15,13 +15,18 @@
         </div>
     @endif
 
-    <div class="row mb-4">
-        <div class="col-md-12 d-flex justify-content-end">
-            <img src="{{ $student->image_show }}" alt="Profile Image" width="100" height="100" class="rounded shadow">
+    <div class="row mb-4" style="margin-right: 10px">
+        <div class="col-md-12 text-end">
+            <img src="{{ $student->image_show }}" 
+                alt="Profile Image" 
+                width="100" 
+                height="100" 
+                class="rounded shadow mb-2">
+            <p class="mb-0">Profile Image</p>
         </div>
     </div>
 
-    <form method="POST" action="{{ route('admin.student.update', $student->id) }}" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <form style="padding: 10px" method="POST" action="{{ route('admin.student.update', $student->id) }}" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         @csrf
 
         <h3 class="text-lg font-semibold mb-3">Edit Student Information</h3>
@@ -101,5 +106,5 @@
         </div>
 
     </form>
-
+</div>
 @endsection

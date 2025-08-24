@@ -49,11 +49,7 @@
                 <td>{{ $loop->iteration + ($students->currentPage()-1)*$students->perPage() }}</td>
 
                 <td>
-                    @if($student->image)
-                        <img src="{{ $student->image_show }}" alt="Student Image" width="50" height="50">
-                    @else
-                        N/A
-                    @endif
+                    <img src="{{ $student->image_show }}" alt="Student Image" width="50" height="50">
                 </td>
                 <td>{{ $student->unique_id }}</td>
                 <td>{{ $student->name }}</td>

@@ -2,7 +2,7 @@
 @section('title', 'Admin | Admin Create')
 @section('main-content')
 
-
+<div class="card card-body shadow mt-5">
     <h1 class="text-2xl font-bold text-center mt-4">Add New Admin</h1>
 
     @if ($errors->any())
@@ -15,7 +15,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('user.admin.store') }}" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <form style="padding: 10px" method="POST" action="{{ route('user.admin.store') }}" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         @csrf
 
         <h3 class="text-lg font-semibold mb-3">Admin Information</h3>
@@ -68,5 +68,5 @@
         </div>
 
     </form>
-
+</div>
 @endsection

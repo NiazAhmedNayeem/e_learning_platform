@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\backend\teacher;
+namespace App\Http\Controllers\teacher;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
@@ -57,6 +57,4 @@ class TeacherController extends Controller
         return redirect()->route('teacher.profile')->with('success', 'Your profile is updated.');
 
     }
-
-
 }

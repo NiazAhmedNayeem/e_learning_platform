@@ -37,11 +37,7 @@
                 <td>{{ $loop->iteration + ($teachers->currentPage()-1)*$teachers->perPage() }}</td>
 
                 <td>
-                    @if($teacher->image)
-                        <img src="{{ $teacher->image_show }}" alt="admin Image" width="50" height="50">
-                    @else
-                        N/A
-                    @endif
+                    <img src="{{ $teacher->image_show }}" alt="teacher Image" width="50" height="50">
                 </td>
                 <td>{{ $teacher->unique_id }}</td>
                 <td>{{ $teacher->name }}</td>

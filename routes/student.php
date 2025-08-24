@@ -4,7 +4,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class. ':student'])->group(function(){
     //Student Dashboard Route
-    Route::get('student/dashboard', [App\Http\Controllers\backend\student\StudentController::class, 'index'])->name('student.dashboard');
+    Route::get('student/dashboard', [App\Http\Controllers\student\StudentController::class, 'index'])->name('student.dashboard');
+
+     //Student Dashboard Route
+    Route::get('student/profile', [App\Http\Controllers\student\StudentController::class, 'profile'])->name('student.profile');
+    Route::get('student/profile/edit', [App\Http\Controllers\student\StudentController::class, 'edit'])->name('student.profile.edit');
+    Route::post('student/profile/update', [App\Http\Controllers\student\StudentController::class, 'update'])->name('student.profile.update');
+
 
 });
 

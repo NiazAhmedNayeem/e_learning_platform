@@ -96,7 +96,12 @@
                     <div class="card-footer text-center bg-white">
 
                         <div class="d-flex justify-content-end gap-2 mt-1">
-                            <a href="{{ route('teacher.profile') }}" class="btn btn-warning btn-lg shadow-sm">Cancel</a>
+                            @if ($user->role == 'teacher')
+                                <a href="{{ route('teacher.profile') }}" class="btn btn-warning btn-lg shadow-sm">Cancel</a>
+                            @elseif ($user->role == 'student')
+                                <a href="{{ route('student.profile') }}" class="btn btn-warning btn-lg shadow-sm">Cancel</a>
+                            @endif
+                            
                             <button type="submit" class="btn btn-primary btn-lg shadow-sm">Reset Password</button>
                         </div>
                     </div>

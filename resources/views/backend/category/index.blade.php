@@ -37,11 +37,7 @@
             <tr>
                 <td>{{ $loop->iteration + ($categories->currentPage()-1)*$categories->perPage() }}</td>
                 <td>
-                    @if($category->image)
-                        <img src="{{ $category->image_show }}" alt="Category Image" class="rounded" width="50" height="50">
-                    @else
-                        N/A
-                    @endif
+                    <img src="{{ $category->image_show }}" alt="Category Image" class="rounded" width="50" height="50">
                 </td>
                 <td>{{ $category->name }}</td>
                 <td>{{ $category->slug }}</td>
