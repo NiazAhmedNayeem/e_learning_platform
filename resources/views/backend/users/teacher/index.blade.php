@@ -20,6 +20,7 @@
             <tr>
                 <th>SL</th>
                 <th>Image</th>
+                <th>Teacher ID</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
@@ -42,6 +43,7 @@
                         N/A
                     @endif
                 </td>
+                <td>{{ $teacher->unique_id }}</td>
                 <td>{{ $teacher->name }}</td>
                 <td>{{ $teacher->email }}</td>
                 <td>{{ $teacher->phone }}</td>

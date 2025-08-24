@@ -37,11 +37,29 @@ class RegisteredUserController extends Controller
         ]);
         //dd($request);
 
+        // Generate unique student ID
+        $today = date('Ymd');
+
+        if ($request->role === 'student') {
+            $count = User::where('role', 'student')
+                        ->whereDate('created_at', today())
+                        ->count() + 1;
+            $number = str_pad($count, 3, '0', STR_PAD_LEFT);
+            $unique_id = 'S' . $today . $number;
+        } elseif ($request->role === 'teacher') {
+            $count = User::where('role', 'teacher')
+                        ->whereDate('created_at', today())
+                        ->count() + 1;
+            $number = str_pad($count, 3, '0', STR_PAD_LEFT);
+            $unique_id = 'T' . $today . $number;
+        }
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
+            'unique_id' => $unique_id,
         ]);
 
         //dd($user);

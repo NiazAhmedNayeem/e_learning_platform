@@ -17,6 +17,7 @@ class TeacherController extends Controller
             ->where(function($query) use ($search){
             $query->where('name', 'like', "%{$search}%")
             ->orWhere('email', 'like', "%{$search}%")
+            ->orWhere('unique_id', 'like', "%{$search}%")
             ->orWhereHas('expertCategory', function($q) use ($search){
                 $q->where('name', 'like', "%{$search}%");
             });
@@ -59,6 +60,19 @@ class TeacherController extends Controller
             $teacher->gender = $request->gender;
             $teacher->bio = $request->bio;
             $teacher->address = $request->address;
+
+            //unique id generate
+            $today = date('Ymd');
+            if ($teacher->role === 'teacher') {
+                $count = User::where('role', 'teacher')
+                            ->whereDate('created_at', today())
+                            ->count() + 1;
+                $number = str_pad($count, 3, '0', STR_PAD_LEFT);
+                $unique_id = 'T' . $today . $number;
+            }
+            $teacher->unique_id = $unique_id;
+
+
 
             if($request->hasFile('image')){ 
                 $fileName = rand().time().'.'.request()->image->getClientOriginalExtension(); 

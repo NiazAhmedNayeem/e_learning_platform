@@ -61,6 +61,10 @@
                         <!-- Details List -->
                         <ul class="list-group list-group-flush shadow-sm rounded">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><strong>Teacher ID:</strong></span>
+                               <span class="fw-bold">{{ $teacher->unique_id }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <span><strong>Email:</strong></span>
                                 <span>{{ $teacher->email }}</span>
                             </li>
@@ -87,12 +91,6 @@
 
                 <!-- Footer -->
                 <div class="card-footer text-center bg-white">
-                    {{-- <a href="{{ route('teacher.profile.edit') }}" class="btn btn-warning btn-sm px-4 rounded-pill">
-                        ✏️ Edit Profile
-                    </a>
-                    <a href="#" class="btn btn-warning btn-sm px-4 rounded-pill">
-                        ✏️ Change Password
-                    </a> --}}
 
                     <div class="d-flex justify-content-end gap-2 mt-1">
                         <a href="{{ route('password.change.form') }}" class="btn btn-warning btn-lg shadow-sm">✏️ Change Password</a>
