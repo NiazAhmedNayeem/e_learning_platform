@@ -48,7 +48,13 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin'])
     Route::delete('admin/delete/category/{id}', [App\Http\Controllers\backend\category\CategoryController::class, 'delete'])->name('admin.category.delete');
 
 
-   
+    ///Admin course management Route
+    Route::get('/admin/all-courses', [App\Http\Controllers\backend\course\CourseController::class, 'index'])->name('admin.course.index');
+    Route::get('admin/course/create', [App\Http\Controllers\backend\course\CourseController::class, 'create'])->name('admin.course.create');
+    Route::post('admin/course/store', [App\Http\Controllers\backend\course\CourseController::class, 'store'])->name('admin.course.store');
+    Route::get('admin/course/edit/{id}', [App\Http\Controllers\backend\course\CourseController::class, 'edit'])->name('admin.course.edit');
+    Route::post('admin/course/update/{id}', [App\Http\Controllers\backend\course\CourseController::class, 'update'])->name('admin.course.update');
+    Route::delete('admin/course/delete/{id}', [App\Http\Controllers\backend\course\CourseController::class, 'delete'])->name('admin.course.delete');
 
 
 

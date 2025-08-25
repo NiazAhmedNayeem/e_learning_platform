@@ -18,17 +18,16 @@
                             
                                     <div class="sb-sidenav-menu-heading">Interface</div>
 
-                                {{-- Add class --}}
-                                    {{-- <a class="nav-link" href="#">
-                                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                        Classes
-                                    </a> --}}
-                                    
-                                
                                 {{-- Add Category --}}
                                     <a class="nav-link" href="{{ route('admin.category.index') }}">
                                         <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                         Category
+                                    </a>
+
+                                {{-- Add course --}}
+                                    <a class="nav-link" href="{{ route('admin.course.index') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                        Courses
                                     </a>
 
                                 {{-- Add students --}}
