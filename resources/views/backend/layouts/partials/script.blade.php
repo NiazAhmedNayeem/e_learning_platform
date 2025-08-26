@@ -15,6 +15,9 @@
 <!-- Toastr -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
+{{-- summernote --}}
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
 <script>
     $(document).ready(function() {
         // toastr messages
@@ -35,8 +38,11 @@
         @endif
 
         // summernote init
-        $('.summernote').summernote({
-            height: 200
+        $(document).ready(function() {
+            $('.summernote').summernote({
+                height: 200,
+                tabsize: 2
+            });
         });
 
         // select2 init
