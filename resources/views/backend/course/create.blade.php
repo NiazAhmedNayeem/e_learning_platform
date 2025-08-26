@@ -1,5 +1,5 @@
 @extends('backend.layouts.master')
-@section('title', 'Admin | Admin Create Course')
+@section('title', 'Admin | Create Course')
 @section('main-content')
 
 <div class="card card-body shadow mt-5">
@@ -56,12 +56,12 @@
 
             <div class="col-md-12 mb-4">
                 <label class="block text-gray-700 text-sm font-bold">Prerequisite</label>
-                <textarea type="text" rows="5" name="prerequisite" value="{{ old('prerequisite') }}" class="form-control summernote"></textarea>
+                <textarea type="text" rows="5" name="prerequisite" class="form-control summernote">{{ old('prerequisite') }}</textarea>
             </div>
 
             <div class="col-md-12 mb-4">
                 <label class="block text-gray-700  font-bold">Short Description</label>
-                <textarea type="text" name="short_description" value="{{ old('short_description') }}" class="form-control summernote" required></textarea>
+                <textarea type="text" name="short_description" class="form-control summernote" required>{{ old('short_description') }}</textarea>
             </div>
 
             <div class="col-md-12 mb-4">
