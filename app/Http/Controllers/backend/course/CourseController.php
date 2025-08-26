@@ -10,14 +10,25 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-use function Termwind\render;
 
 class CourseController extends Controller
 {
     public function index(Request $request){
-        //$search = $request->input('search');
-        $courses = Course::where('status', 1)->paginate(5);
-        return view('backend.course.index', compact('courses'));
+        $search = $request->input('search');
+        // $courses = Course::where('status', 1)->paginate(5);
+
+        $courses = Course::where(function($query) use ($search){
+            $query->where('title', 'like', "%{$search}%")
+            ->orWhereHas('category', function($q) use ($search){
+            $q->where('name', 'like', "%{$search}%");
+            });
+        })
+        ->orderBy('id', 'desc')
+        ->paginate(10);
+                        
+
+
+        return view('backend.course.index', compact('courses', 'search'));
     }
 
     public function create(){

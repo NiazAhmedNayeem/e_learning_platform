@@ -3,17 +3,17 @@
 @section('main-content')
 
 <div class="container mt-4">
-    <h2>Teacher User List</h2>
+    <h2>All Courses List</h2>
      <div class="d-flex justify-content-end mb-3">
         <a href="{{ route('admin.course.create') }}" class="btn btn-primary">Add New Course</a>
     </div>
 
-    {{-- <div class="d-flex justify-content-end mb-3">
+    <div class="d-flex justify-content-end mb-3">
         <form class="d-flex" method="GET" action="{{ route('admin.course.index') }}">
             <input class="form-control" type="text" name="search" value="{{ $search }}" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
             <button class="btn btn-primary" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
         </form>
-    </div> --}}
+    </div>
 
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
@@ -22,7 +22,7 @@
                 <th>Image</th>
                 <th>Title</th>
                 <th>Category</th>
-                <th>Teacher</th>
+                {{-- <th>Teacher</th> --}}
                 <th>Price</th>
                 <th>Discount</th>
                 <th>Final Price</th>
@@ -41,7 +41,7 @@
                 </td>
                 <td>{{ $course->title }}</td>
                 <td>{{ $course->category?->name }}</td>
-                <td>{{ $course->teacher?->name }}</td>
+                {{-- <td>{{ $course->teacher?->name }}</td> --}}
                 <td>{{ $course->price }}</td>
                 <td>{{ $course->discount }} %</td>
                 <td>{{ $course->final_price }}</td>
@@ -71,9 +71,9 @@
     </table>
 
     {{-- Pagination Links --}}
-    {{-- <div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-end">
         {{ $courses->appends(['search' => $search])->links('pagination::bootstrap-5') }}
-    </div> --}}
+    </div>
 </div>
 @endsection
 
