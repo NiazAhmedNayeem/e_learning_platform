@@ -14,8 +14,6 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':teacher'
     Route::post('teacher/profile/update', [App\Http\Controllers\teacher\TeacherController::class, 'update'])->name('teacher.profile.update');
 
 
-    
-
 }); 
 
 

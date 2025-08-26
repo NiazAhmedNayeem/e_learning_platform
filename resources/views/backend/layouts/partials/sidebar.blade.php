@@ -95,6 +95,11 @@
                                     Profile
                                 </a>
 
+                                <a class="nav-link" href="{{ route('profile.notifications') }}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                    Notifications
+                                </a>
+
                                 <a class="nav-link" href="#">
                                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                     Assign Course

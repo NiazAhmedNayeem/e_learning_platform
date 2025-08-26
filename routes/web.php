@@ -31,6 +31,10 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
+    Route::get('/profile/notifications', [App\Http\Controllers\notification\NotificationController::class, 'index'])->name('profile.notifications');
+    Route::get('/profile/notifications/{id}/read', [App\Http\Controllers\notification\NotificationController::class, 'markAsRead'])->name('profile.notifications.read');
+
+
 
 
 

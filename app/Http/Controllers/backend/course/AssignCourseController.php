@@ -5,6 +5,7 @@ namespace App\Http\Controllers\backend\course;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\User;
+use App\Notifications\TeacherCourseAssignNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -35,11 +36,16 @@ class AssignCourseController extends Controller
         DB::beginTransaction();
 
         try{
-            $assign_teacher = Course::findOrFail($request->course_id);
-            $assign_teacher->teacher_id = $request->teacher_id;
+            $course = Course::findOrFail($request->course_id);
+            $course->teacher_id = $request->teacher_id;
             //dd($assign_teacher);
 
-            $assign_teacher->save();
+            $course->save();
+
+            // Notification send
+            $teacher = User::find($request->teacher_id);
+            $teacher->notify(new TeacherCourseAssignNotification($course->title, $course->id, 'assigned'));
+
             DB::commit();
             return redirect()->back()->with('success', 'Teacher assigned successfully.');
 
@@ -59,9 +65,21 @@ class AssignCourseController extends Controller
         DB::beginTransaction();
 
         try {
-            $assign_teacher = Course::findOrFail($id); 
-            $assign_teacher->teacher_id = $request->teacher_id;
-            $assign_teacher->save();
+            $course = Course::findOrFail($id); 
+            $oldTeacher = $course->teacher;
+            $course->teacher_id = $request->teacher_id;
+            $course->save();
+
+            //for old teacher remove notification
+            if ($oldTeacher && $oldTeacher->id != $request->teacher_id) {
+            $oldTeacher->notify(new \App\Notifications\TeacherCourseAssignNotification($course->title, $course->id, 'removed'));
+            }
+
+            //for new teacher add notification
+            $newTeacher = User::find($request->teacher_id);
+            if ($newTeacher) {
+                $newTeacher->notify(new \App\Notifications\TeacherCourseAssignNotification($course->title, $course->id, 'assigned'));
+            }
 
             DB::commit();
             return redirect()->back()->with('success', 'Assign Teacher updated successfully.');
@@ -74,12 +92,20 @@ class AssignCourseController extends Controller
 
     public function delete($id)
     {
-        $assign_teacher = Course::findOrFail($id);
-        $assign_teacher->teacher_id = null; 
-        $assign_teacher->save();
+        $course = Course::findOrFail($id);
+        
+        $teacher = $course->teacher;
+
+        $course->teacher_id = null; 
+        $course->save();
+
+        if ($teacher) {
+            $teacher->notify(new \App\Notifications\TeacherCourseAssignNotification($course->title, $course->id, 'removed'));
+        }
 
         return redirect()->back()->with('success', 'Teacher assignment removed successfully.');
     }
+
 
 
 }

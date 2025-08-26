@@ -24,7 +24,7 @@
         <li class="nav-item dropdown me-3 mt-2">
             <a class="nav-link dropdown-toggle position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
-                {{-- <style>
+                <style>
                     .notification-badge {
                     width: 18px;       
                     height: 18px;      
@@ -34,23 +34,38 @@
                     align-items: center;
                     justify-content: center;
                 }
-                </style> --}}
+                </style>
                 <span class="notification-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    {{-- {{ auth()->user()->unreadNotifications->count() ?? 0 }} --}}0
+                    {{ auth()->user()->unreadNotifications->count() ?? 0 }}
                     <span class="visually-hidden">unread notifications</span>
                 </span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
                 <li><h6 class="dropdown-header">Notifications</h6></li>
-                {{-- @forelse(auth()->user()->unreadNotifications as $notification)
-                    <li>
-                        <a class="dropdown-item" href="{{ $notification->data['url'] ?? '#'}}">
+
+                @forelse(auth()->user()->unreadNotifications as $notification)
+                <li>
+                    <a class="dropdown-item d-flex justify-content-between align-items-start" 
+                    href="{{ $notification->data['url'] ?? route('profile.notifications') }}">
+                    
+                        <div>
                             {{ $notification->data['message'] ?? 'New notification' }}
-                        </a>
-                    </li>
+                            <br>
+                            <small class="text-muted">
+                                {{ $notification->created_at->setTimezone('Asia/Dhaka')->format('d M Y h:i A') }}
+                                {{-- {{ $notification->created_at->timezone(auth()->user()->timezone ?? config('app.timezone'))
+                                    ->format('d M Y h:i A') }} --}}
+                            </small>
+                        </div>
+
+                        @if(!$notification->read_at)
+                            <span class="badge bg-primary rounded-pill">New</span>
+                        @endif
+                    </a>
+                </li>
                 @empty
                     <li><span class="dropdown-item">No new notifications</span></li>
-                @endforelse --}}
+                @endforelse
             </ul>
         </li>
 
