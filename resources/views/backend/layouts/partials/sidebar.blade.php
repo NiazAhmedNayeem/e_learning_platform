@@ -30,6 +30,12 @@
                                         Courses
                                     </a>
 
+                                {{-- Add course --}}
+                                    <a class="nav-link" href="{{ route('admin.course_assign.index') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                        Assign Courses
+                                    </a>
+
                                 {{-- Add students --}}
                                     <a class="nav-link" href="{{ route('admin.student.index') }}">
                                         <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>

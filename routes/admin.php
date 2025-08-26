@@ -56,8 +56,14 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin'])
     Route::post('admin/course/update/{id}', [App\Http\Controllers\backend\course\CourseController::class, 'update'])->name('admin.course.update');
     Route::delete('admin/course/delete/{id}', [App\Http\Controllers\backend\course\CourseController::class, 'delete'])->name('admin.course.delete');
 
-
-
+    ///Admin course Assign management Route
+    Route::get('/admin/all-assign-courses', [App\Http\Controllers\backend\course\AssignCourseController::class, 'index'])->name('admin.course_assign.index');
+    Route::post('admin/course/assign/store', [App\Http\Controllers\backend\course\AssignCourseController::class, 'store'])->name('admin.course_assign.store');
+    Route::post('admin/course/assign/update/{id}', [App\Http\Controllers\backend\course\AssignCourseController::class, 'update'])->name('admin.course_assign.update');
+    Route::delete('admin/course/assign/delete/{id}', [App\Http\Controllers\backend\course\AssignCourseController::class, 'delete'])->name('admin.course_assign.delete');
+    //Ajax route
+    Route::get('get-teachers-by-category', [App\Http\Controllers\backend\course\AssignCourseController::class, 'getTeachersByCategory'])
+    ->name('admin.getTeachersByCategory');
 
 
 }); //Admin middleware Route End

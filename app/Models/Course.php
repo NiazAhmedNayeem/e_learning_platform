@@ -27,7 +27,7 @@ class Course extends Model
         return $this->belongsTo(Category::class);
     }
     public function teacher(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'teacher_id');
     }
 
 

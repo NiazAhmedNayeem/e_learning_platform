@@ -18,10 +18,6 @@ class CategoryController extends Controller
         return view('backend.category.index', compact('categories', 'search'));
     }
 
-    public function create(){
-        return view('backend.category.create');
-    }
-
     public function store(Request $request){
         $request->validate([
             'name'      => 'required|string|max:255',
