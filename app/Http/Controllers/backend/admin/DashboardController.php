@@ -11,10 +11,4 @@ class DashboardController extends Controller
         return view('backend.dashboard.index');
     }
 
-    public function inactive(){
-        return view('backend.dashboard.inactive');
-    }
-
-    
-    
 }

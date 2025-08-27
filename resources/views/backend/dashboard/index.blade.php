@@ -2,7 +2,7 @@
 @section('title', 'Admin Dashboard')
 @section('main-content')
 
-
+@if (auth()->check() && auth()->user()->status == 1)
         <h1 class="mt-4">Dashboard</h1>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item active">Dashboard</li>
@@ -66,7 +66,29 @@
             </div>
         </div>
         
-
+@else
+        
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="card shadow-lg border-0 text-center p-5" style="max-width: 600px;">
+            <div class="card-body">
+                <h2 class="text-warning mb-3">
+                    <i class="fas fa-user-slash"></i> Account Inactive
+                </h2>
+                <p class="fs-5 text-muted">
+                    Your account is currently inactive.  
+                    Please contact the system administrator to resolve this issue  
+                    and regain access to your account.
+                </p>
+                @php
+                    $super_admin = App\Models\User::where('is_super', 1)->first();
+                @endphp
+                <p class="fs-5 text-muted mt-5">
+                    Support Email: <span class="text-success">{{ $super_admin->email }}</span>
+                </p>
+            </div>
+        </div>
+    </div> 
+@endif
 
                     
 @endsection

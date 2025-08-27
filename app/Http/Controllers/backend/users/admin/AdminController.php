@@ -45,6 +45,17 @@ class AdminController extends Controller
             $admin->status = $request->status;
             $admin->role = 'admin';
 
+            $today = date('Ymd');
+            if ($admin->role === 'admin') {
+                $count = User::where('role', 'admin')
+                            ->whereDate('created_at', today())
+                            ->count() + 1;
+                $number = str_pad($count, 3, '0', STR_PAD_LEFT);
+                $unique_id = 'A' . $today . $number;
+            }
+            $admin->unique_id = $unique_id;
+
+
             if($request->hasFile('image')){ 
                 $fileName = rand().time().'.'.request()->image->getClientOriginalExtension(); 
                 request()->image->move(public_path('upload/admin/'),$fileName); 

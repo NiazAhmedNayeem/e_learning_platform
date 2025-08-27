@@ -29,9 +29,9 @@ class TeacherRegisteredNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'message' => "A new teacher has registered: {$this->teacher->name}",
+            'message' => "A new teacher has registered: Name: {$this->teacher->name}, Email: {$this->teacher->email}",
             'teacher_id' => $this->teacher->id,
-            // 'email' => $this->teacher->email,
+            'email' => $this->teacher->email,
         ];
     }
     /**
@@ -47,13 +47,13 @@ class TeacherRegisteredNotification extends Notification
     /**
      * Get the mail representation of the notification.
      */
-    // public function toMail(object $notifiable): MailMessage
-    // {
-    //     return (new MailMessage)
-    //         ->line('The introduction to the notification.')
-    //         ->action('Notification Action', url('/'))
-    //         ->line('Thank you for using our application!');
-    // }
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)
+            ->line('The introduction to the notification.')
+            ->action('Notification Action', url('/'))
+            ->line('Thank you for using our application!');
+    }
 
     /**
      * Get the array representation of the notification.

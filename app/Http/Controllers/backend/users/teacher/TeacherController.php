@@ -170,6 +170,7 @@ class TeacherController extends Controller
             }
             //dd($teacher);
             $teacher->save();
+            $teacher->notify(new TeacherStatusNotification('Your account is updated by Admin'));
             DB::commit();
             return redirect()->route('admin.all-teacher')->with('success', 'Teacher Update Successfully. Thank you.');
         } catch (\Exception $e){

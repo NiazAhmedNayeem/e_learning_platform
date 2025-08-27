@@ -72,7 +72,7 @@ class RegisteredUserController extends Controller
 
 
         // notify all admins for teacher 
-        $admins = User::where('role', 'admin')->get();
+        $admins = User::where('role', 'admin')->where('status', 1)->get();
         foreach ($admins as $admin) {
             $admin->notify(new TeacherRegisteredNotification($user));
         }
