@@ -5,6 +5,7 @@ namespace App\Http\Controllers\backend\users\teacher;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\User;
+use App\Notifications\TeacherStatusNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -203,6 +204,8 @@ class TeacherController extends Controller
         $teacher->status = 0;
         $teacher->save();
 
+        $teacher->notify(new TeacherStatusNotification('Your account is Inactive by Admin'));
+
         return redirect()->back()->with('success', 'Teacher inactive successfully!');
     }
 
@@ -212,6 +215,8 @@ class TeacherController extends Controller
         $teacher = User::where('id', $id)->where('role', 'teacher')->firstOrFail();
         $teacher->status = 1;
         $teacher->save();
+
+        $teacher->notify(new TeacherStatusNotification('Your account is Approved by Admin'));
 
         return redirect()->back()->with('success', 'Teacher approved successfully!');
     }
@@ -223,6 +228,8 @@ class TeacherController extends Controller
         $teacher->status = 2;
         $teacher->save();
 
+        $teacher->notify(new TeacherStatusNotification('Your account is Pending by Admin'));
+
         return redirect()->back()->with('success', 'Teacher pending successfully!');
     }
 
@@ -232,6 +239,8 @@ class TeacherController extends Controller
         $teacher = User::where('id', $id)->where('role', 'teacher')->firstOrFail();
         $teacher->status = 3; // Rejected
         $teacher->save();
+
+        $teacher->notify(new TeacherStatusNotification('Your account is Rejected by Admin'));
 
         return redirect()->back()->with('success', 'Teacher rejected successfully!');
     }

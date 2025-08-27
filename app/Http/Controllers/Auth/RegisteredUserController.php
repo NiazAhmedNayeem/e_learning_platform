@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\TeacherRegisteredNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -68,6 +69,13 @@ class RegisteredUserController extends Controller
         //dd($user);
 
         event(new Registered($user));
+
+
+        // notify all admins for teacher 
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new TeacherRegisteredNotification($user));
+        }
 
         //Auth::login($user);
 
