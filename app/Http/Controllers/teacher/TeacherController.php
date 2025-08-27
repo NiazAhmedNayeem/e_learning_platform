@@ -69,5 +69,9 @@ class TeacherController extends Controller
         return view('teacher.course.index', compact('assign_courses', 'search'));
     }
 
-    
+    public function assignedCoursesDetails($slug){
+        $course = Course::where('slug', $slug)->first();
+        //dd($course);
+        return view('teacher.course.details', compact('course'));
+    }
 }

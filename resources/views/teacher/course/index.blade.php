@@ -48,7 +48,7 @@
                     </span>
                 </td>
                 <td>
-                    <a href="{{ route('admin.course.edit', $course->id) }}" class="btn btn-warning btn-sm">View</a>
+                    <a href="{{ route('teacher.assign.course.details', $course->slug) }}" class="btn btn-warning btn-sm">View</a>
                     
                 </td>
             </tr>
