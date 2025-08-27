@@ -13,6 +13,7 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':teacher'
     Route::get('teacher/profile/edit', [App\Http\Controllers\teacher\TeacherController::class, 'edit'])->name('teacher.profile.edit');
     Route::post('teacher/profile/update', [App\Http\Controllers\teacher\TeacherController::class, 'update'])->name('teacher.profile.update');
 
+    Route::get('teacher/assign/courses', [App\Http\Controllers\teacher\TeacherController::class, 'assignedCourses'])->name('teacher.assign.courses');
 
 }); 
 

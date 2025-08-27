@@ -4,6 +4,7 @@ namespace App\Http\Controllers\teacher;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Course;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -57,4 +58,16 @@ class TeacherController extends Controller
         return redirect()->route('teacher.profile')->with('success', 'Your profile is updated.');
 
     }
+
+    public function assignedCourses(Request $request){
+        $search = $request->input('search');
+        $auth = auth()->user()->id;
+        $assign_courses = Course::where('teacher_id', $auth)->where('status', 1)
+                ->where(function($query) use ($search){
+                $query->where('title', 'like', "%{$search}%");
+                })->paginate(5);
+        return view('teacher.course.index', compact('assign_courses', 'search'));
+    }
+
+    
 }
