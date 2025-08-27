@@ -142,10 +142,19 @@
                             @endif
             {{-- Student Dashboard sidebar end here --}}
 
-                            
+                            @php
+                                $auth = auth()->check();
+                                if($auth && auth()->user()->role == 'admin'){
+                                    $dashboardUrl = 'admin.dashboard';
+                                }elseif($auth && auth()->user()->role == 'teacher'){
+                                    $dashboardUrl = 'teacher.dashboard';
+                                }elseif($auth && auth()->user()->role == 'student'){
+                                    $dashboardUrl = 'student.dashboard';
+                                }
+                            @endphp
 
-                            @if (auth()->check() && auth()->user()->status == 0)
-                                 <a class="nav-link" href="{{ route('inactive.dashboard') }}">
+                            @if (auth()->check() && auth()->user()->status == 0 || auth()->user()->status == 2 || auth()->user()->status == 3)
+                                 <a class="nav-link" href="{{ route($dashboardUrl) }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                     Dashboard
                                 </a>

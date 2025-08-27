@@ -42,12 +42,23 @@
         Manage students easily with a modern, fast and responsive system 🚀
     </p>
 
+       @php
+            $auth = auth()->check();
+            if($auth && auth()->user()->role == 'admin'){
+                $dashboardUrl = 'admin.dashboard';
+            }elseif($auth && auth()->user()->role == 'teacher'){
+                $dashboardUrl = 'teacher.dashboard';
+            }elseif($auth && auth()->user()->role == 'student'){
+                $dashboardUrl = 'student.dashboard';
+            }
+        @endphp
+
     @if (auth()->user())
         <div class="d-flex justify-content-center gap-3">
-            @if (auth()->check() && auth()->user()->status == 1)
-                <a href="{{ route('admin.dashboard') }}" class="btn btn-primary btn-custom">Dashboard</a>
-            @else
-                <a href="{{ route('inactive.dashboard') }}" class="btn btn-primary btn-custom">Dashboard</a>
+            @if (auth()->check())
+                <a href="{{ route($dashboardUrl) }}" class="btn btn-primary btn-custom">Dashboard</a>
+            {{-- @else
+                <a href="{{ route('inactive.dashboard') }}" class="btn btn-primary btn-custom">Dashboard</a> --}}
             @endif
             <form action="{{ route('logout') }}" method="POST">
                 @csrf

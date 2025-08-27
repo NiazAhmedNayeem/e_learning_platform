@@ -10,21 +10,59 @@ use Illuminate\Support\Facades\DB;
 
 class TeacherController extends Controller
 {
-    public function index(Request $request){
-        $search = $request->input('search');
+    // public function index(Request $request){
+    //     $search = $request->input('search');
 
-        $teachers = User::where('role', 'teacher')
-            ->where(function($query) use ($search){
-            $query->where('name', 'like', "%{$search}%")
-            ->orWhere('email', 'like', "%{$search}%")
-            ->orWhere('unique_id', 'like', "%{$search}%")
-            ->orWhereHas('expertCategory', function($q) use ($search){
-                $q->where('name', 'like', "%{$search}%");
+    //     $teachers = User::where('role', 'teacher')
+    //         ->where(function($query) use ($search){
+    //         $query->where('name', 'like', "%{$search}%")
+    //         ->orWhere('email', 'like', "%{$search}%")
+    //         ->orWhere('unique_id', 'like', "%{$search}%")
+    //         ->orWhereHas('expertCategory', function($q) use ($search){
+    //             $q->where('name', 'like', "%{$search}%");
+    //         });
+    //     })->paginate(10);
+
+    //     return view('backend.users.teacher.index', compact('teachers', 'search'));
+    // }
+
+    public function index(Request $request)
+    {
+        $query = User::where('role', 'teacher');
+
+        // Search filter
+        if ($request->search) {
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'like', '%'.$request->search.'%')
+                ->orWhere('email', 'like', '%'.$request->search.'%')
+                ->orWhere('phone', 'like', '%'.$request->search.'%')
+                ->orWhere('unique_id', 'like', '%'.$request->search.'%');
             });
-        })->paginate(5);
+        }
 
-        return view('backend.users.teacher.index', compact('teachers', 'search'));
+        // Status filter
+        if ($request->status !== null && $request->status !== '') {
+            $query->where('status', $request->status);
+        }
+
+        $teachers = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        // Counts for buttons
+        $statusCounts = [
+            'all' => User::where('role', 'teacher')->count(),
+            'active' => User::where('role', 'teacher')->where('status', 1)->count(),
+            'inactive' => User::where('role', 'teacher')->where('status', 0)->count(),
+            'pending' => User::where('role', 'teacher')->where('status', 2)->count(),
+            'rejected' => User::where('role', 'teacher')->where('status', 3)->count(),
+        ];
+
+        return view('backend.users.teacher.index', [
+            'teachers' => $teachers,
+            'search' => $request->search,
+            'statusCounts' => $statusCounts,
+        ]);
     }
+
 
     public function create(){
         $categories = Category::where('status', 1)->get();
@@ -155,4 +193,47 @@ class TeacherController extends Controller
 
         return redirect()->route('admin.all-teacher')->with('success', 'Teacher deleted successfully.');
     }
+
+
+
+    // Inactive teacher
+    public function inactiveTeacher($id)
+    {
+        $teacher = User::where('id', $id)->where('role', 'teacher')->firstOrFail();
+        $teacher->status = 0;
+        $teacher->save();
+
+        return redirect()->back()->with('success', 'Teacher inactive successfully!');
+    }
+
+    // Approve teacher
+    public function approveTeacher($id)
+    {
+        $teacher = User::where('id', $id)->where('role', 'teacher')->firstOrFail();
+        $teacher->status = 1;
+        $teacher->save();
+
+        return redirect()->back()->with('success', 'Teacher approved successfully!');
+    }
+
+    // Pending teacher
+    public function pendingTeacher($id)
+    {
+        $teacher = User::where('id', $id)->where('role', 'teacher')->firstOrFail();
+        $teacher->status = 2;
+        $teacher->save();
+
+        return redirect()->back()->with('success', 'Teacher pending successfully!');
+    }
+
+    // Reject teacher
+    public function rejectTeacher($id)
+    {
+        $teacher = User::where('id', $id)->where('role', 'teacher')->firstOrFail();
+        $teacher->status = 3; // Rejected
+        $teacher->save();
+
+        return redirect()->back()->with('success', 'Teacher rejected successfully!');
+    }
+
 }

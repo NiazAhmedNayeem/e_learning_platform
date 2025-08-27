@@ -31,6 +31,11 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin'])
     Route::get('admin/edit/teacher/{id}', [App\Http\Controllers\backend\users\teacher\TeacherController::class, 'edit'])->name('admin.edit.teacher');
     Route::post('admin/update/teacher/{id}', [App\Http\Controllers\backend\users\teacher\TeacherController::class, 'update'])->name('admin.update.teacher');
     Route::delete('admin/delete/teacher/{id}', [App\Http\Controllers\backend\users\teacher\TeacherController::class, 'delete'])->name('admin.delete.teacher');
+    // New Teacher Status Change rote
+    Route::post('/admin/teacher-inactive/{id}', [App\Http\Controllers\backend\users\teacher\TeacherController::class, 'inactiveTeacher'])->name('admin.teacher.inactive');
+    Route::post('/admin/teacher-pending/{id}', [App\Http\Controllers\backend\users\teacher\TeacherController::class, 'pendingTeacher'])->name('admin.teacher.pending');
+    Route::post('/admin/teacher-approve/{id}', [App\Http\Controllers\backend\users\teacher\TeacherController::class, 'approveTeacher'])->name('admin.teacher.approve');
+    Route::post('/admin/teacher-reject/{id}', [App\Http\Controllers\backend\users\teacher\TeacherController::class, 'rejectTeacher'])->name('admin.teacher.reject');
 
 
     //User Admin management Route

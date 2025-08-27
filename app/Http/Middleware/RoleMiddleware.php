@@ -16,9 +16,9 @@ class RoleMiddleware
         $user = auth()->user();
 
         // Inactive users
-        if ($user->status == 0) {
-            return redirect()->route('inactive.dashboard')->with('error', 'Your account is inactive.');
-        }
+        // if ($user->status == 0) {
+        //     return redirect()->route('inactive.dashboard')->with('error', 'Your account is inactive.');
+        // }
 
         // Admin route
         if ($role === 'admin') {

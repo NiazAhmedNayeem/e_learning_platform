@@ -1,9 +1,9 @@
 @extends('backend.layouts.master')
 @section('title', 'Teacher Dashboard')
 @section('main-content')
-
-
-        <h1 class="mt-4">Teacher Dashboard</h1>
+    
+@if (auth()->check() && auth()->user()->status == 1)
+    <h1 class="mt-4">Teacher Dashboard</h1>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item active">Dashboard</li>
         </ol>
@@ -65,8 +65,14 @@
                 </div>
             </div>
         </div>
-        
-
-
-                    
+@else
+        @if (auth()->check() && auth()->user()->status == 0)
+            <h1 class="mt-4">Your account is Inactive, Please contact with the system admin, Thank You.</h1>
+        @elseif (auth()->check() && auth()->user()->status == 2)
+            <h1 class="mt-4">Your account is Pending, Please wait some times, Thank You.</h1>
+        @elseif (auth()->check() && auth()->user()->status == 3)
+             <h1 class="mt-4">Your account is Rejected, Please contact with the system admin, Thank You.</h1>
+        @endif
+@endif
+           
 @endsection

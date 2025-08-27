@@ -46,12 +46,14 @@ class RegisteredUserController extends Controller
                         ->count() + 1;
             $number = str_pad($count, 3, '0', STR_PAD_LEFT);
             $unique_id = 'S' . $today . $number;
+            $status = 1; //Active
         } elseif ($request->role === 'teacher') {
             $count = User::where('role', 'teacher')
                         ->whereDate('created_at', today())
                         ->count() + 1;
             $number = str_pad($count, 3, '0', STR_PAD_LEFT);
             $unique_id = 'T' . $today . $number;
+            $status = 2; //request for teacher
         }
 
         $user = User::create([
@@ -60,6 +62,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'unique_id' => $unique_id,
+            'status' => $status,
         ]);
 
         //dd($user);

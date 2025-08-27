@@ -35,10 +35,11 @@ class AuthenticatedSessionController extends Controller
             if(auth()->user()->status == 1){
                 return redirect()->route('admin.dashboard')
                 ->with('success', 'Hello '. auth()->user()->name .'! Welcome to Admin Dashboard.');
-            }else{
-                return redirect()->route('inactive.dashboard')
-                ->with('warning', 'Hello ' . auth()->user()->name . '! Your account is inactive.');
             }
+            // else{
+            //     return redirect()->route('inactive.dashboard')
+            //     ->with('warning', 'Hello ' . auth()->user()->name . '! Your account is inactive.');
+            // }
             
         }
         ///For Teacher User
@@ -46,20 +47,39 @@ class AuthenticatedSessionController extends Controller
             if(auth()->user()->status == 1){
                 return redirect()->route('teacher.dashboard')
                 ->with('success', 'Hello '. auth()->user()->name .'! Welcome to Teacher Dashboard.');
-            }else{
-                return redirect()->route('inactive.dashboard')
-                ->with('warning', 'Hello ' . auth()->user()->name . '! Your account is inactive.');
             }
+            // else{
+            //     return redirect()->route('inactive.dashboard')
+            //     ->with('warning', 'Hello ' . auth()->user()->name . '! Your account is inactive.');
+            // }
         }
+
+        elseif(auth()->user()->role == 'teacher'){
+            if(auth()->user()->status == 2){
+                return redirect()->route('teacher.dashboard')
+                ->with('warning', 'Hello '. auth()->user()->name .'! Welcome to Teacher Dashboard.');
+            }
+            // else{
+            //     return redirect()->route('teacher.dashboard')
+            //     ->with('warning', 'Hello ' . auth()->user()->name . '! Your account is pending.');
+            // }
+        }
+
+
+
+
+
+
         ///For Student User
         elseif(auth()->user()->role == 'student'){
             if(auth()->user()->status == 1){
                 return redirect()->route('student.dashboard')
                 ->with('success', 'Hello '. auth()->user()->name .'! Welcome to Student Dashboard.');
-            }else{
-                return redirect()->route('inactive.dashboard')
-                ->with('warning', 'Hello ' . auth()->user()->name . '! Your account is inactive.');
             }
+            // else{
+            //     return redirect()->route('inactive.dashboard')
+            //     ->with('warning', 'Hello ' . auth()->user()->name . '! Your account is inactive.');
+            // }
         }
         else {
             //return redirect()->route('dashboard');

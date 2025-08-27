@@ -110,30 +110,38 @@
                  width="100" 
                  height="100">
             <h5 class="mb-0">{{ auth()->user()->name }}</h5>
-            <small class="text-muted">{{ ucfirst(auth()->user()->role) }}</small>
+            @if (auth()->user()->is_super == 1)
+                <small class="text-muted">Super {{ ucfirst(auth()->user()->role) }}</small>
+            @else
+                <small class="text-muted">{{ ucfirst(auth()->user()->role) }}</small>
+            @endif
+            
+
         </div>
 
         <li><hr class="dropdown-divider"></li>
 
         <!-- Links -->
         @php
-            if(auth()->user()->role == 'admin'){
+            $auth = auth()->check();
+            if($auth && auth()->user()->role == 'admin'){
                 $url = 'admin.profile';
-            }elseif(auth()->user()->role == 'teacher'){
+            }elseif($auth && auth()->user()->role == 'teacher'){
                 $url = 'teacher.profile';
-            }elseif(auth()->user()->role == 'student'){
+            }elseif($auth && auth()->user()->role == 'student'){
                 $url = 'student.profile';
             }
-            if(auth()->user()->role == 'admin'){
+            if($auth && auth()->user()->role == 'admin'){
                 $dashboardUrl = 'admin.dashboard';
-            }elseif(auth()->user()->role == 'teacher'){
+            }elseif($auth && auth()->user()->role == 'teacher'){
                 $dashboardUrl = 'teacher.dashboard';
-            }elseif(auth()->user()->role == 'student'){
+            }elseif($auth && auth()->user()->role == 'student'){
                 $dashboardUrl = 'student.dashboard';
             }
         @endphp
         <li><a class="dropdown-item" href="{{ route($dashboardUrl) }}">Dashboard</a></li>
         <li><a class="dropdown-item" href="{{ route($url) }}">Profile</a></li>
+        <li><a class="dropdown-item" href="{{ route('profile.notifications') }}">Notifications</a></li>
         <li><a class="dropdown-item" href="{{ route('password.change.form') }}">Change Password</a></li>
         <li><hr class="dropdown-divider"></li>
         <li>
