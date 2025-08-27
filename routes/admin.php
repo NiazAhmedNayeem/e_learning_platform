@@ -12,7 +12,10 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin'])
 
     //Admin Dashboard Route
     Route::get('admin/dashboard', [App\Http\Controllers\backend\admin\DashboardController::class, 'index'])->name('admin.dashboard');
-
+    //Admin Profile Route
+    Route::get('admin/profile', [App\Http\Controllers\backend\admin\profile\ProfileController::class, 'profile'])->name('admin.profile');
+    Route::get('admin/profile/edit', [App\Http\Controllers\backend\admin\profile\ProfileController::class, 'edit'])->name('admin.profile.edit');
+    Route::post('admin/profile/update', [App\Http\Controllers\backend\admin\profile\ProfileController::class, 'update'])->name('admin.profile.update');
     //Admin Student management Route
     Route::get('admin/student/index', [App\Http\Controllers\backend\users\student\StudentController::class, 'index'])->name('admin.student.index');
     Route::get('admin/student/create', [App\Http\Controllers\backend\users\student\StudentController::class, 'create'])->name('admin.student.create');

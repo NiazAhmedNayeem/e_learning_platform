@@ -70,7 +70,7 @@
         </li>
 
         <!-- User Dropdown -->
-        <li class="nav-item dropdown">
+        {{-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle d-flex align-items-center" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <img src="{{ auth()->user()->image_show ?? 'https://via.placeholder.com/35' }}" 
                      alt="User Image" 
@@ -89,7 +89,62 @@
                     </form>
                 </li>
             </ul>
+        </li> --}}
+
+
+        <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle d-flex align-items-center" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="{{ auth()->user()->image_show }}" 
+             alt="User Image" 
+             class="rounded-circle" 
+             width="35" 
+             height="35">
+    </a>
+
+    <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="navbarDropdown" style="min-width: 200px;">
+        <!-- User Info Centered -->
+        <div class="text-center mb-3">
+            <img src="{{ auth()->user()->image_show }}" 
+                 alt="User Image" 
+                 class="rounded-circle mb-2" 
+                 width="100" 
+                 height="100">
+            <h5 class="mb-0">{{ auth()->user()->name }}</h5>
+            <small class="text-muted">{{ ucfirst(auth()->user()->role) }}</small>
+        </div>
+
+        <li><hr class="dropdown-divider"></li>
+
+        <!-- Links -->
+        @php
+            if(auth()->user()->role == 'admin'){
+                $url = 'admin.profile';
+            }elseif(auth()->user()->role == 'teacher'){
+                $url = 'teacher.profile';
+            }elseif(auth()->user()->role == 'student'){
+                $url = 'student.profile';
+            }
+            if(auth()->user()->role == 'admin'){
+                $dashboardUrl = 'admin.dashboard';
+            }elseif(auth()->user()->role == 'teacher'){
+                $dashboardUrl = 'teacher.dashboard';
+            }elseif(auth()->user()->role == 'student'){
+                $dashboardUrl = 'student.dashboard';
+            }
+        @endphp
+        <li><a class="dropdown-item" href="{{ route($dashboardUrl) }}">Dashboard</a></li>
+        <li><a class="dropdown-item" href="{{ route($url) }}">Profile</a></li>
+        <li><a class="dropdown-item" href="{{ route('password.change.form') }}">Change Password</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="dropdown-item text-danger">Logout</button>
+            </form>
         </li>
+    </ul>
+</li>
+
 
     </ul>
 </nav>

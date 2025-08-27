@@ -49,11 +49,12 @@
                                     </a>
 
                                 {{-- Add Admin --}}
+                                @if (auth()->user()->is_super == 1)
                                     <a class="nav-link" href="{{ route('user.admin.index') }}">
                                         <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                         Admin
                                     </a>
-
+                                @endif
                                     
                                 {{-- Add User --}}
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">

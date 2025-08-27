@@ -6,7 +6,7 @@
     <div class="card shadow-lg rounded-3 border-0">
         <!-- Header -->
         <div style="background-color: #212529" class="card-header text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">📘Title: {{ $course->title }}</h4>
+            <h4 class="mb-0">Course Details</h4>
             <span class="badge bg-warning text-dark">{{ $course->category?->name ?? 'N/A' }}</span>
             <a href="{{ route('teacher.assign.courses') }}" class="btn btn-danger btn-sm">⬅ Back</a>
         </div>
@@ -56,6 +56,9 @@
 
                 <!-- Details -->
                 <div class="col-md-8">
+                    <h4 class="fw-bold">📘 {{ $course->title }}</h4>
+                    <hr>
+
                     <h5 class="fw-bold">📌 Short Description</h5>
                     <p class="text-muted">{!! $course->short_description !!}</p>
                     <hr>

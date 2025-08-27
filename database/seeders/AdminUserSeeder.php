@@ -15,17 +15,34 @@ class AdminUserSeeder extends Seeder
     {
         User::insert([
             [
-                'name' => 'admin',
-                'email' => 'niazahmed.net@gmail.com',
-                'password' => bcrypt('11223344'),
-                'role' => 'admin',
+                'unique_id' => 'SA20250101',
+                'name'      => 'Niaz Ahmed Nayeem',
+                'email'     => 'niazahmed.net@gmail.com',
+                'password'  => bcrypt('11223344'),
+                'role'      => 'admin',
+                'is_super'  => 1,
             ],
             [
-                'name' => 'Tonmoy',
-                'email' => 'tonmoy@gmail.com',
-                'password' => bcrypt('11223344'),
-                'role' => 'student',
-            ]
+                'unique_id' => 'A20250102',
+                'name'      => 'Admin',
+                'email'     => 'admin@gmail.com',
+                'password'  => bcrypt('11223344'),
+                'role'      => 'admin',
+            ],
+            [
+                'unique_id' => 'T20250101',
+                'name'      => 'Tonmoy',
+                'email'     => 'teacher@gmail.com',
+                'password'  => bcrypt('11223344'),
+                'role'      => 'student',
+            ],
+            [
+                'unique_id' => 'S20250101',
+                'name'      => 'Tonmoy',
+                'email'     => 'student@gmail.com',
+                'password'  => bcrypt('11223344'),
+                'role'      => 'student',
+            ],
         ]);
     }
 }
