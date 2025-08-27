@@ -69,7 +69,7 @@
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Expert</th>
-                <th>Role</th>
+                {{-- <th>Role</th> --}}
                 <th>Status</th>
                 <th>Action</th>
             </tr>
@@ -88,9 +88,9 @@
                 <td>{{ $teacher->email }}</td>
                 <td>{{ $teacher->phone }}</td>
                 <td>{{ $teacher->expertCategory?->name }}</td>
-                <td>
+                {{-- <td>
                      <span class="badge bg-primary">{{ ucfirst($teacher->role) }}</span>
-                </td>
+                </td> --}}
                 <td>
                     @php
                         switch($teacher->status) {

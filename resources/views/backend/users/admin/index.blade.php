@@ -41,7 +41,12 @@
                 <td>{{ $admin->email }}</td>
                 <td>{{ $admin->phone }}</td>
                 <td>
-                     <span class="badge bg-primary">{{ ucfirst($admin->role) }}</span>
+                    @if ($admin->is_super == 1)
+                        <span class="badge bg-primary">Super {{ ucfirst($admin->role) }}</span>
+                    @else
+                        <span class="badge bg-primary">{{ ucfirst($admin->role) }}</span>
+                    @endif
+                     
                 </td>
                 <td>
                      <span class="badge {{ $admin->status == 1 ? 'bg-success' : 'bg-secondary' }}">
