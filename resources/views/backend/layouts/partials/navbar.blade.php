@@ -45,21 +45,22 @@
 
                 @forelse(auth()->user()->unreadNotifications as $notification)
                 <li>
-                    <a class="dropdown-item d-flex justify-content-between align-items-start" 
+                    <a class="dropdown-item py-3 px-3 d-flex justify-content-between align-items-center rounded-3 mb-2 shadow-sm"
+                    style="background: linear-gradient(90deg, #f9f9f9, #e9f7ff);"
                     href="{{ $notification->data['url'] ?? route('profile.notifications') }}">
                     
-                        <div>
-                            {{ limitText($notification->data['message'] ?? 'New notification', 30) }}
-                            <br>
+                        <div class="me-3">
+                            <div class="fw-semibold text-primary">
+                                {{ limitText($notification->data['message'] ?? 'New notification', 28) }}
+                            </div>
                             <small class="text-muted">
+                                <i class="bi bi-clock me-1"></i>
                                 {{ $notification->created_at->setTimezone('Asia/Dhaka')->format('d M Y h:i A') }}
-                                {{-- {{ $notification->created_at->timezone(auth()->user()->timezone ?? config('app.timezone'))
-                                    ->format('d M Y h:i A') }} --}}
                             </small>
                         </div>
 
                         @if(!$notification->read_at)
-                            <span class="badge bg-primary rounded-pill">New</span>
+                            <span class="badge rounded-pill px-3 py-2" style="background-color:#ff6b6b; color:white;">New</span>
                         @endif
                     </a>
                 </li>
