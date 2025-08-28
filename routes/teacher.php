@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\TeacherMiddleware;
+use App\Http\Middleware\CheckStatus;
 use Illuminate\Support\Facades\Route;
 
 
@@ -14,8 +14,8 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':teacher'
     Route::post('teacher/profile/update', [App\Http\Controllers\teacher\TeacherController::class, 'update'])->name('teacher.profile.update');
 
     //Assigned course list
-    Route::get('teacher/assign/courses', [App\Http\Controllers\teacher\TeacherController::class, 'assignedCourses'])->name('teacher.assign.courses');
-    Route::get('teacher/assign/course/details/{slug}', [App\Http\Controllers\teacher\TeacherController::class, 'assignedCoursesDetails'])->name('teacher.assign.course.details');
+    Route::get('teacher/assign/courses', [App\Http\Controllers\teacher\TeacherController::class, 'assignedCourses'])->name('teacher.assign.courses')->middleware([CheckStatus::class]);
+    Route::get('teacher/assign/course/details/{slug}', [App\Http\Controllers\teacher\TeacherController::class, 'assignedCoursesDetails'])->name('teacher.assign.course.details')->middleware([CheckStatus::class]);
 
 }); 
 

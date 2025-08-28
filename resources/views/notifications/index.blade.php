@@ -15,6 +15,7 @@
                         <br>
                         <small class="text-muted">
                             {{-- {{ $notification->created_at->format('d M Y h:i A') }} --}}
+                            <i class="bi bi-clock me-1"></i>
                             {{ $notification->created_at->setTimezone('Asia/Dhaka')->format('d M Y h:i A') }}
                             {{-- {{ $notification->created_at->timezone(auth()->user()->timezone ?? config('app.timezone'))->format('d M Y h:i A') }} --}}
                         </small>
@@ -28,6 +29,7 @@
                         <small class="text-muted">
                             {{-- {{ $notification->created_at->format('d M Y h:i A') }} --}}
                             {{-- {{ $notification->created_at->timezone(auth()->user()->timezone ?? config('app.timezone'))->format('d M Y h:i A') }} --}}
+                            <i class="bi bi-clock me-1"></i>
                             {{ $notification->created_at->setTimezone('Asia/Dhaka')->format('d M Y h:i A') }}
                         </small>
                     </div>

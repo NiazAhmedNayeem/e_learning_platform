@@ -93,11 +93,9 @@
     <div class="row g-0">
         <!-- Left Side -->
         <div class="col-md-4 bg-light text-center p-4 d-flex flex-column align-items-center justify-content-center">
-            @if($user->image)
+           
                 <img src="{{ $user->image_show }}" alt="Profile Image" class="rounded-circle img-thumbnail mb-3 shadow-sm" style="width: 160px; height: 160px; object-fit: cover;">
-            @else
-                <img src="{{ asset('images/default-avatar.png') }}" alt="Default Image" class="rounded-circle img-thumbnail mb-3 shadow-sm" style="width: 160px; height: 160px; object-fit: cover;">
-            @endif
+            
 
             <h4 class="fw-bold mb-1">{{ $user->name }}</h4>
             <p class="text-muted">{{ $user->profession ?? 'No Profession Added' }}</p>

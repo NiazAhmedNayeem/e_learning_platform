@@ -1,21 +1,25 @@
 <?php
 
-use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\ChackStatus;
 use Illuminate\Support\Facades\Route;
 
 //Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
-Route::get('inactive/dashboard', [App\Http\Controllers\backend\admin\DashboardController::class, 'inactive'])->name('inactive.dashboard');
-//Admin middleware Route Start
 Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin'])->group(function(){
-
-
-    //Admin Dashboard Route
-    Route::get('admin/dashboard', [App\Http\Controllers\backend\admin\DashboardController::class, 'index'])->name('admin.dashboard');
     //Admin Profile Route
     Route::get('admin/profile', [App\Http\Controllers\backend\admin\profile\ProfileController::class, 'profile'])->name('admin.profile');
     Route::get('admin/profile/edit', [App\Http\Controllers\backend\admin\profile\ProfileController::class, 'edit'])->name('admin.profile.edit');
     Route::post('admin/profile/update', [App\Http\Controllers\backend\admin\profile\ProfileController::class, 'update'])->name('admin.profile.update');
+
+});
+
+
+//Admin middleware Route Start
+Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin', \App\Http\Middleware\CheckStatus::class])->group(function(){
+
+    //Admin Dashboard Route
+    Route::get('admin/dashboard', [App\Http\Controllers\backend\admin\DashboardController::class, 'index'])->name('admin.dashboard');
+    
     //Admin Student management Route
     Route::get('admin/student/index', [App\Http\Controllers\backend\users\student\StudentController::class, 'index'])->name('admin.student.index');
     Route::get('admin/student/create', [App\Http\Controllers\backend\users\student\StudentController::class, 'create'])->name('admin.student.create');
@@ -36,15 +40,6 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin'])
     Route::post('/admin/teacher-pending/{id}', [App\Http\Controllers\backend\users\teacher\TeacherController::class, 'pendingTeacher'])->name('admin.teacher.pending');
     Route::post('/admin/teacher-approve/{id}', [App\Http\Controllers\backend\users\teacher\TeacherController::class, 'approveTeacher'])->name('admin.teacher.approve');
     Route::post('/admin/teacher-reject/{id}', [App\Http\Controllers\backend\users\teacher\TeacherController::class, 'rejectTeacher'])->name('admin.teacher.reject');
-
-
-    //User Admin management Route
-    Route::get('all/admin/index', [App\Http\Controllers\backend\users\admin\AdminController::class, 'index'])->name('user.admin.index');
-    Route::get('admin/create', [App\Http\Controllers\backend\users\admin\AdminController::class, 'create'])->name('user.admin.create');
-    Route::post('admin/store', [App\Http\Controllers\backend\users\admin\AdminController::class, 'store'])->name('user.admin.store');
-    Route::get('admin/edit/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'edit'])->name('user.admin.edit');
-    Route::post('admin/update/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'update'])->name('user.admin.update');
-    Route::delete('admin/delete/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'delete'])->name('user.admin.delete');
 
    
     ///Admin Category management Route
@@ -75,3 +70,17 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin'])
 
 
 }); //Admin middleware Route End
+
+
+Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin', 
+                            \App\Http\Middleware\CheckSuper::class,
+                            \App\Http\Middleware\CheckStatus::class])->group(function(){
+    //User Admin management Route
+    Route::get('all/admin/index', [App\Http\Controllers\backend\users\admin\AdminController::class, 'index'])->name('user.admin.index');
+    Route::get('admin/create', [App\Http\Controllers\backend\users\admin\AdminController::class, 'create'])->name('user.admin.create');
+    Route::post('admin/store', [App\Http\Controllers\backend\users\admin\AdminController::class, 'store'])->name('user.admin.store');
+    Route::get('admin/edit/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'edit'])->name('user.admin.edit');
+    Route::post('admin/update/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'update'])->name('user.admin.update');
+    Route::delete('admin/delete/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'delete'])->name('user.admin.delete');
+
+});
