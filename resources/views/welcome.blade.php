@@ -55,6 +55,7 @@
 
     @if (auth()->user())
         <div class="d-flex justify-content-center gap-3">
+          <a href="{{ route('frontend.courses') }}" class="btn btn-primary btn-custom">Courses</a>
             @if (auth()->check())
                 <a href="{{ route($dashboardUrl) }}" class="btn btn-primary btn-custom">Dashboard</a>
             {{-- @else
@@ -70,6 +71,7 @@
         <p class="mb-4 text-muted">Please login or register to continue</p>
 
         <div class="d-flex justify-content-center gap-3">
+            <a href="{{ route('frontend.courses') }}" class="btn btn-primary btn-custom">Courses</a>
             <a href="{{ route('login') }}" class="btn btn-primary btn-custom">Login</a>
             <a href="{{ route('register') }}" class="btn btn-success btn-custom">Register</a>
         </div>

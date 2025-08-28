@@ -17,10 +17,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-
-
-
-
 Route::middleware(['auth'])->group(function () {
     //Teacher and Student profile Password Change Route
     Route::get('/settings/password',        [App\Http\Controllers\user_change_password\UserChangePasswordController::class, 'showChangeForm'])->name('password.change.form');
@@ -35,7 +31,23 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
+    ///Courses page for frontend 
+    Route::get('/courses', [App\Http\Controllers\home\HomeController::class, 'courses'])->name('frontend.courses');
 
+    Route::post('/add-to-cart/{id}', [App\Http\Controllers\frontend\cart\CartController::class, 'addToCart'])->name('frontend.add_to_cart');
+    
+    Route::get('/cart', [App\Http\Controllers\frontend\cart\CartController::class, 'cart'])->name('frontend.cart');
+    
+    Route::post('/cart/removed/{id}', [App\Http\Controllers\frontend\cart\CartController::class, 'removed'])->name('frontend.cart.removed');
+
+
+
+    Route::get('/course/checkout', [App\Http\Controllers\frontend\cart\CartController::class, 'checkout'])->name('frontend.checkout');
+
+Route::middleware('auth')->group(function() {
+
+    // Route::get('/courses', [App\Http\Controllers\frontend\courses\CoursePurchaseController::class, 'index'])->name('courses.index');
+});
     
 
 
