@@ -104,11 +104,14 @@ class UserChangePasswordController extends Controller
 
         
         // auth()->logoutOtherDevices($request->new_password); 
-
-        if($user->role == 'teacher'){
+        if($user->role == 'admin'){
+            return redirect()->route('admin.profile')->with('success', 'Password updated successfully!');
+        }elseif($user->role == 'teacher'){
             return redirect()->route('teacher.profile')->with('success', 'Password updated successfully!');
         }elseif($user->role == 'student'){
             return redirect()->route('student.profile')->with('success', 'Password updated successfully!');
+        }else{
+            return redirect()->back()->with('error', 'Something was wrong. Please try again.');
         }
     }
         

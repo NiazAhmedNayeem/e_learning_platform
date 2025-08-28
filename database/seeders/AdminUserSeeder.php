@@ -28,13 +28,15 @@ class AdminUserSeeder extends Seeder
                 'email'     => 'admin@gmail.com',
                 'password'  => bcrypt('11223344'),
                 'role'      => 'admin',
+                'is_super'  => 0,
             ],
             [
                 'unique_id' => 'T20250101',
-                'name'      => 'Tonmoy',
+                'name'      => 'Teacher Ahmed',
                 'email'     => 'teacher@gmail.com',
                 'password'  => bcrypt('11223344'),
-                'role'      => 'student',
+                'role'      => 'teacher',
+                'is_super'  => 0,
             ],
             [
                 'unique_id' => 'S20250101',
@@ -42,6 +44,7 @@ class AdminUserSeeder extends Seeder
                 'email'     => 'student@gmail.com',
                 'password'  => bcrypt('11223344'),
                 'role'      => 'student',
+                'is_super'  => 0,
             ],
         ]);
     }
