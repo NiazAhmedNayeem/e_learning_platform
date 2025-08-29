@@ -45,6 +45,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/course/checkout', [App\Http\Controllers\frontend\cart\CartController::class, 'checkout'])->name('frontend.checkout');
     Route::get('/course/checkout-now/{slug}', [App\Http\Controllers\frontend\cart\CartController::class, 'checkoutNow'])->name('frontend.checkout.now');
 
+    //for Buy now button
+    Route::get('/single-payment/{id}', [App\Http\Controllers\frontend\payment\PaymentController::class, 'singlePayment'])->name('frontend.payment.now');
+    
+    Route::get('/cart-payment', [App\Http\Controllers\frontend\payment\PaymentController::class, 'cartPayment'])->name('frontend.cart.payment');
+
+    Route::get('/payment-process/{id}', [App\Http\Controllers\frontend\payment\PaymentController::class, 'Payment'])->name('frontend.payment.process');
+
+
 Route::middleware('auth')->group(function() {
 
     // Route::get('/courses', [App\Http\Controllers\frontend\courses\CoursePurchaseController::class, 'index'])->name('courses.index');

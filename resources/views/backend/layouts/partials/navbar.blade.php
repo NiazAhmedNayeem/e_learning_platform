@@ -31,7 +31,7 @@
     <ul class="navbar-nav ms-auto me-3 me-lg-4">
 
         {{-- Cart --}}
-        @if (auth()->user()->role == 'student')
+        @if (auth()->check() && auth()->user()->role == 'student')
             <li class="nav-item dropdown me-3 mt-2">
                 <a class="nav-link position-relative" href="{{ route('frontend.cart') }}" style="color: #f8f9fa;">
                     <i class="fas fa-cart-plus me-2"></i>
@@ -60,7 +60,7 @@
             <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #f8f9fa;">
                 <i class="fas fa-bell fa-fw fs-5"></i>
 
-                @if(auth()->user()->unreadNotifications->count() > 0)
+                @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
                     <span class="notification-badge position-absolute top-0 start-100 translate-middle badge rounded-pill">
                         {{ auth()->user()->unreadNotifications->count() }}
                         <span class="visually-hidden">unread notifications</span>

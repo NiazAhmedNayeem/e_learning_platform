@@ -3,7 +3,7 @@
 @section('main-content')
 
 <div class="container my-5">
-    <h2 class="mb-4">Your Shopping Cart</h2>
+    <h2 class="mb-4">Your Cart Items</h2>
 
     @if($cartItems->count() > 0)
         <div class="table-responsive">
@@ -13,8 +13,9 @@
                         <th>Course</th>
                         <th>Teacher</th>
                         <th>Price</th>
+                        <th>Discount</th>
                         <th>Discount Price</th>
-                        <th>Quantity</th>
+                        {{-- <th>Quantity</th> --}}
                         <th>Total</th>
                         <th>Action</th>
                     </tr>
@@ -32,10 +33,23 @@
                                 {{ $item->course->title }}
                             </td>
                             <td>{{ $item->course->teacher?->name ?? 'N/A' }}</td>
-                            <td>{{ $item->course?->price }} TK</td>
-                            <td class="text-success">{{ $item->course?->final_price }} TK</td>
-                            <td>1</td>
-                            <td>{{ $totalPrice }} TK</td>
+                            <td><strong>{{ $item->course?->price }} TK</strong></td>
+                            <td>
+                                @if ($item->course?->discount)
+                                    <strong class="text-danger">{{ $item->course?->discount }}%</strong>
+                                @else
+                                    <span class="text-muted">—</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if ($item->course?->discount)
+                                    <span class="text-success"><strong>{{ $item->course?->final_price }} TK</strong></span>
+                                @else
+                                    <span class="text-muted">—</span>
+                                @endif
+                            </td>
+                            {{-- <td>1</td> --}}
+                            <td><strong>{{ $totalPrice }} TK</strong></td>
                             <td>
                                 <form action="{{ route('frontend.cart.removed', $item->id) }}" method="POST">
                                     @csrf

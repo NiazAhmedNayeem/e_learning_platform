@@ -56,7 +56,7 @@
                     <h5>Order Summary</h5>
                     <hr>
                     <p>Total: <strong>{{ $course->final_price }} TK</strong></p>
-                    <a href="#" class="btn btn-success btn-lg w-100">
+                    <a href="{{ route('frontend.payment.now', $course->id) }}" class="btn btn-success btn-lg w-100">
                         <i class="fas fa-credit-card me-2"></i> Proceed to Payment
                     </a>
                 </div>

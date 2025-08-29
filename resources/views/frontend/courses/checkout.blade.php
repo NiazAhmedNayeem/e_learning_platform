@@ -34,7 +34,13 @@
                                     </td>
                                     <td>{{ $item->course->teacher?->name ?? 'N/A' }}</td>
                                     <td>{{ $item->course->price }} TK</td>
-                                    <td class="text-success">{{ $item->course->final_price }} TK</td>
+                                    <td class="text-success">
+                                        @if ($item->course->discount)
+                                            {{ $item->course->final_price }} TK
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
+                                    </td>
                                     <td>{{ $totalPrice }} TK</td>
                                     <td>
                                         <form action="{{ route('frontend.cart.removed', $item->id) }}" method="POST">
@@ -59,7 +65,7 @@
                     <hr>
                     <p>Total Items: <strong>{{ $cartItems->count() }}</strong></p>
                     <p>Grand Total: <strong>{{ $grandTotal }} TK</strong></p>
-                    <a href="#" class="btn btn-success btn-lg w-100">
+                    <a href="{{ route('frontend.cart.payment') }}" class="btn btn-success btn-lg w-100">
                         <i class="fas fa-credit-card me-2"></i> Proceed to Payment
                     </a>
                 </div>
