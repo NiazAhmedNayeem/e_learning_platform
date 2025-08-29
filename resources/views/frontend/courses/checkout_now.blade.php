@@ -15,8 +15,11 @@
                                 <th>Course</th>
                                 <th>Teacher</th>
                                 <th>Price</th>
-                                <th>Discount</th>
-                                <th>Discount Price</th>
+                                @if ($course->discount)
+                                    <th>Discount</th>
+                                    <th>Discount Price</th>
+                                @endif
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -27,14 +30,22 @@
                                 </td>
                                 <td>{{ $course->teacher?->name ?? 'N/A' }}</td>
                                 <td>{{ $course->price }} TK</td>
-                                <td class="text-success">{{ $course->discount }}%</td>
-                                <td>{{ $course->final_price }} TK</td>
+                                @if ($course->discount)
+                                    <td class="text-success">{{ $course->discount }}%</td>
+                                    <td>{{ $course->final_price }} TK</td>
+                                @endif
                             </tr>
-                            {{-- @endforeach --}}
+                            @if (!$course->discount)
+                            <tr class="table-secondary">
+                                <td colspan="2" class="text-end"><strong>Total:</strong></td>
+                                <td colspan="2"><strong>{{ $course->final_price }} TK</strong></td>
+                            </tr>
+                            @else
                             <tr class="table-secondary">
                                 <td colspan="4" class="text-end"><strong>Total:</strong></td>
                                 <td colspan="2"><strong>{{ $course->final_price }} TK</strong></td>
                             </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
