@@ -29,7 +29,7 @@
                     <button type="submit" class="btn btn-outline-primary w-50">Add to Cart</button>
                 </form>
               
-              <a href="{{ route('frontend.checkout', $course->slug) }}" class="btn btn-primary w-50">Buy Now</a>
+              <a href="{{ route('frontend.checkout.now', $course->slug) }}" class="btn btn-primary w-50">Buy Now</a>
             </div>
           </div>
         </div>

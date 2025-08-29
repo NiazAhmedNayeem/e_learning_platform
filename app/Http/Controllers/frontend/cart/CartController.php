@@ -72,4 +72,11 @@ class CartController extends Controller
         return view('frontend.courses.checkout', compact('cartItems', 'grandTotal'));
     }
 
+    public function checkoutNow($slug)
+    {
+        $userId = auth()->id();
+        $course = Course::where('slug', $slug)->first();
+        return view('frontend.courses.checkout_now', compact('course'));
+    }
+
 }

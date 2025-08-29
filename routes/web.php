@@ -43,6 +43,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('/course/checkout', [App\Http\Controllers\frontend\cart\CartController::class, 'checkout'])->name('frontend.checkout');
+    Route::get('/course/checkout-now/{slug}', [App\Http\Controllers\frontend\cart\CartController::class, 'checkoutNow'])->name('frontend.checkout.now');
 
 Route::middleware('auth')->group(function() {
 
