@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\student;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
+use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -53,5 +56,50 @@ class StudentController extends Controller
 
         return redirect()->route('student.profile')->with('success', 'Your profile is updated.');
 
+    }
+
+    public function myCourses(Request $request){
+        $search = $request->input('search');
+        $user = auth()->user()->id;
+
+        $courseItems = OrderItem::with('course', 'order')
+        ->whereHas('order', function($q) use ($user) {
+            $q->where('user_id', $user)->where('status', 'approved');
+        })
+        ->when($search, function($q) use ($search) {
+            $q->whereHas('course', function($query) use ($search) {
+                $query->where('title', 'like', "%{$search}%");
+            });
+        })
+        ->latest()
+        ->paginate(4);
+
+        //dd($courses);
+        return view('student.course.index', compact('courseItems', 'search'));
+
+    }
+
+    public function myCourseDetails($slug){
+        $course = Course::where('slug', $slug)->first();
+        //dd($course);
+        return view('student.course.details', compact('course'));
+    }
+
+    public function myCourseOrder(Request $request){
+        $user = auth()->id();
+        $search = $request->get('search');
+
+        $orders = Order::with('orderItems.course')
+            ->where('user_id', $user)
+            ->when($search, function($q, $search){
+                $q->whereHas('orderItems.course', function($q2) use ($search){
+                    $q2->where('title', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        //dd($courses);
+        return view('student.order.index', compact('orders', 'search'));
     }
 }

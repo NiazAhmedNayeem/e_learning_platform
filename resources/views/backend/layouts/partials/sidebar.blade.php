@@ -144,13 +144,18 @@
                         Profile
                     </a>
 
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{{ route('student.courses') }}">
                         <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                         My Course
                     </a>
 
+                    <a class="nav-link" href="{{ route('student.course.order') }}">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        My Orders
+                    </a>
 
                 @endif
+                
     {{-- Student Dashboard sidebar end here --}}
 
                 @php
