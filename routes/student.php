@@ -15,6 +15,9 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class. ':student
 
     Route::get('student/course/order', [App\Http\Controllers\student\StudentController::class, 'myCourseOrder'])->name('student.course.order');
 
+    Route::get('/student/order/{order}/invoice', [App\Http\Controllers\Student\StudentController::class, 'invoice'])->name('student.order.invoice');
+
+
     Route::get('student/course/details/{slug}', [App\Http\Controllers\student\StudentController::class, 'myCourseDetails'])->name('student.course.details');
 });
 

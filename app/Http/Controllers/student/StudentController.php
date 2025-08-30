@@ -102,4 +102,15 @@ class StudentController extends Controller
         //dd($courses);
         return view('student.order.index', compact('orders', 'search'));
     }
+
+
+    public function invoice($orderId)
+    {
+        $order = Order::where('id', $orderId)
+                    ->where('user_id', auth()->id())
+                    ->firstOrFail();
+
+         return view('student.order.invoice', compact('order'));
+    }
+
 }
