@@ -50,7 +50,12 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/cart-payment', [App\Http\Controllers\frontend\payment\PaymentController::class, 'cartPayment'])->name('frontend.cart.payment');
 
-    Route::get('/payment-process/{id}', [App\Http\Controllers\frontend\payment\PaymentController::class, 'Payment'])->name('frontend.payment.process');
+    Route::post('/order', [App\Http\Controllers\frontend\payment\PaymentController::class, 'order'])->name('frontend.order.store');
+
+
+
+
+
 
 
 Route::middleware('auth')->group(function() {

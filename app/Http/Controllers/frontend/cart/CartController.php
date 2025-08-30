@@ -5,6 +5,7 @@ namespace App\Http\Controllers\frontend\cart;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Course;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -32,9 +33,21 @@ class CartController extends Controller
             return redirect()->back()->with('error', 'This course already in cart');
         }
 
+
+            // $already_buy = OrderItem::where('course_id', $id)
+            //     ->whereHas('order', function($q) use ($user){
+            //     $q->where('user_id', $user)->where('status', 'approved');
+            // })->exists();
+
+            // if($already_buy){
+            //     return redirect()->back()->with('error', 'You have already purchased this course.');
+            // }
+        
+
         DB::beginTransaction();
 
         try{
+
             $cart = new Cart();
             $cart->user_id = $user;
             $cart->course_id = $id;
@@ -74,8 +87,18 @@ class CartController extends Controller
 
     public function checkoutNow($slug)
     {
-        $userId = auth()->id();
+        $user = auth()->id();
         $course = Course::where('slug', $slug)->first();
+
+        // $already_buy = OrderItem::where('course_id', $course->id)
+        //     ->whereHas('order', function($q) use ($user){
+        //     $q->where('user_id', $user)->where('status', 'approved');
+        // })->exists();
+
+        // if($already_buy){
+        //     return redirect()->back()->with('error', 'You have already purchased this course.');
+        // }
+
         return view('frontend.courses.checkout_now', compact('course'));
     }
 
