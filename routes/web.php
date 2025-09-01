@@ -31,8 +31,11 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
+
+Route::middleware('auth')->group(function() {
     ///Courses page for frontend 
     Route::get('/courses', [App\Http\Controllers\home\HomeController::class, 'courses'])->name('frontend.courses');
+
 
     Route::post('/add-to-cart/{id}', [App\Http\Controllers\frontend\cart\CartController::class, 'addToCart'])->name('frontend.add_to_cart');
     
@@ -58,7 +61,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-Route::middleware('auth')->group(function() {
+
 
     // Route::get('/courses', [App\Http\Controllers\frontend\courses\CoursePurchaseController::class, 'index'])->name('courses.index');
 });

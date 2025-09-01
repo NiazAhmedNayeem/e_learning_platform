@@ -28,12 +28,20 @@
 
                 
                         <div class="sb-sidenav-menu-heading">Interface</div>
+                    {{-- Add Order --}}
+                        <a class="nav-link {{ request()->routeIs('admin.order.index') ? 'active' : '' }}" href="{{ route('admin.order.index') }}">
+                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                            Orders
+                        </a>
+
 
                     {{-- Add Category --}}
-                        <a class="nav-link" href="{{ route('admin.category.index') }}">
+                        <a class="nav-link {{ request()->routeIs('admin.category.index') ? 'active' : '' }}" 
+                        href="{{ route('admin.category.index') }}">
                             <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                             Category
                         </a>
+
 
                     {{-- Add course --}}
                         <a class="nav-link" href="{{ route('admin.course.index') }}">

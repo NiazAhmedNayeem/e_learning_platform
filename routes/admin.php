@@ -69,6 +69,15 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin', 
     ->name('admin.getTeachersByCategory');
 
 
+
+    ///Admin order management Route
+    Route::get('/admin/orders', [App\Http\Controllers\backend\order\OrderController::class, 'index'])->name('admin.order.index');
+
+
+
+
+
+
 }); //Admin middleware Route End
 
 

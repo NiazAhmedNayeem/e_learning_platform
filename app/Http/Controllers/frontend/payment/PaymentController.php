@@ -54,6 +54,14 @@ class PaymentController extends Controller
         try{
 
             $order = new Order();
+            //unique order id
+            $today = date('Ymd');
+            $count = Order::whereDate('created_at', today())
+                        ->count() + 1;
+            $number = str_pad($count, 3, '0', STR_PAD_LEFT);
+            $unique_order_id = 'OR-' . $today . $number;
+            $order->unique_order_id = $unique_order_id;
+
             $order->user_id = $user;
             $order->payment_method = $request->payment_method;
             $order->number = $request->number;
