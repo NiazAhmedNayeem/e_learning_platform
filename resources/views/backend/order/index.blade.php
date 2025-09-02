@@ -64,10 +64,145 @@
                 </td>
 
                 <td>
-                    <a href="#" class="btn btn-warning btn-sm">View</a>
+                     <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#teacherModal{{ $order->id }}">
+                        View
+                    </button>
                     
                 </td>
             </tr>
+
+
+
+
+
+ <!-- Teacher Modal -->
+            <div class="modal fade" id="teacherModal{{ $order->id }}" tabindex="-1" aria-labelledby="teacherModalLabel{{ $order->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content shadow-lg border-0 rounded-3">
+                        
+                        {{-- Header --}}
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title fw-bold" id="teacherModalLabel{{ $order->id }}">
+                                <i class="fas fa-shopping-cart me-2"></i> Order Details
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        {{-- Body --}}
+                        <div class="modal-body">
+                            <div class="row g-4">
+                                {{-- Order Info --}}
+                                <div class="col-md-6">
+                                    <div class="card border-0 shadow-sm h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-primary"><i class="fas fa-receipt me-2"></i>Order Info</h5>
+                                            <p><strong>Order ID:</strong> {{ $order->unique_order_id }}</p>
+                                            <p><strong>Date:</strong> {{ $order->created_at->format('d M, Y') }}</p>
+                                            <p>
+                                                <strong>Status:</strong> 
+                                                <span class="badge px-3 py-2
+                                                    {{ $order->status == 'approved' ? 'bg-success' : 
+                                                    ($order->status == 'pending' ? 'bg-warning text-dark' : 
+                                                    ($order->status == 'rejected' ? 'bg-danger' : 'bg-secondary')) }}">
+                                                    {{ ucfirst($order->status) }}
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Student Info --}}
+                                <div class="col-md-6">
+                                    <div class="card border-0 shadow-sm h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-primary"><i class="fas fa-user me-2"></i>Student Info</h5>
+                                            <p><strong>Name:</strong> {{ $order->user?->name ?? 'N/A' }}</p>
+                                            <p><strong>Email:</strong> {{ $order->user?->email ?? 'N/A' }}</p>
+                                            <p><strong>Payment:</strong> {{ $order->payment_method ?? 'N/A' }}</p>
+                                            <p><strong>{{ $order->payment_method ?? 'N/A' }} Number:</strong> {{ $order->number ?? 'N/A' }}</p>
+                                            <p><strong>Txn ID:</strong> {{ $order->transaction_id ?? 'N/A' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Courses --}}
+                            <div class="card border-0 shadow-sm mt-4">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary"><i class="fas fa-book me-2"></i>Courses</h5>
+                                    <ul class="list-group">
+                                        @foreach($order->orderItems as $item)
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>
+                                                <img src="{{ $item->course?->image_show }}" alt="Course" width="40" height="40" class="rounded me-2 shadow-sm">
+                                                {{ $item->course?->title ?? 'N/A' }}
+                                            </span>
+                                            <span class="fw-bold text-success">{{ $item->price ?? 0 }} TK</span>
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                    <div class="mt-3 text-end">
+                                        <strong>Total:</strong> <span class="fs-5 text-dark">{{ $order->amount ?? 0 }} TK</span>
+                                    </div>
+                                    <div class="mt-3 text-end">
+                                        <a href="{{ route('student.order.invoice', $order->id) }}" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-file-invoice me-1"></i> View Invoice
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+            {{-- Footer --}}
+            <div class="modal-footer d-flex flex-wrap gap-2 bg-light">
+                @if($order->status != 'approved')
+                <form action="{{ route('admin.teacher.approve', $order->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-success"><i class="fas fa-check-circle me-1"></i> Approve</button>
+                </form>
+                @endif
+
+                @if($order->status != 'inactive')
+                <form action="{{ route('admin.teacher.inactive', $order->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-secondary"><i class="fas fa-ban me-1"></i> Inactive</button>
+                </form>
+                @endif
+
+                @if($order->status != 'pending')
+                <form action="{{ route('admin.teacher.pending', $order->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-warning"><i class="fas fa-clock me-1"></i> Pending</button>
+                </form>
+                @endif
+
+                @if($order->status != 'rejected')
+                <form action="{{ route('admin.teacher.reject', $order->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-times-circle me-1"></i> Reject</button>
+                </form>
+                @endif
+
+                <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- End Modal -->
+
+
+
+
+
+
+
+
+
+
+
+
+
             @empty
             <tr>
                 <td colspan="10" class="text-center">No Order Found</td>

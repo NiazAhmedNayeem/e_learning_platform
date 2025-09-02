@@ -182,7 +182,7 @@ $(document).ready(function() {
                     teacherSelect.trigger('change'); // refresh select2
                 },
                 error: function() {
-                    alert('Teacher load হতে সমস্যা হয়েছে');
+                    alert('Teacher loading error');
                 }
             });
         }
