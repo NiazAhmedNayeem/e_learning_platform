@@ -127,12 +127,10 @@
 
                     <a href="{{ route('admin.edit.teacher', $teacher->id) }}" class="btn btn-warning btn-sm">Edit</a>
                     @if(auth()->user()->id != $teacher->id)
-                        <form action="{{ route('admin.delete.teacher', $teacher->id) }}" method="POST" style="display:inline-block;">
+                        <form action="{{ route('admin.delete.teacher', $teacher->id) }}" method="POST" class="deleteForm" style="display:inline-block;">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure to delete?')">
-                                Delete
-                            </button>
+                            <button type="submit" class="btn btn-danger btn-sm deleteBtn">Delete</button>
                         </form>
                     @endif
                 </td>

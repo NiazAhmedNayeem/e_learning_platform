@@ -53,12 +53,10 @@
                 <td>
                     <a href="{{ route('admin.course.edit', $course->id) }}" class="btn btn-warning btn-sm">Edit</a>
                     
-                    <form action="{{ route('admin.course.delete', $course->id) }}" method="POST" style="display:inline-block;">
+                    <form action="{{ route('admin.course.delete', $course->id) }}" method="POST" class="deleteForm" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure to delete?')">
-                            Delete
-                        </button>
+                        <button type="submit" class="btn btn-danger btn-sm deleteBtn">Delete</button>
                     </form>
                 </td>
             </tr>

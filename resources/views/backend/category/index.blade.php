@@ -55,11 +55,12 @@
                     </button>
 
                     <!-- Delete Form -->
-                    <form action="{{ route('admin.category.delete', $category->id) }}" method="POST" style="display:inline-block;">
+                    <form action="{{ route('admin.category.delete', $category->id) }}" method="POST" class="deleteForm" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure to delete?')">Delete</button>
+                        <button type="button" class="btn btn-danger btn-sm deleteBtn">Delete</button>
                     </form>
+
                 </td>
             </tr>
             @empty
@@ -149,5 +150,9 @@
         </form>
     </div>
 </div>
+
+@endsection
+
+@section('scripts')
 
 @endsection
