@@ -60,13 +60,19 @@ Route::middleware('auth')->group(function() {
 
 
 
-
-
-
     // Route::get('/courses', [App\Http\Controllers\frontend\courses\CoursePurchaseController::class, 'index'])->name('courses.index');
 });
     
+///Message route start here
+Route::middleware(['auth'])->group(function () {
+    Route::get('/messages', [App\Http\Controllers\message\MessageController::class, 'index'])->name('messages.index');
+    Route::get('/messages/fetch/{id}', [App\Http\Controllers\message\MessageController::class, 'fetchMessages'])->name('messages.fetch');
+    Route::post('/messages/send', [App\Http\Controllers\message\MessageController::class, 'sendMessage'])->name('messages.send');
+    Route::get('/navbar/unread-messages', [App\Http\Controllers\message\MessageController::class, 'navbarUnreadMessages'])->name('navbar.unread');
+    Route::post('/messages/mark-read', [App\Http\Controllers\message\MessageController::class,'markRead'])->name('messages.markRead');
+    Route::get('/messages/sidebar', [App\Http\Controllers\message\MessageController::class, 'sidebar'])->name('messages.sidebar');
 
+});
 
 
 
