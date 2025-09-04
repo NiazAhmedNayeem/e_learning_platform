@@ -19,7 +19,7 @@
 
     {{-- Admin Dashboard sidebar start here --}}
                 @if(auth()->check() && auth()->user()->role == 'admin' && auth()->user()->status == 1)
-                    <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                    <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
                         <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                         Dashboard
                     </a>
@@ -30,7 +30,7 @@
                         <div class="sb-sidenav-menu-heading">Interface</div>
                     {{-- Add Order --}}
                         <a class="nav-link {{ request()->routeIs('admin.order.index') ? 'active' : '' }}" href="{{ route('admin.order.index') }}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-cart-shopping"></i></div>
                             Orders
                         </a>
 
@@ -38,39 +38,39 @@
                     {{-- Add Category --}}
                         <a class="nav-link {{ request()->routeIs('admin.category.index') ? 'active' : '' }}" 
                         href="{{ route('admin.category.index') }}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-list"></i></div>
                             Category
                         </a>
 
 
                     {{-- Add course --}}
-                        <a class="nav-link" href="{{ route('admin.course.index') }}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                        <a class="nav-link {{ request()->routeIs('admin.course.index') ? 'active' : '' }}" href="{{ route('admin.course.index') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-book-open"></i></div>
                             Courses
                         </a>
 
                     {{-- Add course --}}
-                        <a class="nav-link" href="{{ route('admin.course_assign.index') }}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                        <a class="nav-link {{ request()->routeIs('admin.course_assign.index') ? 'active' : '' }}" href="{{ route('admin.course_assign.index') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-book-open-reader"></i></div>
                             Assign Courses
                         </a>
 
                     {{-- Add students --}}
-                        <a class="nav-link" href="{{ route('admin.student.index') }}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                        <a class="nav-link {{ request()->routeIs('admin.student.index') ? 'active' : '' }}" href="{{ route('admin.student.index') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-user-graduate"></i></div>
                             Students
                         </a>
 
                     {{-- Add Teachers --}}
-                        <a class="nav-link" href="{{ route('admin.all-teacher') }}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                        <a class="nav-link {{ request()->routeIs('admin.all-teacher') ? 'active' : '' }}" href="{{ route('admin.all-teacher') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-user-tie"></i></div>
                             Teachers
                         </a>
 
                     {{-- Add Admin --}}
                     @if (auth()->user()->is_super == 1)
-                        <a class="nav-link" href="{{ route('user.admin.index') }}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                        <a class="nav-link {{ request()->routeIs('user.admin.index') ? 'active' : '' }}" href="{{ route('user.admin.index') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-user-gear"></i></div>
                             Admin
                         </a>
                     @endif
@@ -100,7 +100,7 @@
 
     {{-- Teacher Dashboard sidebar start here --}}
                 @if(auth()->check() && auth()->user()->role == 'teacher' && auth()->user()->status == 1)
-                    <a class="nav-link" href="{{ route('teacher.dashboard') }}">
+                    <a class="nav-link {{ request()->routeIs('teacher.dashboard') ? 'active' : '' }}" href="{{ route('teacher.dashboard') }}">
                         <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                         Dashboard
                     </a>
@@ -110,23 +110,23 @@
                 
                     <div class="sb-sidenav-menu-heading">Interface</div>
 
-                    <a class="nav-link" href="{{ route('teacher.profile') }}">
-                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <a class="nav-link {{ request()->routeIs('teacher.profile') ? 'active' : '' }}" href="{{ route('teacher.profile') }}">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-address-card"></i></div>
                         Profile
                     </a>
 
-                    <a class="nav-link" href="{{ route('profile.notifications') }}">
-                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <a class="nav-link {{ request()->routeIs('profile.notifications') ? 'active' : '' }}" href="{{ route('profile.notifications') }}">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-bell"></i></div>
                         Notifications
                     </a>
 
-                    <a class="nav-link" href="{{ route('teacher.assign.courses') }}">
-                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <a class="nav-link {{ request()->routeIs('teacher.assign.courses') ? 'active' : '' }}" href="{{ route('teacher.assign.courses') }}">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-book-open-reader"></i></div>
                         Assign Course
                     </a>
 
                     <a class="nav-link" href="#">
-                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-user-graduate"></i></div>
                         Students
                     </a>
 
@@ -137,7 +137,7 @@
 
     {{-- Student Dashboard sidebar start here --}}
                 @if(auth()->check() && auth()->user()->role == 'student' && auth()->user()->status == 1)
-                    <a class="nav-link" href="{{ route('student.dashboard') }}">
+                    <a class="nav-link {{ request()->routeIs('student.dashboard') ? 'active' : '' }}" href="{{ route('student.dashboard') }}">
                         <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                         Dashboard
                     </a>
@@ -147,18 +147,18 @@
                 
                     <div class="sb-sidenav-menu-heading">Interface</div>
 
-                    <a class="nav-link" href="{{ route('student.profile') }}">
-                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <a class="nav-link {{ request()->routeIs('student.profile') ? 'active' : '' }}" href="{{ route('student.profile') }}">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-address-card"></i></div>
                         Profile
                     </a>
 
-                    <a class="nav-link" href="{{ route('student.courses') }}">
-                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <a class="nav-link {{ request()->routeIs('student.courses') ? 'active' : '' }}" href="{{ route('student.courses') }}">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-book-open"></i></div>
                         My Course
                     </a>
 
-                    <a class="nav-link" href="{{ route('student.course.order') }}">
-                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <a class="nav-link {{ request()->routeIs('student.course.order') ? 'active' : '' }}" href="{{ route('student.course.order') }}">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-cart-shopping"></i></div>
                         My Orders
                     </a>
 
@@ -178,7 +178,7 @@
                 @endphp
 
                 @if (auth()->check() && auth()->user()->status == 0 || auth()->user()->status == 2 || auth()->user()->status == 3)
-                        <a class="nav-link" href="{{ route($dashboardUrl) }}">
+                        <a class="nav-link {{ request()->routeIs($dashboardUrl) ? 'active' : '' }}" href="{{ route($dashboardUrl) }}">
                         <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                         Dashboard
                     </a>
