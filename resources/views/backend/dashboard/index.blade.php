@@ -31,17 +31,19 @@
                 </a>
             </div>
 
-            <div class="col-xl-3 col-md-6">
-                <a class="text-decoration-none" href="{{ route('user.admin.index') }}">
-                    <div class="card text-white mb-4 shadow-lg" style="background: linear-gradient(135deg, #1d2671, #c33764);">
-                        <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
-                            <h5 class="card-title text-uppercase fw-bold mb-2">Total Admins</h5>
-                            <h2 class="display-4 fw-bold mb-3">{{ $admins }}</h2>
+            @if (auth()->check() && auth()->user()->role == 'admin' && auth()->user()->is_super == 1)
+                <div class="col-xl-3 col-md-6">
+                    <a class="text-decoration-none" href="{{ route('user.admin.index') }}">
+                        <div class="card text-white mb-4 shadow-lg" style="background: linear-gradient(135deg, #1d2671, #c33764);">
+                            <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
+                                <h5 class="card-title text-uppercase fw-bold mb-2">Total Admins</h5>
+                                <h2 class="display-4 fw-bold mb-3">{{ $admins }}</h2>
+                            </div>
                         </div>
-                    </div>
-                </a>
-            </div>
-
+                    </a>
+                </div>
+            @endif
+            
             <div class="col-xl-3 col-md-6">
                 <a class="text-decoration-none" href="{{ route('admin.category.index') }}">
                     <div class="card text-white mb-4 shadow-lg" style="background: linear-gradient(135deg, #1d2671, #c33764);">
