@@ -4,6 +4,7 @@ namespace App\Http\Controllers\backend\order;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Notifications\OrderStatusNotification;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -26,6 +27,15 @@ class OrderController extends Controller
         $order->status = $request->status;
         //dd($order);
         $order->update();
+
+        if($order->status == 'approved'){
+            $order->user->notify(new OrderStatusNotification('#'.$order->unique_order_id . ' - Your order is approved by admin'));
+        }elseif($order->status == 'pending'){
+            $order->user->notify(new OrderStatusNotification('#'.$order->unique_order_id  . ' - Your order is pending by admin'));
+        }elseif($order->status == 'rejected'){
+            $order->user->notify(new OrderStatusNotification('#'.$order->unique_order_id  . ' - Your order is rejected by admin'));
+        }
+        
         return redirect()->route('admin.order.index')->with('success', 'Order status change successfully.');
     }
 }

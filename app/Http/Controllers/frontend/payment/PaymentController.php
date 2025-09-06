@@ -7,6 +7,8 @@ use App\Models\Cart;
 use App\Models\Course;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\User;
+use App\Notifications\OrderStatusNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -79,6 +81,11 @@ class PaymentController extends Controller
 
             //dd($order);
             $order->save();
+
+            $admins = User::where('role', 'admin')->get();
+            foreach($admins as $admin){
+                $admin->notify(new OrderStatusNotification("New order #{$order->unique_order_id} has been placed."));
+            }
 
 
             foreach($request->course_id as $courseId){
