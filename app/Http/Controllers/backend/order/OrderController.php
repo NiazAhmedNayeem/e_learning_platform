@@ -13,4 +13,19 @@ class OrderController extends Controller
         $orders = Order::paginate(5);
         return view('backend.order.index', compact('orders', 'search'));
     }
+
+    public function invoice($orderId)
+    {
+        $order = Order::where('id', $orderId)->firstOrFail();
+
+         return view('backend.order.invoice', compact('order'));
+    }
+
+    public function status(Request $request, $id){
+        $order = Order::find($id);
+        $order->status = $request->status;
+        //dd($order);
+        $order->update();
+        return redirect()->route('admin.order.index')->with('success', 'Order status change successfully.');
+    }
 }

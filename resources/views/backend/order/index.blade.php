@@ -75,7 +75,7 @@
 
 
 
- <!-- Teacher Modal -->
+            <!-- Order Modal -->
             <div class="modal fade" id="teacherModal{{ $order->id }}" tabindex="-1" aria-labelledby="teacherModalLabel{{ $order->id }}" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content shadow-lg border-0 rounded-3">
@@ -145,7 +145,7 @@
                                         <strong>Total:</strong> <span class="fs-5 text-dark">{{ $order->amount ?? 0 }} TK</span>
                                     </div>
                                     <div class="mt-3 text-end">
-                                        <a href="{{ route('student.order.invoice', $order->id) }}" class="btn btn-outline-primary btn-sm">
+                                        <a href="{{ route('admin.order.invoice', $order->id) }}" class="btn btn-outline-primary btn-sm">
                                             <i class="fas fa-file-invoice me-1"></i> View Invoice
                                         </a>
                                     </div>
@@ -156,29 +156,25 @@
             {{-- Footer --}}
             <div class="modal-footer d-flex flex-wrap gap-2 bg-light">
                 @if($order->status != 'approved')
-                <form action="{{ route('admin.teacher.approve', $order->id) }}" method="POST">
+                <form action="{{ route('admin.order.status', $order->id) }}" method="POST">
+                    <input name="status" type="hidden" value="approved">
                     @csrf
                     <button type="submit" class="btn btn-success"><i class="fas fa-check-circle me-1"></i> Approve</button>
                 </form>
                 @endif
 
-                @if($order->status != 'inactive')
-                <form action="{{ route('admin.teacher.inactive', $order->id) }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-secondary"><i class="fas fa-ban me-1"></i> Inactive</button>
-                </form>
-                @endif
-
                 @if($order->status != 'pending')
-                <form action="{{ route('admin.teacher.pending', $order->id) }}" method="POST">
+                <form action="{{ route('admin.order.status', $order->id) }}" method="POST">
                     @csrf
+                    <input name="status" type="hidden" value="pending">
                     <button type="submit" class="btn btn-warning"><i class="fas fa-clock me-1"></i> Pending</button>
                 </form>
                 @endif
 
                 @if($order->status != 'rejected')
-                <form action="{{ route('admin.teacher.reject', $order->id) }}" method="POST">
+                <form action="{{ route('admin.order.status', $order->id) }}" method="POST">
                     @csrf
+                    <input name="status" type="hidden" value="rejected">
                     <button type="submit" class="btn btn-danger"><i class="fas fa-times-circle me-1"></i> Reject</button>
                 </form>
                 @endif
@@ -187,20 +183,9 @@
             </div>
         </div>
     </div>
-</div>
+</div>                      
 
             <!-- End Modal -->
-
-
-
-
-
-
-
-
-
-
-
 
 
             @empty
