@@ -19,7 +19,7 @@
                 <th>Image</th>
                 <th>Title</th>
                 <th>Category</th>
-                {{-- <th>Teacher</th> --}}
+                <th>Students</th>
                 <th>Price</th>
                 <th>Discount</th>
                 <th>Final Price</th>
@@ -38,7 +38,7 @@
                 </td>
                 <td>{{ $course->title }}</td>
                 <td>{{ $course->category?->name }}</td>
-                {{-- <td>{{ $course->teacher?->name }}</td> --}}
+                <td>{{ $course->students?->count() }}</td>
                 <td>{{ $course->price }}</td>
                 <td>{{ $course->discount }} %</td>
                 <td>{{ $course->final_price }}</td>

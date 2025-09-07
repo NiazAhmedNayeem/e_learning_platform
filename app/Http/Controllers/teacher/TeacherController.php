@@ -74,4 +74,20 @@ class TeacherController extends Controller
         //dd($course);
         return view('teacher.course.details', compact('course'));
     }
+
+    public function totalCourseStudent(Request $request)
+    {
+        $search = $request->input('search');
+        $teacher = auth()->user()->id;
+
+        $courses = Course::where('teacher_id', $teacher)
+            ->where('status', 1)
+            ->where(function($query) use ($search){
+                $query->where('title', 'like', "%{$search}%");
+            })->paginate(5);
+
+        return view('teacher.student.index', compact('courses', 'search'));
+    }
+
+
 }

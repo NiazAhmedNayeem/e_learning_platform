@@ -125,7 +125,7 @@
                         Assign Course
                     </a>
 
-                    <a class="nav-link" href="#">
+                    <a class="nav-link {{ request()->routeIs('teacher.course.student') ? 'active' : '' }}" href="{{ route('teacher.course.student') }}">
                         <div class="sb-nav-link-icon"><i class="fa-solid fa-user-graduate"></i></div>
                         Students
                     </a>

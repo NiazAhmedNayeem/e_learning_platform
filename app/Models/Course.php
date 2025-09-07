@@ -40,4 +40,23 @@ class Course extends Model
         return asset('public/upload/courses/' . $this->image);
     }
 
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+
+    public function getStudentsAttribute()
+    {
+        return \App\Models\User::query()
+            ->join('orders', 'orders.user_id', '=', 'users.id')
+            ->join('order_items', 'order_items.order_id', '=', 'orders.id')
+            ->where('order_items.course_id', $this->id)
+            ->where('orders.status', 'approved')
+            ->select('users.*')
+            ->distinct()
+            ->get();  // collection
+    }
+
+
 }

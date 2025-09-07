@@ -16,6 +16,8 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':teacher'
     //Assigned course list
     Route::get('teacher/assign/courses', [App\Http\Controllers\teacher\TeacherController::class, 'assignedCourses'])->name('teacher.assign.courses')->middleware([CheckStatus::class]);
     Route::get('teacher/assign/course/details/{slug}', [App\Http\Controllers\teacher\TeacherController::class, 'assignedCoursesDetails'])->name('teacher.assign.course.details')->middleware([CheckStatus::class]);
+    //Total course students count
+    Route::get('teacher/course/students', [App\Http\Controllers\teacher\TeacherController::class, 'totalCourseStudent'])->name('teacher.course.student')->middleware([CheckStatus::class]);
 
 }); 
 
