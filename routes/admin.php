@@ -95,4 +95,19 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin',
     Route::post('admin/update/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'update'])->name('user.admin.update');
     Route::delete('admin/delete/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'delete'])->name('user.admin.delete');
 
+
+    //clear-all-cache route
+    Route::get('/clear-all-cache', function() {
+    Illuminate\Support\Facades\Artisan::call('route:clear');
+    Illuminate\Support\Facades\Artisan::call('config:clear');
+    Illuminate\Support\Facades\Artisan::call('cache:clear');
+    Illuminate\Support\Facades\Artisan::call('view:clear');
+
+        // return redirect()->back()->with('success', 'All caches cleared successfully!');
+        return response()->json(['status' => 'success', 'message' => 'All caches cleared successfully!']);
+
+    });
 });
+
+
+
