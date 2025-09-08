@@ -10,10 +10,11 @@ class Category extends Model
             'name',
             'status',
             'image',
+            'slug',
         ];
 
 
-
+    protected $appends = ['image_show'];
 
     public function getImageShowAttribute()
     {

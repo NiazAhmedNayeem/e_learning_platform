@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Models\Category;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Validator;
 
 Route::get('/', function () {
     return view('welcome');
@@ -73,6 +76,180 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/messages/sidebar', [App\Http\Controllers\message\MessageController::class, 'sidebar'])->name('messages.sidebar');
 
 });
+
+
+
+
+
+
+
+
+
+
+    ///ajax test
+    Route::get('/ajax-test', [App\Http\Controllers\backend\admin\DashboardController::class, 'ajaxTest'])->name('ajax.test');
+  
+        
+
+        Route::get('/categories', function(){
+            return response()->json(Category::orderBy('id', 'desc')->get());
+        });
+
+
+        Route::post('/category-store', function(Illuminate\Http\Request $request){
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:100',
+                'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+                'status' => 'required|in:0,1',
+            ]);
+
+            if($validator->fails()){
+                return response()->json([
+                    'status' => 'error',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
+
+            $category = new Category();
+            $category->name = $request->name;
+            $category->status = $request->status;
+
+            // slug generate
+           $slug = Illuminate\Support\Str::slug($request->name);
+
+            // check uniqueness
+            $originalSlug = $slug;
+            $count = 1;
+            while (Category::where('slug', $slug)->exists()) {
+                $slug = $originalSlug . '-' . $count;
+                $count++;
+            }
+
+            $category->slug = $slug;
+
+            if($request->hasFile('image')){ 
+                    $fileName = rand().time().'.'.request()->image->getClientOriginalExtension(); 
+                    request()->image->move(public_path('upload/category/'),$fileName); 
+                    $category->image = $fileName; 
+            }
+            $category->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Category added successfully.',
+                'category' => $category,
+            ]);
+        });
+
+
+
+        // Single category data
+        Route::get('/categories/{id}', function($id){
+            return Category::findOrFail($id);
+        });
+
+
+        Route::post('/category-update/{id}', function(Illuminate\Http\Request $request, $id){
+            $request->validate([
+                'name' => 'required|string|max:100',
+                'status' => 'required|in:0,1',
+            ]);
+
+            $category = Category::find($id);
+            $category->name = $request->name;
+            $category->status = $request->status;
+
+            // slug handle
+            $slug = Illuminate\Support\Str::slug($request->name);
+
+            if ($slug !== $category->slug) {
+                $originalSlug = $slug;
+                $count = 1;
+
+                while (Category::where('slug', $slug)
+                    ->where('id', '!=', $category->id)
+                    ->exists()) 
+                {
+                    $slug = $originalSlug . '-' . $count;
+                    $count++;
+                }
+
+                $category->slug = $slug;
+            }
+
+            if($request->hasFile('image')){ 
+                    @unlink(public_path("upload/category/".$category->image));
+                    $fileName = rand().time().'.'.request()->image->getClientOriginalExtension(); 
+                    request()->image->move(public_path('upload/category/'),$fileName); 
+                    $category->image = $fileName; 
+            }
+            $category->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Category updated successfully.',
+                'category' => $category,
+            ]);
+        });
+
+        Route::delete('/category-delete/{id}', function($id){
+            $category = Category::find($id);
+            if(!$category){
+                return redirect()->route('admin.category.index')->with('error', 'Category not found.');
+            }
+
+            if($category->image && file_exists(public_path("upload/category/".$category->image))){
+                unlink(public_path("upload/category/".$category->image));
+            }
+            $category->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Category delete successfully.',
+            ]);
+        });
+
+
+
+        Route::post('/form-submit', function(Illuminate\Http\Request $request){
+            $validator = validator::make($request->all(), [
+                'name'  => 'required|string|max:100',
+                'email' => 'required|email|max:100',
+                'age'   => 'required|numeric|min:1|max:120',
+            ]);
+
+            if($validator->fails()){
+                return response()->json([
+                    'status' => 'error',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+            
+            
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Info added successfully.',
+                'data' => [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'age' => $request->age,
+                    'greeting' => 'Hello '. $request->name.'! Your email is: '.$request->email.' and age is: '.$request->age,
+                ],
+
+            ]);
+        });
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -20,4 +20,13 @@ class DashboardController extends Controller
         return view('backend.dashboard.index', compact('students','teachers','admins','courses','assigned_courses','categories'));
     }
 
+
+
+    ///ajax test
+    public function ajaxTest(){
+
+        // $categories = Category::all();
+        return view('ajax.index');
+    }
+
 }
