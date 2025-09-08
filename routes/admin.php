@@ -44,11 +44,11 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin', 
    
     ///Admin Category management Route
     Route::get('/admin/all-categories', [App\Http\Controllers\backend\category\CategoryController::class, 'index'])->name('admin.category.index');
-    Route::get('admin/create/category', [App\Http\Controllers\backend\category\CategoryController::class, 'create'])->name('admin.category.create');
-    Route::post('admin/store/category', [App\Http\Controllers\backend\category\CategoryController::class, 'store'])->name('admin.category.store');
-    Route::get('admin/edit/category/{id}', [App\Http\Controllers\backend\category\CategoryController::class, 'edit'])->name('admin.category.edit');
-    Route::post('admin/update/category/{id}', [App\Http\Controllers\backend\category\CategoryController::class, 'update'])->name('admin.category.update');
-    Route::delete('admin/delete/category/{id}', [App\Http\Controllers\backend\category\CategoryController::class, 'delete'])->name('admin.category.delete');
+    Route::get('/categories', [App\Http\Controllers\backend\category\CategoryController::class, 'data']);
+    Route::post('/category-store', [App\Http\Controllers\backend\category\CategoryController::class, 'store']);
+    Route::get('/categories/{id}', [App\Http\Controllers\backend\category\CategoryController::class, 'edit']);
+    Route::post('/category-update/{id}', [App\Http\Controllers\backend\category\CategoryController::class, 'update']);
+    Route::delete('/category-delete/{id}', [App\Http\Controllers\backend\category\CategoryController::class, 'delete']);
 
 
     ///Admin course management Route
