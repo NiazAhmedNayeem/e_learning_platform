@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
 {
@@ -20,21 +21,36 @@ class StudentController extends Controller
         return view('student.profile.index', compact('student'));
     }
 
-    public function edit(){
-        $student = auth()->user();
-        return view('student.profile.edit', compact('student'));
-    }
+    // public function edit(){
+    //     $student = auth()->user();
+    //     return view('student.profile.edit', compact('student'));
+    // }
 
     public function update(Request $request){
 
         $student = auth()->user();
 
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name'        => 'required|string|max:255',
             'email'       => 'required|email|unique:users,email,'.$student->id,
             'phone'       => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:11|max:15',
             'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'gender'      => 'required|in:male,female',
         ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // $request->validate([
+        //     'name'        => 'required|string|max:255',
+        //     'email'       => 'required|email|unique:users,email,'.$student->id,
+        //     'phone'       => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:11|max:15',
+        //     'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        // ]);
 
         $student->name = $request->name;
         $student->email = $request->email;
@@ -54,9 +70,22 @@ class StudentController extends Controller
         //dd($student);
         $student->save();
 
-        return redirect()->route('student.profile')->with('success', 'Your profile is updated.');
+        $html = view('student.profile.profile_view', compact('student'))->render();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Profile update successfully.',
+            'html' => $html,
+        ]);
+
+        // return redirect()->route('student.profile')->with('success', 'Your profile is updated.');
 
     }
+
+
+
+
+
 
     public function myCourses(Request $request){
         $search = $request->input('search');
