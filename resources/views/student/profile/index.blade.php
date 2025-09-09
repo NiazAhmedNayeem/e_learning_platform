@@ -22,7 +22,7 @@
                         </h3>
                     </div>
 
-                    <form  id="profileUpdateForm">
+                    <form  id="profileUpdateForm" enctype="multipart/form-data">
                         @csrf
 
                         <div class="row g-0">
