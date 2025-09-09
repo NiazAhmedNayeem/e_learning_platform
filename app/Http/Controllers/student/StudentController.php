@@ -45,13 +45,6 @@ class StudentController extends Controller
             ], 422);
         }
 
-        // $request->validate([
-        //     'name'        => 'required|string|max:255',
-        //     'email'       => 'required|email|unique:users,email,'.$student->id,
-        //     'phone'       => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:11|max:15',
-        //     'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        // ]);
-
         $student->name = $request->name;
         $student->email = $request->email;
         $student->phone = $request->phone;
@@ -77,8 +70,6 @@ class StudentController extends Controller
             'message' => 'Profile update successfully.',
             'html' => $html,
         ]);
-
-        // return redirect()->route('student.profile')->with('success', 'Your profile is updated.');
 
     }
 

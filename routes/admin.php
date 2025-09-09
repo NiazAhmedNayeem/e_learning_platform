@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin'])->group(function(){
     //Admin Profile Route
-    Route::get('admin/profile', [App\Http\Controllers\backend\admin\profile\ProfileController::class, 'profile'])->name('admin.profile');
-    Route::get('admin/profile/edit', [App\Http\Controllers\backend\admin\profile\ProfileController::class, 'edit'])->name('admin.profile.edit');
-    Route::post('admin/profile/update', [App\Http\Controllers\backend\admin\profile\ProfileController::class, 'update'])->name('admin.profile.update');
+    Route::get('/admin/profile', [App\Http\Controllers\backend\admin\profile\ProfileController::class, 'profile'])->name('admin.profile');
+    // Route::get('admin/profile/edit', [App\Http\Controllers\backend\admin\profile\ProfileController::class, 'edit'])->name('admin.profile.edit');
+    Route::post('/admin/profile/update', [App\Http\Controllers\backend\admin\profile\ProfileController::class, 'update'])->name('admin.profile.update');
 
 });
 

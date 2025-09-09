@@ -33,6 +33,7 @@
                                 <div class="mb-4">
                                     @if($student->image)
                                         <img src="{{ $student->image_show }}" 
+                                            id="previewImage"
                                             alt="Profile Image" 
                                             class="rounded-circle img-thumbnail shadow-sm" 
                                             style="width: 160px; height: 160px; object-fit: cover;">
@@ -214,6 +215,16 @@
                 $('#phoneError').html('');
             });
 
+
+            $('#image').on('change', function(e){
+                let reader = new FileReader();
+                reader.onload = function(e){
+                    $('#previewImage').attr('src', e.target.result);
+                }
+                if(this.files && this.files[0]){
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
 
         });
     </script>

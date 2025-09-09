@@ -32,7 +32,8 @@
                                 <!-- Profile Image -->
                                 <div class="mb-4">
                                     @if($teacher->image)
-                                        <img src="{{ $teacher->image_show }}" 
+                                        <img src="{{ $teacher->image_show }}"
+                                            id="previewImage" 
                                             alt="Profile Image" 
                                             class="rounded-circle img-thumbnail shadow-sm" 
                                             style="width: 160px; height: 160px; object-fit: cover;">
@@ -224,7 +225,16 @@
                 $('#categoryError').html('');
             });
 
-            
+            ///image preview
+            $('#image').on('change', function(e){
+                let reader = new FileReader();
+                reader.onload = function(e){
+                    $('#previewImage').attr('src', e.target.result);
+                }
+                if(this.files && this.files[0]){
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
 
 
         });

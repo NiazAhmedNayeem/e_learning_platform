@@ -1,0 +1,101 @@
+<div class="card shadow-lg border-0 rounded-3">
+    <div style="background-color: #212529" class="card-footer text-center">
+        <h3 class="text-white">
+            Welcome to {{ $admin->name }} profile!
+        </h3>
+    </div>
+    <div class="row g-0">
+
+        <!-- Left Side (Image + Basic Info) -->
+        <div class="col-md-4 bg-light text-center p-4 d-flex flex-column align-items-center justify-content-center">
+            <!-- Profile Image -->
+            @if($admin->image)
+                <img src="{{ $admin->image_show }}" 
+                        alt="Profile Image" 
+                        class="rounded-circle img-thumbnail mb-3 shadow-sm" 
+                        style="width: 160px; height: 160px; object-fit: cover;">
+            @else
+                <img src="https://ui-avatars.com/api/?name={{ urlencode($admin->name) }}&size=160" 
+                    class="rounded-circle img-thumbnail shadow-sm mb-2" 
+                    alt="Default Avatar">
+            @endif
+
+            <!-- Name -->
+            <h4 class="fw-bold mb-1">{{ $admin->name }}</h4>
+            <p class="text-muted">{{ $admin->profession ?? 'No Profession Added' }}</p>
+
+
+            @php
+                $roleClass = $admin->role === 'admin' ? 'bg-success' : 'bg-info';
+            @endphp
+
+            @if (auth()->user()->is_super == 1)
+                <p class="d-inline-block {{ $roleClass }} text-white text-uppercase px-3 py-1 rounded-pill mb-3">
+                    Super {{ ucfirst($admin->role) }}
+                </p>
+            @else 
+                <p class="d-inline-block {{ $roleClass }} text-white text-uppercase px-3 py-1 rounded-pill mb-3">
+                    {{ ucfirst($admin->role) }}
+                </p>
+            @endif
+
+            
+
+
+            
+        </div>
+
+        <!-- Right Side (Details) -->
+        <div class="col-md-8 p-4">
+            <h5 class="mb-4 border-bottom pb-2 text-primary fw-bold">Profile Details</h5>
+            
+            <!-- Bio -->
+            @if($admin->bio)
+                <div class="bg-light p-3 mb-4 rounded shadow-sm">
+                    <p class="text-secondary fst-italic mb-0">
+                        "{{ $admin->bio }}"
+                    </p>
+                </div>
+            @endif
+            
+            <!-- Details List -->
+            <ul class="list-group list-group-flush shadow-sm rounded">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><strong>Admin ID:</strong></span>
+                    <span class="fw-bold">{{ $admin->unique_id }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><strong>Email:</strong></span>
+                    <span>{{ $admin->email }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><strong>Phone:</strong></span>
+                    <span>{{ $admin->phone ?? 'N/A' }}</span>
+                </li>
+                {{-- <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><strong>Expertise Category:</strong></span>
+                    <span>{{ $admin->expertCategory?->name ?? 'N/A' }}</span>
+                </li> --}}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><strong>Gender:</strong></span>
+                    <span>{{ ucfirst($admin->gender) ?? 'N/A' }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><strong>Address:</strong></span>
+                    <span>{{ $admin->address ?? 'N/A' }}</span>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="card-footer text-center bg-white">
+
+        <div class="d-flex justify-content-end gap-2 mt-1">
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-primary btn-lg shadow-sm">Dashboard</a>
+            <a href="{{ route('password.change.form') }}" class="btn btn-warning btn-lg shadow-sm">✏️ Change Password</a>
+            <button id="editProfileBtn" class="btn btn-primary btn-lg shadow-sm">✏️ Edit Profile</button>
+        </div>
+    </div>
+</div>
