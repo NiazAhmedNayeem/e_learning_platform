@@ -22,50 +22,65 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
+
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        //return redirect()->intended(route('dashboard', absolute: false));
+        $user = auth()->user();
 
-        ///For Admin User
-        if(auth()->user()->role == 'admin'){
-            if(auth()->user()->status == 1){
-                return redirect()->route('admin.dashboard')
-                ->with('success', 'Hello '. auth()->user()->name .'! Welcome to Admin Dashboard.');
-            }
-            if(auth()->user()->status == 0){
-                return redirect()->route('admin.dashboard')
-                ->with('warning', 'Hello '. auth()->user()->name .'! Welcome to Admin Dashboard. Your account is inactive.');
-            }
-        }
-        ///For Teacher User
-        elseif(auth()->user()->role == 'teacher'){
-            if(auth()->user()->status == 1){
-                return redirect()->route('teacher.dashboard')
-                ->with('success', 'Hello '. auth()->user()->name .'! Welcome to Teacher Dashboard.');
-            }elseif(auth()->user()->status == 2){
-                return redirect()->route('teacher.dashboard')
-                ->with('warning', 'Hello '. auth()->user()->name .'! Your account is pending.');
-            }
-        }
+        $message = '';
+        $type = 'success';
 
-        ///For Student User
-        elseif(auth()->user()->role == 'student'){
-            if(auth()->user()->status == 1){
-                return redirect()->route('student.dashboard')
-                ->with('success', 'Hello '. auth()->user()->name .'! Welcome to Student Dashboard.');
+        // Role-based message set 
+        if ($user->role == 'admin') {
+            if ($user->status == 1) {
+                $message = 'Hello ' . $user->name . '! Welcome to Admin Dashboard.';
+                $type = 'success';
+            } elseif ($user->status == 0) {
+                $message = 'Hello ' . $user->name . '! Welcome to Admin Dashboard. Your account is inactive.';
+                $type = 'warning';
             }
-        }
-        else {
-            //return redirect()->route('dashboard');
-            return redirect()->route('login')
-            ->with('warning', 'Something is wrong');
+        } elseif ($user->role == 'teacher') {
+            if ($user->status == 1) {
+                $message = 'Hello ' . $user->name . '! Welcome to Teacher Dashboard.';
+                $type = 'success';
+            } elseif ($user->status == 2) {
+                $message = 'Hello ' . $user->name . '! Your account is pending.';
+                $type = 'warning';
+            }
+        } elseif ($user->role == 'student') {
+            if ($user->status == 1) {
+                $message = 'Hello ' . $user->name . '! Welcome to Student Dashboard.';
+                $type = 'success';
+            }
+        } else {
+            return redirect()->route('login')->with('warning', 'Something is wrong');
         }
 
+        // Redirect back to the previously intended page, or use fallback route if none exists
+        return redirect()->intended($this->defaultDashboardRoute($user))
+            ->with($type, $message);
     }
+
+    /**
+     * // Determine the fallback route based on the user's role
+     */
+    private function defaultDashboardRoute($user)
+    {
+        if ($user->role == 'admin') {
+            return route('admin.dashboard');
+        } elseif ($user->role == 'teacher') {
+            return route('teacher.dashboard');
+        } elseif ($user->role == 'student') {
+            return route('student.dashboard');
+        } else {
+            return route('login'); // generic fallback
+        }
+    }
+
 
     /**
      * Destroy an authenticated session.

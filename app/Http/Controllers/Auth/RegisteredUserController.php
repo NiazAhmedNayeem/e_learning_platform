@@ -54,7 +54,7 @@ class RegisteredUserController extends Controller
                         ->count() + 1;
             $number = str_pad($count, 3, '0', STR_PAD_LEFT);
             $unique_id = 'T' . $today . $number;
-            $status = 2; //request for teacher
+            $status = 2; //request for teacher (pending)
         }
 
         $user = User::create([
