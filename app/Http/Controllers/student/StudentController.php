@@ -21,10 +21,6 @@ class StudentController extends Controller
         return view('student.profile.index', compact('student'));
     }
 
-    // public function edit(){
-    //     $student = auth()->user();
-    //     return view('student.profile.edit', compact('student'));
-    // }
 
     public function update(Request $request){
 

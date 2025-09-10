@@ -22,15 +22,6 @@ class TeacherController extends Controller
         return view('teacher.profile.index', compact('teacher', 'categories'));
     }
 
-    // public function edit(){
-    //     $teacher = auth()->user();
-    //     $categories = Category::where('status', 1)->get();
-    //     return view('teacher.profile.edit', compact('teacher', 'categories'));
-    // }
-
-
-
-
 
     public function update(Request $request){
 
@@ -51,12 +42,6 @@ class TeacherController extends Controller
             ], 422);
         }
 
-        // $request->validate([
-        //     'name'        => 'required|string|max:255',
-        //     'email'       => 'required|email|unique:users,email,'.$teacher->id,
-        //     'phone'       => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:11|max:15',
-        //     'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        // ]);
 
         $teacher->name = $request->name;
         $teacher->email = $request->email;

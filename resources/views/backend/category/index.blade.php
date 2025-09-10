@@ -348,7 +348,7 @@
                 success: function(res){
                     if(res.status === 'success'){
                         $('#deleteRow').remove(); // confirm row remove
-                        loadCategories(currentPage);         // table refresh
+                        loadCategories(currentPage, currentSearch);         // table refresh
                         toastr.success(res.message, 'Success', {timeOut: 3000});
                     }
                 }

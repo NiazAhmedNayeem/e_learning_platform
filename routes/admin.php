@@ -87,12 +87,13 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin',
                             \App\Http\Middleware\CheckSuper::class,
                             \App\Http\Middleware\CheckStatus::class])->group(function(){
     //User Admin management Route
-    Route::get('all/admin/index', [App\Http\Controllers\backend\users\admin\AdminController::class, 'index'])->name('user.admin.index');
-    Route::get('admin/create', [App\Http\Controllers\backend\users\admin\AdminController::class, 'create'])->name('user.admin.create');
-    Route::post('admin/store', [App\Http\Controllers\backend\users\admin\AdminController::class, 'store'])->name('user.admin.store');
-    Route::get('admin/edit/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'edit'])->name('user.admin.edit');
-    Route::post('admin/update/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'update'])->name('user.admin.update');
-    Route::delete('admin/delete/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'delete'])->name('user.admin.delete');
+    Route::get('/all/admin/index', [App\Http\Controllers\backend\users\admin\AdminController::class, 'index'])->name('user.admin.index');
+    Route::get('/all/admin/data', [App\Http\Controllers\backend\users\admin\AdminController::class, 'data']);
+    // Route::get('/admin/create', [App\Http\Controllers\backend\users\admin\AdminController::class, 'create'])->name('user.admin.create');
+    Route::post('/admin/store', [App\Http\Controllers\backend\users\admin\AdminController::class, 'store'])->name('user.admin.store');
+    // Route::get('/admin/edit/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'edit'])->name('user.admin.edit');
+    Route::post('/admin/update/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'update'])->name('user.admin.update');
+    Route::delete('/admin/delete/{id}', [App\Http\Controllers\backend\users\admin\AdminController::class, 'delete'])->name('user.admin.delete');
 
 
     //clear-all-cache route

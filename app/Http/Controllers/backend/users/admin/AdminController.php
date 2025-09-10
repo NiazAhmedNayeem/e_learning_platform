@@ -6,33 +6,67 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
     public function index(Request $request){
-        $search = $request->input('search');
+        // $search = $request->input('search');
 
-        $admins = User::where('role', 'admin')
-            ->where(function($query) use ($search){
-            $query->where('name', 'like', "%{$search}%")
-            ->orWhere('email', 'like', "%{$search}%");
-        })->paginate(5);
+        // $admins = User::where('role', 'admin')
+        //     ->where(function($query) use ($search){
+        //     $query->where('name', 'like', "%{$search}%")
+        //     ->orWhere('email', 'like', "%{$search}%");
+        // })->paginate(5);
 
-        return view('backend.users.admin.index', compact('admins', 'search'));
+        return view('backend.users.admin.index');
+        // return view('backend.users.admin.index', compact('admins', 'search'));
     }
 
-    public function create(){
-        return view('backend.users.admin.create');
+    public function data(Request $request)
+    {
+        $query = User::where('role', 'admin');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $admins = $query->orderBy('id', 'desc')->paginate(5);
+
+        return response()->json($admins);
     }
+
+
+
+    // public function create(){
+    //     return view('backend.users.admin.create');
+    // }
+
+
+    
     public function store(Request $request){
 
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name'        => 'required|string|max:255',
             'email'       => 'required|email|unique:users,email',
-            'password'    => 'required|',
+            'password'    => 'required|min:8',
             'phone'       => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:11|max:15',
-            'image'       => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'status'      => 'required|in:0,1',
         ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
 
         DB::beginTransaction();
 
@@ -64,7 +98,14 @@ class AdminController extends Controller
             //dd($admin);
             $admin->save();
             DB::commit();
-            return redirect()->route('user.admin.index')->with('success', 'Admin Create Successfully. Thank you.');
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Admin profile create successfully.',
+                'admin' => $admin,
+            ]);
+
+            // return redirect()->route('user.admin.index')->with('success', 'Admin Create Successfully. Thank you.');
         } catch (\Exception $e){
             DB::rollBack();
             return back()->with('error', $e->getMessage());
@@ -72,10 +113,10 @@ class AdminController extends Controller
         
     }
 
-    public function edit($id){
-        $admin = User::find($id);
-        return view('backend.users.admin.edit', compact('admin'));
-    }
+    // public function edit($id){
+    //     $admin = User::find($id);
+    //     return view('backend.users.admin.edit', compact('admin'));
+    // }
 
     public function update(Request $request, $id){
 
@@ -133,7 +174,11 @@ class AdminController extends Controller
 
         $admin->delete();
 
-        return redirect()->route('user.admin.index')->with('success', 'Admin deleted successfully.');
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Admin profile delete successfully.',
+        ]);
+        // return redirect()->route('user.admin.index')->with('success', 'Admin deleted successfully.');
     }
     
 }
