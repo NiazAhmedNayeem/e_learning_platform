@@ -17,6 +17,9 @@
             <button class="btn btn-primary" id="toggleAddForm">
                 <i class="fas fa-plus"></i> Add New Admin
             </button>
+            <button class="btn btn-danger" id="toggleCancelForm" style="display: none">
+                <i class="fas fa-close"></i> Cancel
+            </button>
         </div>
     </div>
 
@@ -98,22 +101,6 @@
 
 
 
-
-
-    {{-- <div class="d-flex justify-content-end mb-3">
-        <a href="{{ route('user.admin.create') }}" class="btn btn-primary">Add admin</a>
-    </div>
-
-    <div class="d-flex justify-content-end mb-3">
-        <form class="d-flex" method="GET" action="{{ route('user.admin.index') }}">
-            <input class="form-control" type="text" name="search" value="{{ $search }}" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-            <button class="btn btn-primary" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
-        </form>
-    </div> --}}
-
-
-
-
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
             <tr>
@@ -138,6 +125,78 @@
     </nav>
     
 </div>
+
+
+    <!-- Edit Admin Modal -->
+    <div class="modal fade" id="editAdminModal" tabindex="-1" aria-labelledby="editAdminModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <form id="editAdminForm" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="editAdminModalLabel">Edit Admin</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="editId">
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="editName" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="editName" name="name">
+                                <small class="text-danger" id="editErrorName"></small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="editEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="editEmail" name="email">
+                                <small class="text-danger" id="editErrorEmail"></small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="editPhone" class="form-label">Phone</label>
+                                <input type="text" class="form-control" id="editPhone" name="phone">
+                                <small class="text-danger" id="editErrorPhone"></small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="editPassword" class="form-label">Password (Leave blank to keep unchanged)</label>
+                                <input type="password" class="form-control" id="editPassword" name="password">
+                                <small class="text-danger" id="editErrorPassword"></small>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <label for="editStatus" class="form-label">Status</label>
+                                <select class="form-control" id="editStatus" name="status" >
+                                    <option value="">Select Status</option>
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                                <small class="text-danger" id="editErrorStatus"></small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="editImage" class="form-label">Profile Image</label>
+                                <input type="file" class="form-control" id="editImage" name="image">
+                            </div>
+
+                            <div class="col-md-12 mt-2">
+                                <img id="editPreviewImage" src="#" alt="Preview" class="img-thumbnail" style="max-height: 100px; display: none;">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Admin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 
@@ -147,11 +206,26 @@
             //form open and close
             $('#toggleAddForm').click(function(){
                 $('#addAdminInput').slideToggle();
+                $('#toggleAddForm').hide();
+                $('#toggleCancelForm').show();
             });
+
+            $('#toggleCancelForm').click(function(){
+                $('#addAdminInput').slideToggle();
+                $('#toggleAddForm').show();
+                $('#toggleCancelForm').hide();
+                $('#addAdminForm')[0].reset();
+                //error remove
+                $('#addAdminForm').find('.text-danger').html('');
+            });
+
+
             //form cancel
             $('#cancelForm').click(function(e){
                 e.preventDefault();
                 $('#addAdminInput').slideToggle();
+                $('#toggleCancelForm').hide();
+                $('#toggleAddForm').show();
                 $('#addAdminForm')[0].reset();
                 //error remove
                 $('#addAdminForm').find('.text-danger').html('');
@@ -163,6 +237,7 @@
             let currentSearch = '';
             let authId = {{ auth()->id() }};
 
+            ///data table
             function loadAdmins(page = 1, search = ''){
                 currentPage = page;
                 currentSearch = search;
@@ -258,6 +333,8 @@
                             $('#addAdminForm')[0].reset();
                             loadAdmins();
                             $('#addAdminInput').slideToggle();
+                            $('#toggleAddForm').show();
+                            $('#toggleCancelForm').hide();
                             toastr.success(res.message, 'Success', {timeOut: 3000});
                         }
                     },
@@ -275,7 +352,7 @@
             });
 
 
-            ///error remove
+            ///create form error remove
             $('#name').on('input', function(){
                 $('#errorName').html('');
             });
@@ -292,9 +369,91 @@
                 $('#errorStatus').html('');
             });
 
+            ///edit form error remove
+            $('#editName').on('input', function(){
+                $('#editErrorName').html('');
+            });
+            $('#editEmail').on('input', function(){
+                $('#editErrorEmail').html('');
+            });
+            $('#editPhone').on('input', function(){
+                $('#editErrorPhone').html('');
+            });
+            $('#editPassword').on('input', function(){
+                $('#editErrorPassword').html('');
+            });
+            // $('#editStatus').on('input', function(){
+            //     $('#editErrorStatus').html('');
+            // });
 
 
 
+
+            // Bootstrap modal instance
+            const editModal = new bootstrap.Modal(document.getElementById('editAdminModal'));
+
+            // Open modal with data
+            $(document).on('click', '.editBtn', function () {
+                const id = $(this).data('id');
+
+                $.get("{{ url('/admin/edit') }}/"+id, function (res) {
+                    if (res.status === 'success') {
+                        const admin = res.data;
+
+                        $('#editId').val(admin.id);
+                        $('#editName').val(admin.name);
+                        $('#editEmail').val(admin.email);
+                        $('#editPhone').val(admin.phone);
+                        $('#editStatus').val(admin.status);
+                        $('#editPassword').val(''); // leave blank
+                        $('#editPreviewImage').attr('src', admin.image_show).show();
+
+                        // Clear errors
+                        $('#editAdminForm').find('.text-danger').html('');
+
+                        let authId = {{ auth()->user()->id }};
+                        if (authId === admin.id) {
+                            $('#editStatus').prop('disabled', true);
+                        } else {
+                            $('#editStatus').prop('disabled', false);
+                        }
+
+                        editModal.show();
+                    }
+                });
+            });
+
+            // Update form submit
+            $('#editAdminForm').submit(function (e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const id = $('#editId').val();
+
+                $.ajax({
+                    url: "{{ url('/admin/update') }}/"+id,
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        if (res.status === 'success') {
+                            editModal.hide();
+                            loadAdmins(currentPage, currentSearch);
+                            toastr.success(res.message, 'Success', { timeOut: 3000 });
+                        }
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 422) {
+                            const errors = xhr.responseJSON.errors;
+                            $('#editErrorName').text(errors.name ? errors.name[0] : '');
+                            $('#editErrorEmail').text(errors.email ? errors.email[0] : '');
+                            $('#editErrorPhone').text(errors.phone ? errors.phone[0] : '');
+                            $('#editErrorPassword').text(errors.password ? errors.password[0] : '');
+                            // $('#editErrorStatus').text(errors.status ? errors.status[0] : '');
+                        }
+                    }
+                });
+            });
 
 
             //Delete category
@@ -332,7 +491,7 @@
                     success: function(res){
                         if(res.status === 'success'){
                             $('#deleteRow').remove(); // confirm row remove
-                            loadAdmins(currentPage, currentSearch);         // table refresh
+                            loadAdmins(currentPage, currentSearch); // table refresh
                             toastr.success(res.message, 'Success', {timeOut: 3000});
                         }
                     }
@@ -341,10 +500,7 @@
 
 
 
-
-
-
-        });
+        }); //document ready function end
     </script>
 @endsection
 
