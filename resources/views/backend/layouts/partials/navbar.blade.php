@@ -47,7 +47,7 @@
         <li class="nav-item dropdown me-3 mt-2">
             <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #f8f9fa;">
                 <i class="fas fa-bell fa-fw fs-5"></i>
-                @if(auth()->user()->unreadNotifications->count() > 0)
+                @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
                     <span class="notification-badge position-absolute top-0 start-100 translate-middle badge rounded-pill">
                         {{ auth()->user()->unreadNotifications->count() }}
                     </span>
@@ -182,7 +182,7 @@
     fetchNavbarMessages();
 
     // Refresh every 1 seconds
-    setInterval(fetchNavbarMessages, 1000);
+    setInterval(fetchNavbarMessages, 30000);
 
 
 

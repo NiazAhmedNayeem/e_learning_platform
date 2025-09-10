@@ -9,7 +9,7 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <h5>Order Info:</h5>
-                <p><strong>Order ID:</strong> {{ $order->id }}</p>
+                <p><strong>Order ID:</strong> {{ $order->unique_order_id }}</p>
                 <p><strong>Order Date:</strong> {{ $order->created_at->format('d M, Y') }}</p>
                 <p><strong>Status:</strong> 
                     <span class="badge 
