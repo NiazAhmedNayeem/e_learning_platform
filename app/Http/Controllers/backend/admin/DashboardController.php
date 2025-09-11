@@ -5,6 +5,7 @@ namespace App\Http\Controllers\backend\admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\Skill;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -26,7 +27,53 @@ class DashboardController extends Controller
     public function ajaxTest(){
 
         // $categories = Category::all();
-        return view('ajax.index');
+        $skills = Skill::where('user_id', auth()->user()->id)->get();
+        return view('ajax.index', compact('skills'));
+    }
+
+    public function store(Request $request){
+        //dd($request->all());
+        $skills = $request->input('skill');
+        
+        
+        foreach($skills as $s){
+            if(!empty($s)){
+                $skill = new Skill();
+                $skill->user_id = auth()->user()->id;
+                $skill->skill = $s;
+                //dd($skill);
+                $skill->save();
+            }
+        }
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Skill added successfully.',
+        ]);
+        
+    }
+
+    public function update(Request $request){
+        //dd($request->all());
+        $skills = $request->input('skill');
+        
+        Skill::where('user_id', auth()->user()->id)->delete();
+        
+        foreach($skills as $s){
+            if(!empty($s)){
+                $skill = new Skill();
+                $skill->user_id = auth()->user()->id;
+                $skill->skill = $s;
+                //dd($skill);
+                $skill->save();
+            }
+        }
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Skill added successfully.',
+        ]);
+        
     }
 
 }

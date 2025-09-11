@@ -106,35 +106,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/ajax-test', [App\Http\Controllers\backend\admin\DashboardController::class, 'ajaxTest'])->name('ajax.test');
   
 
+    Route::post('/form-submit', [App\Http\Controllers\backend\admin\DashboardController::class, 'store'])->name('skill.store');
+    Route::post('/form-submit-update', [App\Http\Controllers\backend\admin\DashboardController::class, 'update'])->name('skill.update');
 
 
-        Route::post('/form-submit', function(Illuminate\Http\Request $request){
-            $validator = validator::make($request->all(), [
-                'name'  => 'required|string|max:100',
-                'email' => 'required|email|max:100',
-                'age'   => 'required|numeric|min:1|max:120',
-            ]);
-
-            if($validator->fails()){
-                return response()->json([
-                    'status' => 'error',
-                    'errors' => $validator->errors(),
-                ], 422);
-            }
-            
-            
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Info added successfully.',
-                'data' => [
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'age' => $request->age,
-                    'greeting' => 'Hello '. $request->name.'! Your email is: '.$request->email.' and age is: '.$request->age,
-                ],
-
-            ]);
-        });
+        
 
 
 
