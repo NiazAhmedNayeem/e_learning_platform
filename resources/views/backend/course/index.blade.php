@@ -51,6 +51,7 @@
                     </span>
                 </td>
                 <td>
+                    <a href="{{ route('admin.course.manage-videos', $course->id) }}" class="btn btn-info btn-sm">Manage Video</a>
                     <a href="{{ route('admin.course.edit', $course->id) }}" class="btn btn-warning btn-sm">Edit</a>
                     
                     <form action="{{ route('admin.course.delete', $course->id) }}" method="POST" class="deleteForm" style="display:inline-block;">

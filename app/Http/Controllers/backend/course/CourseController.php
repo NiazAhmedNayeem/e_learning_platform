@@ -179,5 +179,13 @@ class CourseController extends Controller
         $course->delete();
         return redirect()->route('admin.course.index')->with('success', 'Course delete successfully.');
     }
+
+
+    ////course video management here
+
+    public function video($id){
+        $course = Course::find($id);
+        return view('backend.course.video.index', compact('course'));
+    }
     
 }

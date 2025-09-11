@@ -58,6 +58,14 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin', 
     Route::post('admin/course/update/{id}', [App\Http\Controllers\backend\course\CourseController::class, 'update'])->name('admin.course.update');
     Route::delete('admin/course/delete/{id}', [App\Http\Controllers\backend\course\CourseController::class, 'delete'])->name('admin.course.delete');
 
+    //course videos management route
+    Route::get('admin/course/video/{id}', [App\Http\Controllers\backend\course\CourseController::class, 'video'])->name('admin.course.manage-videos');
+
+
+
+
+
+
     ///Admin course Assign management Route
     Route::get('/admin/all-assign-courses', [App\Http\Controllers\backend\course\AssignCourseController::class, 'index'])->name('admin.course_assign.index');
     Route::post('admin/course/assign/store', [App\Http\Controllers\backend\course\AssignCourseController::class, 'store'])->name('admin.course_assign.store');
