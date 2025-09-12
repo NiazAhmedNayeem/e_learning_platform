@@ -59,7 +59,15 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin', 
     Route::delete('admin/course/delete/{id}', [App\Http\Controllers\backend\course\CourseController::class, 'delete'])->name('admin.course.delete');
 
     //course videos management route
-    Route::get('admin/course/video/{id}', [App\Http\Controllers\backend\course\CourseController::class, 'video'])->name('admin.course.manage-videos');
+    Route::get('/admin/course/video-index/{id}', [App\Http\Controllers\backend\course\CourseVideoController::class, 'index'])->name('admin.course.manage-videos');
+    Route::get('/admin/course/video-data/{id}', [App\Http\Controllers\backend\course\CourseVideoController::class, 'data']);
+    Route::post('/admin/course/video-store', [App\Http\Controllers\backend\course\CourseVideoController::class, 'store']);
+    
+
+
+
+
+    Route::get('admin/course/video/{id}', [App\Http\Controllers\backend\course\CourseVideoController::class, 'videoPlayer'])->name('admin.course.video-player');
 
 
 

@@ -181,11 +181,6 @@ class CourseController extends Controller
     }
 
 
-    ////course video management here
-
-    public function video($id){
-        $course = Course::find($id);
-        return view('backend.course.video.index', compact('course'));
-    }
+    
     
 }

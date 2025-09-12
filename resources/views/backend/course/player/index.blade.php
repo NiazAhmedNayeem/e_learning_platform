@@ -1,5 +1,5 @@
 @extends('backend.layouts.master')
-@section('title', 'Admin | Course Video')
+@section('title', 'Admin | Video Player')
 @section('main-content')
 
 
@@ -24,10 +24,11 @@
 
 <div class="container py-4">
   <div class="row g-3">
+
     <!-- Main Video Player -->
     <div class="col-lg-8">
       <div class="video-player">
-        <div class="card-header bg-dark border-0 fw-semibold">{{ $course->title }}</div>
+        <div class="card-header bg-dark border-0 fw-semibold">Course: {{ $course->title }}</div>
         <video id="main-video" controls autoplay>
           <source src="{{ asset('videos/1.mp4') }}" type="video/mp4">
         </video>

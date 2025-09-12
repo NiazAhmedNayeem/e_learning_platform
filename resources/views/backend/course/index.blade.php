@@ -4,7 +4,7 @@
 
 <div class="container mt-4">
     <h2>All Courses List</h2>
-     <div class="d-flex justify-content-end mb-3">
+    <div class="d-flex justify-content-end mb-3">
         <a href="{{ route('admin.course.create') }}" class="btn btn-primary">Add New Course</a>
     </div>
 
@@ -51,13 +51,14 @@
                     </span>
                 </td>
                 <td>
-                    <a href="{{ route('admin.course.manage-videos', $course->id) }}" class="btn btn-info btn-sm">Manage Video</a>
-                    <a href="{{ route('admin.course.edit', $course->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{{ route('admin.course.manage-videos', $course->id) }}" class="btn btn-success btn-sm">+<i class="fa-solid fa-video"></i></a>
+                    <a href="{{ route('admin.course.video-player', $course->id) }}" class="btn btn-info btn-sm"><i class="fa-solid fa-circle-play"></i></a>
+                    <a href="{{ route('admin.course.edit', $course->id) }}" class="btn btn-warning btn-sm"><i class="fa-solid fa-file-pen"></i></a>
                     
                     <form action="{{ route('admin.course.delete', $course->id) }}" method="POST" class="deleteForm" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm deleteBtn">Delete</button>
+                        <button type="submit" class="btn btn-danger btn-sm deleteBtn"><i class="fa-solid fa-trash"></i></button>
                     </form>
                 </td>
             </tr>
