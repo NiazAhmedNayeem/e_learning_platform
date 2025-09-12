@@ -8,7 +8,7 @@
     <div class="d-flex justify-content-between mb-3">
         <!-- Search (left) -->
         <div class="w-25">
-            <input type="text" id="searchBox" class="form-control" placeholder="Search category...">
+            <input type="text" id="searchBox" class="form-control" placeholder="Search with video title...">
         </div>
 
         <!-- Add Button (right) -->
@@ -26,6 +26,7 @@
         <thead class="table-dark">
             <tr>
                 <th>SL</th>
+                <th>Position</th>
                 <th>Title</th>
                 <th>Demo</th>
                 <th>Status</th>
@@ -119,6 +120,82 @@
   </div>
 </div>
 
+
+
+<!-- Edit Video Modal -->
+<div class="modal fade" id="editVideoModal" tabindex="-1" aria-labelledby="editVideoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content bg-light">
+      <div class="modal-header border-0">
+        <h5 class="modal-title" id="editVideoModalLabel">Edit Course Video</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form id="editVideoForm">
+            @csrf
+             <input type="hidden" id="editVideoId" name="id">
+            <div class="row">
+                <!-- Title -->
+                <div class="mb-3">
+                    <label class="form-label">Video Title</label>
+                    <input type="text" name="title" id="editTitle" class="form-control" placeholder="Enter video title">
+                    <div id="editTitleError" class="text-danger small"></div>
+                </div>
+
+                <!-- Video Link -->
+                <div class="mb-3">
+                    <label class="form-label">Video Link</label>
+                    <input type="text" name="video_link" id="editVideoLink" class="form-control" placeholder="https://youtube.com/...">
+                    <div id="editLinkError" class="text-danger small"></div>
+                </div>
+
+                <!-- Is Demo -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Is Demo?</label>
+                    <select name="is_demo" id="editIsDemo" class="form-control">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                    <div id="editDemoError" class="text-danger small"></div>
+                </div>
+
+                <!-- Position -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Position</label>
+                    <input type="number" name="position" id="editPosition" class="form-control" min="1">
+                    <div id="editPositionError" class="text-danger small"></div>
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" id="editStatus" class="form-control">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                    <div id="editStatusError" class="text-danger small"></div>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" id="editDescription" class="form-control" rows="3"></textarea>
+                    <div id="editDescriptionError" class="text-danger small"></div>
+                </div>
+
+            </div>
+            <div class="text-end">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Video</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 @endsection
 
 @section('scripts')
@@ -134,6 +211,7 @@
                     $.each(res.data, function(index, video){
                         html += `<tr>
                             <td>${res.from + index}</td>
+                            <td>${video.position}</td>
                             <td>${video.title}</td>
                             <td>${video.is_demo == 1 ? 'Yes' : 'No'}</td>
                             <td>
@@ -148,7 +226,7 @@
                         </tr>`;
                     });
                 }else{
-                    html = `<tr><td colspan="5" class="text-center">No Video found</td></tr>`;
+                    html = `<tr><td colspan="6" class="text-center">No Video found</td></tr>`;
                 }
                 $('#videosTable').html(html);
 
@@ -227,6 +305,78 @@
 
             });
         });
+
+
+        $(document).on('click', '.editBtn', function(){
+            let videoId = $(this).data('id');
+
+            $.get("{{ url('/admin/course/video-edit') }}/" + videoId, function(res){
+                if(res.status === 'success'){
+                    let video = res.data;
+                    $('#editVideoId').val(video.id);
+                    $('#editTitle').val(video.title);
+                    $('#editVideoLink').val(video.video_link);
+                    $('#editPosition').val(video.position);
+                    $('#editIsDemo').val(video.is_demo);
+                    $('#editStatus').val(video.status);
+                    $('#editDescription').val(video.description);
+
+                    let modal = new bootstrap.Modal(document.getElementById('editVideoModal'));
+                        modal.show();
+                    } else {
+                        toastr.error(res.message);
+                }
+            });
+        });
+
+
+
+        $('#editVideoForm').submit(function(e){
+            e.preventDefault();
+
+            let videoId = $('#editVideoId').val();
+
+            let formData = new FormData(this);
+
+            $.ajax({
+                url: "{{ url('/admin/course/video-update') }}/" + videoId,
+                method: "POST",
+                data: formData,
+                processData: false, 
+                contentType: false, 
+                success: function(res){
+                    console.log(res)
+                    if(res.status === 'success'){   
+                        let modal = bootstrap.Modal.getInstance(document.getElementById('editVideoModal'));
+                        modal.hide();
+                        $('.modal-backdrop').remove();
+                        $('body').removeClass('modal-open');
+                        $('body').css('padding-right', '');
+
+                        $('#editVideoForm')[0].reset(); 
+                        loadVideos(); 
+                        toastr.success(res.message, 'Success', {timeOut: 3000});
+                    }
+                },
+                error: function(xhr){
+                    console.log(xhr.responseText); // debug
+                    if(xhr.status == 422){
+                        let errors = xhr.responseJSON.errors;
+                        $('#editTitleError').html(errors.title ? errors.title[0] : '');
+                        $('#editLinkError').html(errors.video_link ? errors.video_link[0] : '');
+                        $('#editPositionError').html(errors.position ? errors.position[0] : '');
+                        $('#editDemoError').html(errors.is_demo ? errors.is_demo[0] : '');
+                        $('#editStatusError').html(errors.status ? errors.status[0] : '');
+                        $('#editDescriptionError').html(errors.description ? errors.description[0] : '');
+                    } else {
+                        alert("Something went wrong: " + xhr.status);
+                    }
+                }
+
+            });
+        });
+
+
 
         
 
