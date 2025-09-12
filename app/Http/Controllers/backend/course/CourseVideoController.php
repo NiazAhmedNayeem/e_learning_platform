@@ -128,7 +128,22 @@ class CourseVideoController extends Controller
     }
 
 
+    public function delete($id){
+        $video = CourseVideo::find($id);
+        if(!$video){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Video not found.'
+            ], 404);
+        }
 
+        $video->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Video delete successfully.',
+        ]);
+    }
 
 
 }

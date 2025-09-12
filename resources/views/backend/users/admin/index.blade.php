@@ -468,7 +468,7 @@
                 let deleteConfirm = `
                     <tr id="deleteRow">
                         <td colspan="6" class="text-center">
-                            Are you sure you want to delete this category? 
+                            Are you sure you want to delete this admin? 
                             <button class="btn btn-sm btn-danger confirmDelete" data-id="${id}">Yes</button>
                             <button class="btn btn-sm btn-secondary cancelDelete">No</button>
                         </td>

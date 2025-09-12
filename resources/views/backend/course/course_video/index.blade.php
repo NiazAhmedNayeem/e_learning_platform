@@ -345,7 +345,7 @@
                 processData: false, 
                 contentType: false, 
                 success: function(res){
-                    console.log(res)
+                    //console.log(res)
                     if(res.status === 'success'){   
                         let modal = bootstrap.Modal.getInstance(document.getElementById('editVideoModal'));
                         modal.hide();
@@ -359,7 +359,7 @@
                     }
                 },
                 error: function(xhr){
-                    console.log(xhr.responseText); // debug
+                    //console.log(xhr.responseText); // debug
                     if(xhr.status == 422){
                         let errors = xhr.responseJSON.errors;
                         $('#editTitleError').html(errors.title ? errors.title[0] : '');
@@ -377,6 +377,47 @@
         });
 
 
+        //Delete video
+        $(document).on('click', '.deleteBtn', function(){
+            let id = $(this).data('id');
+            let tr = $(this).closest('tr');
+
+            
+            $('#deleteRow').remove();
+
+            // Confirm row HTML
+            let deleteConfirm = `
+                <tr id="deleteRow">
+                    <td colspan="6" class="text-center">
+                        Are you sure you want to delete this video? 
+                        <button class="btn btn-sm btn-danger confirmDelete" data-id="${id}">Yes</button>
+                        <button class="btn btn-sm btn-secondary cancelDelete">No</button>
+                    </td>
+                </tr>
+            `;
+
+            tr.after(deleteConfirm);
+        });
+
+        $(document).on('click', '.cancelDelete', function(){
+            $('#deleteRow').remove();
+        });
+
+        $(document).on('click', '.confirmDelete', function(){
+            let id = $(this).data('id');
+
+            $.ajax({
+                url: "{{ url('/admin/course/video-delete') }}/" + id,
+                method: "DELETE",
+                success: function(res){
+                    if(res.status === 'success'){
+                        $('#deleteRow').remove(); // confirm row remove
+                        loadVideos();         // table refresh
+                        toastr.success(res.message, 'Success', {timeOut: 3000});
+                    }
+                }
+            });
+        });
 
         
 
