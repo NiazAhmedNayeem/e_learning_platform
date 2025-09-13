@@ -3,13 +3,35 @@
 @section('main-content')
 
 <div class="container mt-4">
-    <h2>All videos of {{ $course->title }}</h2>
+    <!-- Breadcrumb -->
+    @php
+        if (auth()->user()->role === 'admin') {
+            $dashboard = 'admin.dashboard';
+        }
+    @endphp
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-light rounded-3 p-2">
+            <li class="breadcrumb-item"><i class="fa-solid fa-house"></i> <a href="{{ route($dashboard) }}" class="text-decoration-none"> Dashboard</a></li>
+            <li class="breadcrumb-item">
+                <a href="{{ route('admin.course.index') }}" class="text-decoration-none ">Courses</a>
+            </li>
+            <li class="breadcrumb-item active " aria-current="page">{{ $course->title }} / videos</li>
+        </ol>
+    </nav>
+
+
+    {{-- <div class="d-flex align-items-center mb-4 gap-3">
+        <a href="{{ url()->previous() }}" class="btn btn-secondary">← Back</a>
+        <h2 class="mb-0">All videos of {{ $course->title }}</h2>
+    </div> --}}
+
 
     <div class="d-flex justify-content-between mb-3">
         <!-- Search (left) -->
         <div class="w-25">
             <input type="text" id="searchBox" class="form-control" placeholder="Search with video title...">
         </div>
+
 
         <!-- Add Button (right) -->
         <div>
@@ -246,6 +268,10 @@
 
         loadVideos();
 
+        function getSearchValue() {
+            return $("#searchBox").val();
+        }
+
         // live search
         let typingTimer;
         $("#searchBox").on("keyup", function(){
@@ -354,7 +380,7 @@
                         $('body').css('padding-right', '');
 
                         $('#editVideoForm')[0].reset(); 
-                        loadVideos(); 
+                        loadVideos(1, getSearchValue()); 
                         toastr.success(res.message, 'Success', {timeOut: 3000});
                     }
                 },
@@ -412,7 +438,7 @@
                 success: function(res){
                     if(res.status === 'success'){
                         $('#deleteRow').remove(); // confirm row remove
-                        loadVideos();         // table refresh
+                        loadVideos(1, getSearchValue());  // table refresh
                         toastr.success(res.message, 'Success', {timeOut: 3000});
                     }
                 }

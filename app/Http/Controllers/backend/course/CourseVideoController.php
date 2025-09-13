@@ -15,7 +15,9 @@ class CourseVideoController extends Controller
 
     public function videoPlayer($id){
         $course = Course::find($id);
-        return view('backend.course.player.index', compact('course'));
+        $videos = CourseVideo::where('course_id', $id)->orderBy('position', 'asc')->get();
+        //dd($videos);
+        return view('backend.course.player.index', compact('course', 'videos'));
     }
 
     public function index($id){

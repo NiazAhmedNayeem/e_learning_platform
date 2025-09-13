@@ -8,3 +8,11 @@ if (!function_exists('limitText')) {
         return Str::limit($text, $limit, $end);
     }
 }
+
+if (!function_exists('getYoutubeId')) {
+    function getYoutubeId($url) {
+        preg_match('/(youtu\.be\/|v=)([^&]+)/', $url, $matches);
+        return $matches[2] ?? null;
+    }
+}
+
