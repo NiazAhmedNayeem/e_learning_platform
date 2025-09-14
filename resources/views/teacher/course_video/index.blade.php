@@ -1,5 +1,5 @@
 @extends('backend.layouts.master')
-@section('title', 'Admin | Course videos')
+@section('title', 'Teacher | Course videos')
 @section('main-content')
 
 <div class="container mt-4">
@@ -228,7 +228,7 @@
 
         function loadVideos(page = 1, search = '') {
             let html = '';
-            $.get("{{ url('admin/course/video-data') }}/" + courseId + "?page=" + page + "&search=" + search, function(res){
+            $.get("{{ url('teacher/course/video-data') }}/" + courseId + "?page=" + page + "&search=" + search, function(res){
                 if(res.data.length > 0){
                     $.each(res.data, function(index, video){
                         html += `<tr>
@@ -296,7 +296,7 @@
             let formData = new FormData(this);
 
             $.ajax({
-                url: "{{ url('/admin/course/video-store') }}",
+                url: "{{ url('/teacher/course/video-store') }}",
                 method: "POST",
                 data: formData,
                 processData: false, 
@@ -336,7 +336,7 @@
         $(document).on('click', '.editBtn', function(){
             let videoId = $(this).data('id');
 
-            $.get("{{ url('/admin/course/video-edit') }}/" + videoId, function(res){
+            $.get("{{ url('/teacher/course/video-edit') }}/" + videoId, function(res){
                 if(res.status === 'success'){
                     let video = res.data;
                     $('#editVideoId').val(video.id);
@@ -365,7 +365,7 @@
             let formData = new FormData(this);
 
             $.ajax({
-                url: "{{ url('/admin/course/video-update') }}/" + videoId,
+                url: "{{ url('/teacher/course/video-update') }}/" + videoId,
                 method: "POST",
                 data: formData,
                 processData: false, 
@@ -433,7 +433,7 @@
             let id = $(this).data('id');
 
             $.ajax({
-                url: "{{ url('/admin/course/video-delete') }}/" + id,
+                url: "{{ url('/teacher/course/video-delete') }}/" + id,
                 method: "DELETE",
                 success: function(res){
                     if(res.status === 'success'){

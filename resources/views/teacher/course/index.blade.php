@@ -48,7 +48,9 @@
                     </span>
                 </td>
                 <td>
-                    <a href="{{ route('teacher.assign.course.details', $course->slug) }}" class="btn btn-warning btn-sm">View</a>
+                    <a href="{{ route('teacher.assign.course.details', $course->slug) }}" class="btn btn-warning btn-sm"><i class="fa-solid fa-eye"></i></a>
+                    <a href="{{ route('teacher.course.manage-videos', $course->id) }}" class="btn btn-success btn-sm">+<i class="fa-solid fa-video"></i></a>
+                    <a href="{{ route('teacher.course.video-player', $course->id) }}" class="btn btn-info btn-sm"><i class="fa-solid fa-circle-play"></i></a>
                     
                 </td>
             </tr>

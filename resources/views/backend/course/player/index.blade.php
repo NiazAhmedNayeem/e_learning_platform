@@ -22,7 +22,7 @@
 <div class="container py-4">
 
 <!-- Breadcrumb -->
-<nav aria-label="breadcrumb" class="mb-4">
+{{-- <nav aria-label="breadcrumb" class="mb-4">
     <ol class="breadcrumb bg-dark rounded-3 p-2">
         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}" class="text-decoration-none text-light">Dashboard</a></li>
         <li class="breadcrumb-item">
@@ -30,7 +30,7 @@
         </li>
         <li class="breadcrumb-item active text-white" aria-current="page">{{ $course->title }} Videos</li>
     </ol>
-</nav>
+</nav> --}}
 
 
 

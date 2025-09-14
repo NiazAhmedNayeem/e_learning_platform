@@ -3,7 +3,19 @@
 @section('main-content')
 
 <div class="container mt-4">
-    <h2>All Courses List</h2>
+    @php
+        if (auth()->user()->role === 'admin') {
+            $dashboard = 'admin.dashboard';
+        }
+    @endphp
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-light rounded-3 p-2">
+            <li class="breadcrumb-item"><i class="fa-solid fa-house"></i> <a href="{{ route($dashboard) }}" class="text-decoration-none"> Dashboard</a></li>
+            
+            <li class="breadcrumb-item active " aria-current="page">All Courses</li>
+        </ol>
+    </nav>
+    {{-- <h2>All Courses List</h2> --}}
     <div class="d-flex justify-content-end mb-3">
         <a href="{{ route('admin.course.create') }}" class="btn btn-primary">Add New Course</a>
     </div>

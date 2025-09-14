@@ -2,8 +2,25 @@
 @section('title', 'Admin | Update Course')
 @section('main-content')
 
+<div class="container py-4">
+@php
+    if (auth()->user()->role === 'admin') {
+        $dashboard = 'admin.dashboard';
+    }
+@endphp
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-light rounded-3 p-2">
+        <li class="breadcrumb-item"><i class="fa-solid fa-house"></i> <a href="{{ route($dashboard) }}" class="text-decoration-none"> Dashboard</a></li>
+        <li class="breadcrumb-item">
+            <a href="{{ route('admin.course.index') }}" class="text-decoration-none">Courses</a>
+        </li>
+        <li class="breadcrumb-item active " aria-current="page">{{ $course->title }} <i class="fa-solid fa-arrow-right"></i> edit</li>
+    </ol>
+</nav>
+
 <div class="card card-body shadow mt-5">
-    <h1 class="text-2xl font-bold text-center mt-4">Edit Course</h1>
+    
+    {{-- <h1 class="text-2xl font-bold text-center mt-4">Edit Course</h1> --}}
 
     @if ($errors->any())
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-5">
@@ -99,5 +116,6 @@
         </div>
 
     </form>
+</div>
 </div>
 @endsection
