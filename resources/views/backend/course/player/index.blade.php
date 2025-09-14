@@ -1,5 +1,12 @@
 @extends('backend.layouts.master')
-@section('title', 'Admin | Video Player')
+@php
+  if(auth()->user()->role === 'admin'){
+    $title = 'Admin | Video Player';
+  }elseif (auth()->user()->role === 'teacher') {
+    $title = 'Teacher | Video Player';
+  }
+@endphp
+@section('title', $title)
 @section('main-content')
 
 <style>

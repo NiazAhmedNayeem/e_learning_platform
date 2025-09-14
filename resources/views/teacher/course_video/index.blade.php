@@ -217,6 +217,22 @@
   </div>
 </div>
 
+<!-- Video Modal -->
+<div class="modal fade" id="videoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content bg-dark text-white">
+      <div class="modal-header">
+        <h5 class="modal-title" id="videoModalLabel">Video Preview</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <iframe id="videoFrame" width="100%" height="400" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 @endsection
 
@@ -242,6 +258,9 @@
                                 </span>
                             </td>
                             <td>
+                                <button class="btn btn-info btn-sm viewVideoBtn" data-link="${video.video_link}" data-title="${video.title}">
+                                    View
+                                </button>
                                 <button class="btn btn-warning btn-sm editBtn" data-id="${video.id}">Edit</button>
                                 <button class="btn btn-danger btn-sm deleteBtn" data-id="${video.id}">Delete</button>
                             </td>
@@ -447,7 +466,31 @@
 
         
 
+        // video play with modal
+        $(document).on("click", ".viewVideoBtn", function () {
+            let link = $(this).data("link");
+            let title = $(this).data("title");
 
+            // YouTube embed URL 
+            function getYoutubeEmbedUrl(url) {
+                let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
+                let match = url.match(regExp);
+                return (match && match[2].length === 11) 
+                    ? "https://www.youtube.com/embed/" + match[2] + "?autoplay=1" 
+                    : url;
+            }
+
+            $("#videoModalLabel").text(title);
+            $("#videoFrame").attr("src", getYoutubeEmbedUrl(link));
+
+            // Modal show          
+            $("#videoModal").modal("show");
+        });
+
+        // when close the modal the video will stop
+        $("#videoModal").on("hidden.bs.modal", function () {
+            $("#videoFrame").attr("src", "");
+        });
 
 
 

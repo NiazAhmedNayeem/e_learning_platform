@@ -16,12 +16,12 @@
         <thead class="table-dark">
             <tr>
                 <th>SL</th>
-                <th>Title</th>
+                <th>Course Title</th>
                 <th>Category</th>
                 <th>Teacher</th>
-                <th>Price</th>
+                {{-- <th>Price</th>
                 <th>Discount</th>
-                <th>Final Price</th>
+                <th>Final Price</th> --}}
                 <th>Status</th>
                 <th>Action</th>
             </tr>
@@ -36,10 +36,13 @@
                     {{ $item->course->title }}
                 </td>
                 <td>{{ $item->course?->category?->name }}</td>
-                <td>{{ $item->course?->teacher?->name }}</td>
-                <td>{{ $item->course?->price }}</td>
+                <td>
+                    <img src="{{ $item->course?->teacher?->image_show }}" alt="Course Image" width="50" height="50">
+                    {{ $item->course?->teacher?->name }}
+                </td>
+                {{-- <td>{{ $item->course?->price }}</td>
                 <td>{{ $item->course?->discount }} %</td>
-                <td>{{ $item->course?->final_price }}</td>
+                <td>{{ $item->course?->final_price }}</td> --}}
                 <td>
                      @php
                         $status = $item->order?->status;

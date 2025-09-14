@@ -89,7 +89,7 @@
                         <i class="fas fa-hourglass-half"></i> Account Pending
                     </h2>
                     <p class="fs-5 text-muted">
-                        Your account is currently under review. Please wait for approval.  
+                        Your account is currently under review. Please update your <a href="{{ route('teacher.profile') }}" class="text-decoration-none">profile</a> information and wait for approval.  
                         Thank you for your patience.
                     </p>
                 </div>

@@ -9,6 +9,7 @@ use App\Models\CourseVideo;
 use App\Models\User;
 use App\Notifications\NewVideoUploaded;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class TeacherController extends Controller
@@ -93,17 +94,60 @@ class TeacherController extends Controller
 
     public function totalCourseStudent(Request $request)
     {
-        $search = $request->input('search');
+        // $search = $request->input('search');
         $teacher = auth()->user()->id;
 
-        $courses = Course::where('teacher_id', $teacher)
-            ->where('status', 1)
-            ->where(function($query) use ($search){
-                $query->where('title', 'like', "%{$search}%");
-            })->paginate(5);
+        // $courses = Course::where('teacher_id', $teacher)
+        //     ->where('status', 1)
+        //     ->where(function($query) use ($search){
+        //         $query->where('title', 'like', "%{$search}%");
+        //     })->paginate(5);
 
-        return view('teacher.student.index', compact('courses', 'search'));
+        $courses = Course::where('teacher_id', $teacher)->where('status', 1)->get();
+
+        return view('teacher.student.index', compact('courses'));
+        // return view('teacher.student.index', compact('courses', 'search'));
     }
+
+    public function studentsData(Request $request)
+    {
+        $teacherId = auth()->id(); // Logged in teacher ID
+
+        $query = DB::table('order_items')
+            ->join('orders', 'orders.id', '=', 'order_items.order_id')
+            ->join('users', 'users.id', '=', 'orders.user_id')
+            ->join('courses', 'courses.id', '=', 'order_items.course_id')
+            ->select(
+                'users.id as user_id',
+                'users.name',
+                'users.email',
+                'users.phone',
+                'courses.id as course_id',
+                'courses.title as course_title'
+            )
+            ->where('orders.status', 'approved') // Only approved orders
+            ->where('courses.teacher_id', $teacherId); // Only my courses
+
+        // Course filter (optional)
+        if($request->course_id){
+            $query->where('courses.id', $request->course_id);
+        }
+
+        // Search
+        if($request->search){
+            $query->where(function($q) use ($request){
+                $q->where('users.name', 'like', '%'.$request->search.'%')
+                ->orWhere('users.email', 'like', '%'.$request->search.'%')
+                ->orWhere('users.phone', 'like', '%'.$request->search.'%');
+            });
+        }
+
+        $students = $query->orderBy('users.name')->paginate(10);
+
+        return response()->json($students);
+    }
+
+
 
 
 

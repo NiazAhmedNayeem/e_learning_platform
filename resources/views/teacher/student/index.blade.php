@@ -5,11 +5,23 @@
 <div class="container mt-4">
     <h2>Course wise students list</h2>
 
-    <div class="d-flex justify-content-end mb-3">
-        <form class="d-flex" method="GET" action="{{ route('teacher.course.student') }}">
-            <input class="form-control" type="text" name="search" value="{{ $search }}" placeholder="Search with course title..." />
-            <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
-        </form>
+    <div class="d-flex justify-content-start mb-3 gap-3">
+        
+        <!-- Course Filter -->
+        <div class="w-25">
+            <select class="form-control" id="courseFilter">
+                <option value="">-- Course wise students list --</option>
+                @foreach($courses as $course)
+                    <option value="{{ $course->id }}">{{ $course->title }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <!-- Search -->
+        <div class="w-25">
+            <input type="text" id="searchBox" class="form-control" placeholder="Search student name/email/phone...">
+        </div>
+
     </div>
 
     <table class="table table-bordered table-striped">
@@ -22,31 +34,87 @@
                 <th>Phone</th>
             </tr>
         </thead>
-        <tbody>
-            @php $sl = ($courses->currentPage() - 1) * $courses->perPage() + 1; @endphp
-            @forelse ($courses as $course)
-                @foreach ($course->students as $student)
-                    <tr>
-                        <td>{{ $sl++ }}</td>
-                        <td>
-                            <img src="{{ $course->image_show }}" alt="Course Image" width="50" height="50">
-                            {{ $course->title }}
-                        </td>
-                        <td>{{ $student->name }}</td>
-                        <td>{{ $student->email }}</td>
-                        <td>{{ $student->phone }}</td>
-                    </tr>
-                @endforeach
-            @empty
-                <tr>
-                    <td colspan="5" class="text-center">No Student Found</td>
-                </tr>
-            @endforelse
+        <tbody id="studentsTable">
+            <tr>
+                <td colspan="5" class="text-center">Loading...</td>
+            </tr>
         </tbody>
     </table>
 
-    <div class="d-flex justify-content-end">
-        {{ $courses->appends(['search' => $search])->links('pagination::bootstrap-5') }}
-    </div>
+    <nav>
+        <ul class="pagination" id="paginationLinks"></ul>
+    </nav>
 </div>
+@endsection
+
+
+@section('scripts')
+<script>
+$(document).ready(function(){
+
+    function loadStudents(page = 1, search = '', course_id = '') {
+        let html = '';
+        $.get("{{ url('/teacher/course/students-data') }}", { page: page, search: search, course_id: course_id }, function(res){
+            if(res.data.length > 0){
+                $.each(res.data, function(index, student){
+                    html += `<tr>
+                        <td>${res.from + index}</td>
+                        <td>${student.course_title}</td>
+                        <td>${student.name}</td>
+                        <td>${student.email}</td>
+                        <td>${student.phone}</td>
+                    </tr>`;
+                });
+            }else{
+                html = `<tr><td colspan="5" class="text-center">No Student found</td></tr>`;
+            }
+
+            $('#studentsTable').html(html);
+
+            // pagination
+            let links = '';
+            $.each(res.links, function(index, link){
+                let active = link.active ? 'active' : '';
+                links += `<li class="page-item ${active}">
+                    <a class="page-link" href="#" data-page="${link.url ? link.url.split('page=')[1] : ''}">
+                        ${link.label}
+                    </a>
+                </li>`;
+            });
+            $("#paginationLinks").html(links);
+        });
+    }
+
+    // Initial load
+    loadStudents();
+
+    // Live search
+    let typingTimer;
+    $("#searchBox").on("keyup", function(){
+        clearTimeout(typingTimer);
+        let value = $(this).val();
+        let course = $("#courseFilter").val();
+        typingTimer = setTimeout(function(){
+            loadStudents(1, value, course);
+        }, 300);
+    });
+
+    // Course filter change
+    $("#courseFilter").on("change", function(){
+        let value = $("#searchBox").val();
+        let course = $(this).val();
+        loadStudents(1, value, course);
+    });
+
+    // Pagination click
+    $(document).on("click", "#paginationLinks a", function(e){
+        e.preventDefault();
+        let page = $(this).data("page");
+        let search = $("#searchBox").val();
+        let course = $("#courseFilter").val();
+        if(page) loadStudents(page, search, course);
+    });
+
+});
+</script>
 @endsection
