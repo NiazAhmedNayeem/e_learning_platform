@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Course;
 use App\Models\CourseVideo;
 use App\Models\User;
+use App\Notifications\NewVideoUploaded;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -201,6 +202,20 @@ class TeacherController extends Controller
             'description' => $request->description,
             'position'    => $request->position ?? 1,
         ]);
+
+        // === Notify all students ===
+        $students = User::whereIn('id', function($query) use ($request){
+            $query->select('orders.user_id')
+            ->from('orders')
+            ->join('order_items', 'orders.id', '=', 'order_items.order_id')
+            ->where('order_items.course_id', $request->course_id)
+            ->where('orders.status', 'approved');
+        })->get();
+
+
+        foreach($students as $student){
+            $student->notify(new NewVideoUploaded($video->course, $video));
+        }
 
         return response()->json([
             'status'  => 'success',
