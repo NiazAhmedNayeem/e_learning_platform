@@ -3,6 +3,7 @@
 @section('main-content')
 
 <div class="container my-4">
+
     <div class="card shadow-lg rounded-3 border-0">
         <!-- Header -->
         <div style="background-color: #212529" class="card-header text-white d-flex justify-content-between align-items-center">
@@ -79,6 +80,7 @@
             Last Updated: {{ $course->updated_at->setTimezone('Asia/Dhaka')->format('d M, Y h:i A') }}
         </div>
     </div>
+    
 </div>
 
 @endsection

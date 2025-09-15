@@ -5,7 +5,7 @@
 <div class="container mt-4">
     <h2>Course wise students list</h2>
 
-    <div class="d-flex justify-content-start mb-3 gap-3">
+    <div class="d-flex justify-content-start mb-3 gap-3 align-items-center">
         
         <!-- Course Filter -->
         <div class="w-25">
@@ -20,6 +20,11 @@
         <!-- Search -->
         <div class="w-25">
             <input type="text" id="searchBox" class="form-control" placeholder="Search student name/email/phone...">
+        </div>
+
+        <!-- Total Students -->
+        <div>
+            <span id="totalStudents" class="fw-semibold">Total Students: 0</span>
         </div>
 
     </div>
@@ -53,8 +58,8 @@
 $(document).ready(function(){
 
     function loadStudents(page = 1, search = '', course_id = '') {
-        let html = '';
         $.get("{{ url('/teacher/course/students-data') }}", { page: page, search: search, course_id: course_id }, function(res){
+            let html = '';
             if(res.data.length > 0){
                 $.each(res.data, function(index, student){
                     html += `<tr>
@@ -70,6 +75,9 @@ $(document).ready(function(){
             }
 
             $('#studentsTable').html(html);
+
+            // update total students
+            $('#totalStudents').text('Total Students: ' + res.total);
 
             // pagination
             let links = '';
@@ -94,6 +102,12 @@ $(document).ready(function(){
         clearTimeout(typingTimer);
         let value = $(this).val();
         let course = $("#courseFilter").val();
+           // hide total students if searching
+        if(value.trim() !== '') {
+            $('#totalStudents').hide();
+        } else {
+            $('#totalStudents').show();
+        }
         typingTimer = setTimeout(function(){
             loadStudents(1, value, course);
         }, 300);

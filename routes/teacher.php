@@ -14,21 +14,21 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':teacher'
 
     //Assigned course list
     Route::get('/teacher/assign/courses', [App\Http\Controllers\teacher\TeacherController::class, 'assignedCourses'])->name('teacher.assign.courses')->middleware([CheckStatus::class]);
-    Route::get('/teacher/assign/course/details/{slug}', [App\Http\Controllers\teacher\TeacherController::class, 'assignedCoursesDetails'])->name('teacher.assign.course.details')->middleware([CheckStatus::class]);
+    // Route::get('/teacher/assign/course/details/{slug}', [App\Http\Controllers\teacher\TeacherController::class, 'assignedCoursesDetails'])->name('teacher.assign.course.details')->middleware([CheckStatus::class]);
     //Total course students count
     Route::get('/teacher/course/students', [App\Http\Controllers\teacher\TeacherController::class, 'totalCourseStudent'])->name('teacher.course.student')->middleware([CheckStatus::class]);
     Route::get('/teacher/course/students-data', [App\Http\Controllers\teacher\TeacherController::class, 'studentsData'])->middleware([CheckStatus::class]);
 
 
     //course videos management route
-    Route::get('/teacher/course/video-index/{id}', [App\Http\Controllers\teacher\TeacherController::class, 'videoIndex'])->name('teacher.course.manage-videos');
-    Route::get('/teacher/course/video-data/{id}', [App\Http\Controllers\teacher\TeacherController::class, 'videoData']);
-    Route::post('/teacher/course/video-store', [App\Http\Controllers\teacher\TeacherController::class, 'videoStore']);
-    Route::get('/teacher/course/video-edit/{id}', [App\Http\Controllers\teacher\TeacherController::class, 'videoEdit']);
-    Route::post('/teacher/course/video-update/{id}', [App\Http\Controllers\teacher\TeacherController::class, 'videoUpdate']);
-    Route::delete('/teacher/course/video-delete/{id}', [App\Http\Controllers\teacher\TeacherController::class, 'videoDelete']);
-    
-    Route::get('teacher/course/video/{id}', [App\Http\Controllers\teacher\TeacherController::class, 'videoPlayer'])->name('teacher.course.video-player');
+    Route::get('/teacher/course/video-index/{id}', [App\Http\Controllers\teacher\TeacherController::class, 'videoIndex'])->name('teacher.course.manage-videos')->middleware([CheckStatus::class]);
+    Route::get('/teacher/course/video-data/{id}', [App\Http\Controllers\teacher\TeacherController::class, 'videoData'])->middleware([CheckStatus::class]);
+    Route::post('/teacher/course/video-store', [App\Http\Controllers\teacher\TeacherController::class, 'videoStore'])->middleware([CheckStatus::class]);
+    Route::get('/teacher/course/video-edit/{id}', [App\Http\Controllers\teacher\TeacherController::class, 'videoEdit'])->middleware([CheckStatus::class]);
+    Route::post('/teacher/course/video-update/{id}', [App\Http\Controllers\teacher\TeacherController::class, 'videoUpdate'])->middleware([CheckStatus::class]);
+    Route::delete('/teacher/course/video-delete/{id}', [App\Http\Controllers\teacher\TeacherController::class, 'videoDelete'])->middleware([CheckStatus::class]);
+    ///video player route
+    Route::get('teacher/course/video/{id}', [App\Http\Controllers\teacher\TeacherController::class, 'videoPlayer'])->name('teacher.course.video-player')->middleware([CheckStatus::class]);
 
 }); 
 

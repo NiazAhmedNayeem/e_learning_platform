@@ -86,27 +86,19 @@ class TeacherController extends Controller
         return view('teacher.course.index', compact('assign_courses', 'search'));
     }
 
-    public function assignedCoursesDetails($slug){
-        $course = Course::where('slug', $slug)->first();
-        //dd($course);
-        return view('teacher.course.details', compact('course'));
-    }
+    // public function assignedCoursesDetails($slug){
+    //     $course = Course::where('slug', $slug)->first();
+    //     //dd($course);
+    //     return view('teacher.course.details', compact('course'));
+    // }
 
     public function totalCourseStudent(Request $request)
     {
-        // $search = $request->input('search');
         $teacher = auth()->user()->id;
-
-        // $courses = Course::where('teacher_id', $teacher)
-        //     ->where('status', 1)
-        //     ->where(function($query) use ($search){
-        //         $query->where('title', 'like', "%{$search}%");
-        //     })->paginate(5);
 
         $courses = Course::where('teacher_id', $teacher)->where('status', 1)->get();
 
         return view('teacher.student.index', compact('courses'));
-        // return view('teacher.student.index', compact('courses', 'search'));
     }
 
     public function studentsData(Request $request)
@@ -149,13 +141,6 @@ class TeacherController extends Controller
 
 
 
-
-
-
-
-
-
-
     ////course video management section
 
     public function videoPlayer($id){
@@ -168,20 +153,6 @@ class TeacherController extends Controller
         //dd($videos);
         return view('backend.course.player.index', compact('course', 'videos'));
     }
-
-    // public function videoIndex($id){
-    //     $course = Course::find($id);
-    //     return view('teacher.course_video.index', compact('course'));
-    // }
-
-    // public function videoData(Request $request, $id){
-    //     $query = CourseVideo::where('course_id', $id);
-    //     if ($request->has('search') && $request->search != '') {
-    //         $query->where('title', 'like', '%' . $request->search . '%');
-    //     }
-    //     $videos = $query->orderBy('position', 'asc')->paginate(5);
-    //     return response()->json($videos);
-    // }
 
 
     public function videoIndex($id)
