@@ -9,7 +9,20 @@ class NotificationController extends Controller
 {
     public function index()
     {
+        return view('notifications.index');
+    }
+
+    // Fetch notifications with pagination
+    public function fetchNotifications(Request $request)
+    {
         $notifications = auth()->user()->notifications()->latest()->paginate(10);
+
+        if ($request->ajax()) {
+            $view = view('notifications.partials.notification_list', compact('notifications'))->render();
+            return response()->json([
+                'html' => $view,
+            ]);
+        }
 
         return view('notifications.index', compact('notifications'));
     }
@@ -22,6 +35,9 @@ class NotificationController extends Controller
             $notification->markAsRead();
         }
 
-        return back()->with('success', 'Notification marked as read.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Notification marked as read successfully!' 
+        ]);
     }
 }

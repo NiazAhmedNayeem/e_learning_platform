@@ -4,45 +4,56 @@
 @section('main-content')
 <div class="container mt-4">
     <h4>Your Notifications</h4>
-    <ul class="list-group mt-3">
-        @forelse ($notifications as $notification)
-            @if(!$notification->read_at)
-                <a href="{{ route('profile.notifications.read', $notification->id) }}" 
-                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center list-group-item-warning">
-
-                    <div>
-                        {{ $notification->data['message'] ?? 'No message' }}
-                        <br>
-                        <small class="text-muted">
-                            {{-- {{ $notification->created_at->format('d M Y h:i A') }} --}}
-                            <i class="bi bi-clock me-1"></i>
-                            {{ $notification->created_at->setTimezone('Asia/Dhaka')->format('d M Y h:i A') }}
-                            {{-- {{ $notification->created_at->timezone(auth()->user()->timezone ?? config('app.timezone'))->format('d M Y h:i A') }} --}}
-                        </small>
-                    </div>
-                </a>
-            @else
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        {{ $notification->data['message'] ?? 'No message' }}
-                        <br>
-                        <small class="text-muted">
-                            {{-- {{ $notification->created_at->format('d M Y h:i A') }} --}}
-                            {{-- {{ $notification->created_at->timezone(auth()->user()->timezone ?? config('app.timezone'))->format('d M Y h:i A') }} --}}
-                            <i class="bi bi-clock me-1"></i>
-                            {{ $notification->created_at->setTimezone('Asia/Dhaka')->format('d M Y h:i A') }}
-                        </small>
-                    </div>
-                </li>
-            @endif
-        @empty
-            <li class="list-group-item">No notifications available.</li>
-        @endforelse
+    <ul class="list-group mt-3" id="notification-list">
+        {{-- Notifications will be loaded here via AJAX --}}
     </ul>
 
-    {{-- Pagination Links --}}
-    <div class="mt-3">
-        {{ $notifications->links('pagination::bootstrap-5') }}
-    </div>
+    <div class="mt-3" id="pagination-links"></div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+$(document).ready(function() {
+    fetchNotifications();
+
+    function fetchNotifications(page = 1) {
+        $.ajax({
+            url: "{{ route('profile.notifications.fetch') }}",
+            data: { page: page },
+            success: function(res) {
+                $('#notification-list').html(res.html);
+
+                // Pagination is already inside partial, no duplicate append
+                // Just ensure links are bound
+            }
+        });
+    }
+
+    // Pagination click
+    $(document).on('click', '#pagination-links a', function(e){
+        e.preventDefault();
+        let page = $(this).attr('href').split('page=')[1];
+        fetchNotifications(page);
+    });
+
+    // Mark as read
+    $(document).on('click', '.mark-as-read', function(e){
+        e.preventDefault();
+        let url = $(this).attr('href');
+        let item = $(this);
+
+        $.get(url, function(res){
+            if(res.success){
+                item.removeClass('list-group-item-warning')
+                    .addClass('list-group-item-secondary')
+                    .removeClass('mark-as-read');
+
+                toastr.success(res.message, 'Success', {timeOut: 3000});
+            }
+        });
+    });
+});
+
+</script>
 @endsection

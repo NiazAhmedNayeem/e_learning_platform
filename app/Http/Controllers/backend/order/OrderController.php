@@ -11,7 +11,7 @@ class OrderController extends Controller
 {
     public function index(Request $request){
         $search = $request->input('search');
-        $orders = Order::paginate(5);
+        $orders = Order::orderBy('id', 'desc')->paginate(5);
         return view('backend.order.index', compact('orders', 'search'));
     }
 
