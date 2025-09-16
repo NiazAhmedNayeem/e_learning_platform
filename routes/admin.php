@@ -18,7 +18,8 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin', 
 
     //Admin Dashboard Route
     Route::get('admin/dashboard', [App\Http\Controllers\backend\admin\DashboardController::class, 'index'])->name('admin.dashboard');
-    
+    Route::get('admin/dashboard/filter', [App\Http\Controllers\backend\admin\DashboardController::class, 'filter'])->name('admin.dashboard.filter');
+
     //Admin Student management Route
     Route::get('admin/student/index', [App\Http\Controllers\backend\users\student\StudentController::class, 'index'])->name('admin.student.index');
     Route::get('admin/student/create', [App\Http\Controllers\backend\users\student\StudentController::class, 'create'])->name('admin.student.create');

@@ -3,119 +3,176 @@
 @section('main-content')
 
 @if (auth()->check() && auth()->user()->status == 1)
-        <h1 class="mt-4">Dashboard</h1>
+        <h1 class="mt-2">Dashboard</h1>
         <ol class="breadcrumb mb-4">
             {{-- <li class="breadcrumb-item active">Dashboard</li> --}}
         </ol>
-        <div class="row">
-            
-            <div class="col-xl-3 col-md-6">
-                <a class="text-decoration-none" href="{{ route('admin.student.index') }}">
-                <div class="card text-white mb-4 shadow-lg" style="background: linear-gradient(135deg, #1d2671, #c33764);">
-                    <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
-                        <h5 class="card-title text-uppercase fw-bold mb-2">Total Students</h5>
-                        <h2 class="display-4 fw-bold mb-3">{{ $students }}</h2>
-                    </div>
-                </div>
-                </a>
-            </div>
 
-            <div class="col-xl-3 col-md-6">
-                <a class="text-decoration-none" href="{{ route('admin.all-teacher') }}">
-                    <div class="card text-white mb-4 shadow-lg" style="background: linear-gradient(135deg, #1d2671, #c33764);">
+        {{-- Filter Form --}}
+        <div class="row mb-4">
+            <div class="col-md-12 d-flex flex-wrap gap-2">
+                {{-- Pre-defined buttons --}}
+                <button class="btn btn-secondary filterBtn" data-filter="all">All</button>
+                <button class="btn btn-primary filterBtn" data-filter="day">Today</button>
+                <button class="btn btn-success filterBtn" data-filter="week">This Week</button>
+                <button class="btn btn-warning filterBtn" data-filter="month">This Month</button>
+                <button class="btn btn-danger filterBtn" data-filter="year">This Year</button>
+
+                {{-- Custom Date Range --}}
+                <input type="date" id="fromDate" class="form-control" style="max-width: 180px;">
+                <input type="date" id="toDate" class="form-control" style="max-width: 180px;">
+            </div>
+        </div>
+
+
+        {{-- Dashboard Cards --}}
+        <div class="row">
+            <style>
+                .card-hover {
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    border-radius: 15px;
+                }
+                .card-hover:hover {
+                    transform: translateY(-8px) scale(1.03);
+                    box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+                }
+            </style>
+
+            {{-- Total Amount --}}
+            <div class="col-xl-3 col-md-6 mb-4">
+                <a class="text-decoration-none" href="{{ route('admin.order.index') }}">
+                    <div class="card text-white shadow-lg border-0 card-hover" style="background: linear-gradient(135deg, #1d2671, #c33764);">
                         <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
-                            <h5 class="card-title text-uppercase fw-bold mb-2">Total Teachers</h5>
-                            <h2 class="display-4 fw-bold mb-3">{{ $teachers }}</h2>
+                            <i class="fas fa-money-bill-wave fa-2x mb-2"></i>
+                            <h6 class="text-uppercase fw-bold mb-1">Total Amount Received</h6>
+                            <h2 class="fw-bold totalAmount">{{ number_format($totalAmount) }} ৳</h2>
                         </div>
                     </div>
                 </a>
             </div>
 
+            {{-- Total Complete Orders --}}
+            <div class="col-xl-3 col-md-6 mb-4">
+                <a class="text-decoration-none" href="{{ route('admin.order.index') }}">
+                    <div class="card text-white shadow-lg border-0 card-hover" style="background: linear-gradient(135deg, #00b09b, #96c93d);">
+                        <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
+                            <i class="fas fa-check-circle fa-2x mb-2"></i>
+                            <h6 class="text-uppercase fw-bold mb-1">Total Complete Orders</h6>
+                            <h2 class="fw-bold completeOrder">{{ $completeOrder }}</h2>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            {{-- Total Pending Orders --}}
+            <div class="col-xl-3 col-md-6 mb-4">
+                <a class="text-decoration-none" href="{{ route('admin.order.index') }}">
+                    <div class="card text-white shadow-lg border-0 card-hover" style="background: linear-gradient(135deg, #ff512f, #dd2476);">
+                        <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
+                            <i class="fas fa-hourglass-half fa-2x mb-2"></i>
+                            <h6 class="text-uppercase fw-bold mb-1">Total Pending Orders</h6>
+                            <h2 class="fw-bold pendingOrder">{{ $pendingOrder }}</h2>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            {{-- Total Reject Orders --}}
+            <div class="col-xl-3 col-md-6 mb-4">
+                <a class="text-decoration-none" href="{{ route('admin.order.index') }}">
+                    <div class="card text-white shadow-lg border-0 card-hover" style="background: linear-gradient(135deg, #f12711, #f5af19);">
+                        <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
+                            <i class="fas fa-times-circle fa-2x mb-2"></i>
+                            <h6 class="text-uppercase fw-bold mb-1">Total Reject Orders</h6>
+                            <h2 class="fw-bold rejectOrder">{{ $rejectOrder }}</h2>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            {{-- Total Students --}}
+            <div class="col-xl-3 col-md-6 mb-4">
+                <a class="text-decoration-none" href="{{ route('admin.student.index') }}">
+                    <div class="card text-white shadow-lg border-0 card-hover" style="background: linear-gradient(135deg, #36d1dc, #5b86e5);">
+                        <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
+                            <i class="fas fa-user-graduate fa-2x mb-2"></i>
+                            <h6 class="text-uppercase fw-bold mb-1">Total Students</h6>
+                            <h2 class="fw-bold students">{{ $students }}</h2>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            {{-- Total Teachers --}}
+            <div class="col-xl-3 col-md-6 mb-4">
+                <a class="text-decoration-none" href="{{ route('admin.all-teacher') }}">
+                    <div class="card text-white shadow-lg border-0 card-hover" style="background: linear-gradient(135deg, #ff6a00, #ee0979);">
+                        <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
+                            <i class="fas fa-chalkboard-teacher fa-2x mb-2"></i>
+                            <h6 class="text-uppercase fw-bold mb-1">Total Teachers</h6>
+                            <h2 class="fw-bold teachers">{{ $teachers }}</h2>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            {{-- Total Admins --}}
             @if (auth()->check() && auth()->user()->role == 'admin' && auth()->user()->is_super == 1)
-                <div class="col-xl-3 col-md-6">
+                <div class="col-xl-3 col-md-6 mb-4">
                     <a class="text-decoration-none" href="{{ route('user.admin.index') }}">
-                        <div class="card text-white mb-4 shadow-lg" style="background: linear-gradient(135deg, #1d2671, #c33764);">
+                        <div class="card text-white shadow-lg border-0 card-hover" style="background: linear-gradient(135deg, #0f2027, #2c5364);">
                             <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
-                                <h5 class="card-title text-uppercase fw-bold mb-2">Total Admins</h5>
-                                <h2 class="display-4 fw-bold mb-3">{{ $admins }}</h2>
+                                <i class="fas fa-user-shield fa-2x mb-2"></i>
+                                <h6 class="text-uppercase fw-bold mb-1">Total Admins</h6>
+                                <h2 class="fw-bold admins">{{ $admins }}</h2>
                             </div>
                         </div>
                     </a>
                 </div>
             @endif
-            
-            <div class="col-xl-3 col-md-6">
+
+            {{-- Total Categories --}}
+            <div class="col-xl-3 col-md-6 mb-4">
                 <a class="text-decoration-none" href="{{ route('admin.category.index') }}">
-                    <div class="card text-white mb-4 shadow-lg" style="background: linear-gradient(135deg, #1d2671, #c33764);">
+                    <div class="card text-white shadow-lg border-0 card-hover" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
                         <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
-                            <h5 class="card-title text-uppercase fw-bold mb-2">Total Categories</h5>
-                            <h2 class="display-4 fw-bold mb-3">{{ $categories }}</h2>
+                            <i class="fas fa-th-large fa-2x mb-2"></i>
+                            <h6 class="text-uppercase fw-bold mb-1">Total Categories</h6>
+                            <h2 class="fw-bold categories">{{ $categories }}</h2>
                         </div>
                     </div>
                 </a>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            {{-- Total Courses --}}
+            <div class="col-xl-3 col-md-6 mb-4">
                 <a class="text-decoration-none" href="{{ route('admin.course.index') }}">
-                    <div class="card text-white mb-4 shadow-lg" style="background: linear-gradient(135deg, #1d2671, #c33764);">
+                    <div class="card text-white shadow-lg border-0 card-hover" style="background: linear-gradient(135deg, #fc4a1a, #f7b733);">
                         <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
-                            <h5 class="card-title text-uppercase fw-bold mb-2">Total Courses</h5>
-                            <h2 class="display-4 fw-bold mb-3">{{ $courses }}</h2>
+                            <i class="fas fa-book-open fa-2x mb-2"></i>
+                            <h6 class="text-uppercase fw-bold mb-1">Total Courses</h6>
+                            <h2 class="fw-bold courses">{{ $courses }}</h2>
                         </div>
                     </div>
                 </a>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            {{-- Assigned Courses --}}
+            <div class="col-xl-3 col-md-6 mb-4">
                 <a class="text-decoration-none" href="{{ route('admin.course_assign.index') }}">
-                    <div class="card text-white mb-4 shadow-lg" style="background: linear-gradient(135deg, #1d2671, #c33764);">
+                    <div class="card text-white shadow-lg border-0 card-hover" style="background: linear-gradient(135deg, #8360c3, #2ebf91);">
                         <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
-                            <h6 class="card-title text-uppercase fw-bold mb-2">Assigned Courses</h6>
-                            <h2 class="display-4 fw-bold mb-3">{{ $assigned_courses }}</h2>
+                            <i class="fas fa-tasks fa-2x mb-2"></i>
+                            <h6 class="text-uppercase fw-bold mb-1">Assigned Courses</h6>
+                            <h2 class="fw-bold assignedCourses">{{ $assigned_courses }}</h2>
                         </div>
                     </div>
                 </a>
             </div>
 
-            {{-- <div class="col-xl-3 col-md-6">
-                <div class="card bg-primary text-white mb-4">
-                    <div class="card-body">All Student</div>
-                    <h4>{{ $students }}</h4>
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" href="#">View Details</a>
-                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                    </div>
-                </div>
-            </div> --}}
-            
-            {{-- <div class="col-xl-3 col-md-6">
-                <div class="card bg-warning text-white mb-4">
-                    <div class="card-body">Warning Card</div>
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" href="#">View Details</a>
-                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="card bg-success text-white mb-4">
-                    <div class="card-body">Success Card</div>
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" href="#">View Details</a>
-                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="card bg-danger text-white mb-4">
-                    <div class="card-body">Danger Card</div>
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" href="#">View Details</a>
-                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                    </div>
-                </div>
-            </div> --}}
         </div>
+
+
         <div class="row">
             <div class="col-xl-6">
                 <div class="card mb-4">
@@ -142,7 +199,7 @@
     <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
         <div class="card shadow-lg border-0 text-center p-5" style="max-width: 600px;">
             <div class="card-body">
-                <h2 class="text-warning mb-3">
+                <h2 class="text-warning mb-2">
                     <i class="fas fa-user-slash"></i> Account Inactive
                 </h2>
                 <p class="fs-5 text-muted">
@@ -163,3 +220,50 @@
 
                     
 @endsection
+
+@section('scripts')
+<script>
+    $(document).ready(function(){
+
+        function loadDashboard(filter = 'all', from = '', to = ''){
+            $.ajax({
+                url: "{{ route('admin.dashboard.filter') }}",
+                type: "GET",
+                data: {filter: filter, from: from, to: to},
+                success: function(res){
+                    $('.totalAmount').text(new Intl.NumberFormat().format(res.totalAmount) + ' ৳');
+                    $('.completeOrder').text(res.completeOrder);
+                    $('.pendingOrder').text(res.pendingOrder);
+                    $('.rejectOrder').text(res.rejectOrder);
+                    $('.students').text(res.students);
+                    $('.teachers').text(res.teachers);
+                    $('.admins').text(res.admins);
+                    $('.categories').text(res.categories);
+                    $('.courses').text(res.courses);
+                    $('.assignedCourses').text(res.assigned_courses);
+                }
+            });
+        }
+
+        // Pre-defined buttons
+        $('.filterBtn').click(function(){
+            let filter = $(this).data('filter');
+            $('#fromDate, #toDate').val('');
+            loadDashboard(filter);
+        });
+
+        // Custom date range live filter
+        $('#fromDate, #toDate').on('change', function(){
+            let from = $('#fromDate').val();
+            let to = $('#toDate').val();
+            if(from && to){
+                loadDashboard('custom', from, to);
+            }
+        });
+
+        // Initial load
+        loadDashboard(); 
+    });
+</script>
+@endsection
+
