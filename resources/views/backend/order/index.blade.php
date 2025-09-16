@@ -129,7 +129,7 @@
         $(document).on("click", "#paginationLinks a", function(e){
             e.preventDefault();
             let page = $(this).data("page");
-            if(page) loadOrders(page);
+            if(page) loadOrders(page, search);
         });
 
         //live search

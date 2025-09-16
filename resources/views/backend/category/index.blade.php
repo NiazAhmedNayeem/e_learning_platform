@@ -229,10 +229,13 @@
             let id = $(this).data('id');
             let tr = $(this).closest('tr'); 
 
-            // if another row open before edit form remove
+            
             $('#editRow').remove();
+            $('#deleteRow').remove();
 
             
+            $(this).prop('disabled', true);
+
             $.get("{{ url('/categories') }}/" + id, function(res){
                 let editForm = `
                     <tr id="editRow">
@@ -261,18 +264,27 @@
                                     <div id="editErrorStatus" class="text-danger small"></div>
                                 </div>
 
-                                <div class="col-md-3 d-grid">
-                                    <button type="submit" class="btn btn-success">Update</button>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-success">Update</button>
+                                        <button type="submit" id="cancelEditForm" class="btn btn-danger">Cancel</button>
+                                    </div>
                                 </div>
                             </form>
                         </td>
                     </tr>
-                    `;
-
-
-                
+                `;
                 tr.after(editForm);
+            }).always(function(){
+                
+                $('.editBtn').prop('disabled', false);
             });
+        });
+
+        ///edit form cancel
+        $(document).on('click', '#cancelEditForm', function(e){
+            e.preventDefault();
+            $('#editRow').remove();
         });
 
 
@@ -320,6 +332,7 @@
             let tr = $(this).closest('tr');
 
             
+            $('#editRow').remove();
             $('#deleteRow').remove();
 
             // Confirm row HTML

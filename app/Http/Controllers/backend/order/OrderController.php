@@ -9,10 +9,7 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function index(Request $request){
-        // $search = $request->input('search');
-        // $orders = Order::orderBy('id', 'desc')->paginate(5);
-        // return view('backend.order.index', compact('orders', 'search'));
+    public function index(){
         return view('backend.order.index');
     }
 
@@ -29,7 +26,7 @@ class OrderController extends Controller
             });
         }
 
-        $orders = $query->orderBy('id', 'desc')->paginate(2);
+        $orders = $query->orderBy('id', 'desc')->paginate(10);
 
         return response()->json($orders);
     }
