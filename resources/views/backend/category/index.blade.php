@@ -104,6 +104,7 @@
             currentSearch = search;
 
             $.get("{{ url('/categories') }}?page=" + page + "&search=" + search, function(res){
+            
                 let html = '';
 
                 if(res.data.length > 0){

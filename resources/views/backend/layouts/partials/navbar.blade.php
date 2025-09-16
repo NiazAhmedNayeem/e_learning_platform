@@ -4,7 +4,10 @@
 
     </style>
     <!-- Navbar Brand-->
-    <a class="navbar-brand ps-3" href="{{ route('dashboard') }}">Student Management</a>
+    <a class="navbar-brand ps-3" href="{{ route('dashboard') }}">
+        {{-- <img src="{{ auth()->user()->image_show }}" height="40" width="100"/> --}}
+        Student Management
+    </a>
 
     <!-- Sidebar Toggle-->
     <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle">

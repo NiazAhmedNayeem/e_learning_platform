@@ -90,6 +90,8 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin', 
 
     ///Admin order management Route
     Route::get('/admin/orders', [App\Http\Controllers\backend\order\OrderController::class, 'index'])->name('admin.order.index');
+    Route::get('/admin/orders-data', [App\Http\Controllers\backend\order\OrderController::class, 'orderData']);
+    Route::get('/admin/order-details/{id}', [App\Http\Controllers\backend\order\OrderController::class, 'show'])->name('admin.orders.show');
     Route::get('/admin/order/{order}/invoice', [App\Http\Controllers\backend\order\OrderController::class, 'invoice'])->name('admin.order.invoice');
     Route::post('/admin/order/status/{id}', [App\Http\Controllers\backend\order\OrderController::class, 'status'])->name('admin.order.status');
 
