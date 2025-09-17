@@ -7,21 +7,29 @@
 
     <div class="d-flex justify-content-between mb-3">
         <!-- Filter Buttons (left) -->
+
+        <select id="perPage"  style="max-width: 50px;">
+            <option value="10">10</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+
+
        <div class="btn-group">
-            <button type="button" class="btn btn-info filterBtn me-2" data-filter="reset">
-                Reset
+            <button type="button" class="btn btn-secondary filterBtn me-2" data-filter="reset">
+               <i class="fa-solid fa-eraser"></i> Reset
             </button>
             <button type="button" class="btn btn-info filterBtn me-2" data-filter="all">
-                All (<span class="filter-count" data-filter="all">0</span>)
+                <i class="fa-solid fa-bars"></i> All (<span class="filter-count" data-filter="all">0</span>)
             </button>
             <button type="button" class="btn btn-success filterBtn me-2" data-filter="approved">
-                Approved (<span class="filter-count" data-filter="approved">0</span>)
+                <i class="fas fa-check-circle"></i> Approved (<span class="filter-count" data-filter="approved">0</span>)
             </button>
             <button type="button" class="btn btn-warning filterBtn me-2" data-filter="pending">
-                Pending (<span class="filter-count" data-filter="pending">0</span>)
+                <i class="fas fa-hourglass-half"></i> Pending (<span class="filter-count" data-filter="pending">0</span>)
             </button>
             <button type="button" class="btn btn-danger filterBtn" data-filter="rejected">
-                Rejected (<span class="filter-count" data-filter="rejected">0</span>)
+                <i class="fas fa-times-circle"></i> Rejected (<span class="filter-count" data-filter="rejected">0</span>)
             </button>
 
         </div>
@@ -29,7 +37,7 @@
         <div class="d-flex align-items-center">
             <input type="date" id="fromDate" class="form-control me-2" style="max-width: 180px;">
             <input type="date" id="toDate" class="form-control me-2" style="max-width: 180px;">
-            <input type="text" id="searchBox" class="form-control" placeholder="Search by order number...">
+            <input type="text" id="searchBox" class="form-control" placeholder="Search...">
         </div>
 
         <!-- Search Bar (right) -->
@@ -93,21 +101,27 @@
 
         ///when status update
         function updateFilterCounts(counts){
-            $('.filterBtn[data-filter="all"]').text(`All (${counts.all})`);
-            $('.filterBtn[data-filter="approved"]').text(`Approved (${counts.approved})`);
-            $('.filterBtn[data-filter="pending"]').text(`Pending (${counts.pending})`);
-            $('.filterBtn[data-filter="rejected"]').text(`Rejected (${counts.rejected})`);
+            $('.filterBtn[data-filter="all"]').html(`<i class="fa-solid fa-bars"></i> All (${counts.all})`);
+            $('.filterBtn[data-filter="approved"]').html(`<i class="fas fa-check-circle"></i> Approved (${counts.approved})`);
+            $('.filterBtn[data-filter="pending"]').html(`<i class="fas fa-hourglass-half"></i> Pending (${counts.pending})`);
+            $('.filterBtn[data-filter="rejected"]').html(`<i class="fas fa-times-circle"></i> Rejected (${counts.rejected})`);
         }
 
         let currentSearch = '';
         let currentFilter = 'all';
         let currentFrom = '';
         let currentTo = '';
+        let currentPerPage = 10;
+
+        $('#perPage').on('change', function(){
+            currentPerPage = $(this).val();
+            loadOrders(1, currentSearch, currentFilter, currentFrom, currentTo, currentPerPage);
+        });
 
         ///Data table
-        function loadOrders(page = 1, search = '', filter = 'all', from = '', to = ''){
+        function loadOrders(page = 1, search = '', filter = 'all', from = '', to = '', perPage = 10){
             let html = '';
-            $.get("{{ url('/admin/orders-data') }}", {page, search, filter, from, to}, function(res){
+            $.get("{{ url('/admin/orders-data') }}", {page, search, filter, from, to, perPage}, function(res){
                 currentSearch = search;
                 currentFilter = filter;
                 currentFrom = from;

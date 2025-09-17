@@ -17,11 +17,15 @@ class OrderController extends Controller
     {
         $query = Order::with('user'); 
 
+        // Per page from request, default 10
+        $perPage = $request->perPage ?? 10;
+
         // Filter by status
-        if($request->filter && $request->filter != 'all'){
+        if ($request->filter && $request->filter != 'all') {
             $query->where('status', $request->filter);
         }
 
+        // Date filter
         if ($request->filled('from')) {
             $query->whereDate('created_at', '>=', $request->from);
         }
@@ -30,6 +34,7 @@ class OrderController extends Controller
             $query->whereDate('created_at', '<=', $request->to);
         }
 
+        // Search filter
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -39,9 +44,10 @@ class OrderController extends Controller
             });
         }
 
-        $orders = $query->orderBy('id', 'desc')->paginate(1);
+        // Paginate with dynamic per page
+        $orders = $query->orderBy('id', 'desc')->paginate($perPage);
 
-         // Total counts (all pages)
+        // Total counts (all pages)
         $counts = [
             'all' => Order::count(),
             'approved' => Order::where('status', 'approved')->count(),
@@ -49,17 +55,16 @@ class OrderController extends Controller
             'rejected' => Order::where('status', 'rejected')->count()
         ];
 
-        // return response()->json($orders);
-            return response()->json([
-                'data' => $orders->items(),        // table data
-                'from' => $orders->firstItem(),    // SL start
-                'last_page' => $orders->lastPage(),// total pages
-                'current_page' => $orders->currentPage(), 
-                'total' => $orders->total(),
-                'counts' => $counts
-            ]);
-
+        return response()->json([
+            'data' => $orders->items(),        // table data
+            'from' => $orders->firstItem() ?? 1,// SL start
+            'last_page' => $orders->lastPage(),// total pages
+            'current_page' => $orders->currentPage(), 
+            'total' => $orders->total(),
+            'counts' => $counts
+        ]);
     }
+
 
     public function show($id)
     {
