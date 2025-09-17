@@ -6,11 +6,29 @@
     <h2>All Orders List</h2>
 
     <div class="d-flex justify-content-between mb-3">
-        <!-- Search (left) -->
+        <!-- Filter Buttons (left) -->
+       <div class="btn-group">
+            <button type="button" class="btn btn-info filterBtn me-2" data-filter="all">
+                All (<span class="filter-count" data-filter="all">0</span>)
+            </button>
+            <button type="button" class="btn btn-success filterBtn me-2" data-filter="approved">
+                Approved (<span class="filter-count" data-filter="approved">0</span>)
+            </button>
+            <button type="button" class="btn btn-warning filterBtn me-2" data-filter="pending">
+                Pending (<span class="filter-count" data-filter="pending">0</span>)
+            </button>
+            <button type="button" class="btn btn-danger filterBtn" data-filter="rejected">
+                Rejected (<span class="filter-count" data-filter="rejected">0</span>)
+            </button>
+        </div>
+
+
+        <!-- Search Bar (right) -->
         <div class="w-25">
             <input type="text" id="searchBox" class="form-control" placeholder="Search by order number...">
         </div>
     </div>
+
 
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
@@ -64,15 +82,30 @@
 <script>
     $(document).ready(function(){
 
+        ///when status update
+        function updateFilterCounts(counts){
+            $('.filterBtn[data-filter="all"]').text(`All(${counts.all})`);
+            $('.filterBtn[data-filter="approved"]').text(`Approved(${counts.approved})`);
+            $('.filterBtn[data-filter="pending"]').text(`Pending(${counts.pending})`);
+            $('.filterBtn[data-filter="rejected"]').text(`Rejected(${counts.rejected})`);
+        }
+
         let currentSearch = '';
-        function loadOrders(page = 1, search = ''){
+        let currentFilter = 'all';
+        
+        ///Data table
+        function loadOrders(page = 1, search = '', filter = 'all'){
             let html = '';
-            $.get("{{ url('/admin/orders-data') }}?page=" + page + "&search=" + search, function(res){
+            $.get("{{ url('/admin/orders-data') }}", {page:page, search:search, filter:filter}, function(res){
                 currentSearch = search;
+                currentFilter = filter;
+
+                updateFilterCounts(res.counts);
+
+                let html = '';
                 if(res.data && res.data.length > 0){
                     $.each(res.data, function(index, order){
-                        html += `
-                        <tr>
+                        html += `<tr>
                             <td>${res.from + index}</td>
                             <td>${order.unique_order_id}</td>
                             <td>
@@ -89,50 +122,90 @@
                             <td>${order.transaction_id}</td>
                             <td>${dayjs(order.created_at).tz('Asia/Dhaka').format('DD MMM YYYY - hh:mm A')}</td>
                             <td>
-                                ${
-                                    order.status === 'pending' 
-                                    ? '<span class="badge bg-warning">Pending</span>'
-                                    : order.status === 'approved'
-                                    ? '<span class="badge bg-success">Approved</span>'
-                                    : order.status === 'rejected'
-                                    ? '<span class="badge bg-danger">Rejected</span>'
-                                    : '<span class="badge bg-secondary">Unknown</span>'
-                                }
+                                ${order.status === 'pending' ? '<span class="badge bg-warning">Pending</span>'
+                                : order.status === 'approved' ? '<span class="badge bg-success">Approved</span>'
+                                : order.status === 'rejected' ? '<span class="badge bg-danger">Rejected</span>'
+                                : '<span class="badge bg-secondary">Unknown</span>'}
                             </td>
                             <td>
-                                <button type="button" class="btn btn-info btn-sm viewOrder" data-id="${order.id}">
-                                    View
-                                </button>
+                                <button type="button" class="btn btn-info btn-sm viewOrder" data-id="${order.id}">View</button>
                             </td>
-                        </tr>
-                        `;
+                        </tr>`;
                     });
                 }else{
-                    html = `<tr><td colspan="10" class="text-center">No categories found</td></tr>`;
+                    html = `<tr><td colspan="10" class="text-center">No orders found</td></tr>`;
                 }
                 $('#orderTable').html(html);
 
-                // pagination links making
-                let links = '';
-                $.each(res.links, function(index, link){
-                    let active = link.active ? 'active' : '';
-                    links += `<li class="page-item ${active}">
-                        <a class="page-link" href="#" data-page="${link.url ? link.url.split('page=')[1] : ''}">
-                            ${link.label}
-                        </a>
-                    </li>`;
-                });
-                $('#paginationLinks').html(links);
+
+                 // ✅ এখানে call করবে pagination render
+                renderPagination(res.current_page, res.last_page);
+
+                // যদি filter counts থাকে
+                if(res.counts){
+                    updateFilterCounts(res.counts);
+                }
+
+                // Pagination buttons
+                // let pag = '';
+                // for(let i=1;i<=res.last_page;i++){
+                //     let active = i === res.current_page ? 'active' : '';
+                //     pag += `<li class="page-item ${active}">
+                //                 <a class="page-link" href="#" data-page="${i}">${i}</a>
+                //             </li>`;
+                // }
+                // $('#paginationLinks').html(pag);
+
+                
+
             });
         }
+        
         loadOrders();
 
         // Pagination new data load 
         $(document).on("click", "#paginationLinks a", function(e){
             e.preventDefault();
             let page = $(this).data("page");
-            if(page) loadOrders(page, currentSearch);
+            if(page) loadOrders(page, currentSearch, currentFilter);
         });
+
+        function renderPagination(current, last){
+            let pag = '';
+
+            // Previous button
+            if(current > 1){
+                pag += `<li class="page-item">
+                            <a class="page-link" href="#" data-page="${current - 1}">« Previous</a>
+                        </li>`;
+            } else {
+                pag += `<li class="page-item disabled">
+                            <span class="page-link">« Previous</span>
+                        </li>`;
+            }
+
+            // Page numbers
+            for(let i = 1; i <= last; i++){
+                let active = i === current ? 'active' : '';
+                pag += `<li class="page-item ${active}">
+                            <a class="page-link" href="#" data-page="${i}">${i}</a>
+                        </li>`;
+            }
+
+            // Next button
+            if(current < last){
+                pag += `<li class="page-item">
+                            <a class="page-link" href="#" data-page="${current + 1}">Next »</a>
+                        </li>`;
+            } else {
+                pag += `<li class="page-item disabled">
+                            <span class="page-link">Next »</span>
+                        </li>`;
+            }
+
+            $('#paginationLinks').html(pag);
+        }
+
 
         //live search
         let typingTimer;
@@ -140,8 +213,19 @@
             clearTimeout(typingTimer);
             let value = $(this).val();
             typingTimer = setTimeout(() => {
-                loadOrders(1, value);
+                loadOrders(1, value, currentFilter);
             }, 300);
+        });
+
+
+        // Filter Button click
+        $(document).on('click', '.filterBtn', function(){
+            let filter = $(this).data('filter');
+            loadOrders(1, currentSearch, filter);
+            
+            // Active button highlight
+            $('.filterBtn').removeClass('active');
+            $(this).addClass('active');
         });
 
 
@@ -160,7 +244,7 @@
             });
         });
 
-
+        ///status update
         $(document).on('click', '.updateStatus', function(){
             let orderId = $(this).data('id');
             let status = $(this).data('status');
@@ -197,6 +281,11 @@
 
                         // Modal hide
                         $('#orderModal').modal('hide');
+
+                        //when state change the filter button count update
+                        if(res.counts){
+                            updateFilterCounts(res.counts);
+                        }
 
                         toastr.success(res.message, 'Success', {timeOut: 3000});
                     }

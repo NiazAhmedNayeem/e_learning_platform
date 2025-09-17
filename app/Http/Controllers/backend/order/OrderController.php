@@ -17,6 +17,11 @@ class OrderController extends Controller
     {
         $query = Order::with('user'); 
 
+        // Filter by status
+        if($request->filter && $request->filter != 'all'){
+            $query->where('status', $request->filter);
+        }
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -26,9 +31,26 @@ class OrderController extends Controller
             });
         }
 
-        $orders = $query->orderBy('id', 'desc')->paginate(10);
+        $orders = $query->orderBy('id', 'desc')->paginate(4);
 
-        return response()->json($orders);
+         // Total counts (all pages)
+        $counts = [
+            'all' => Order::count(),
+            'approved' => Order::where('status', 'approved')->count(),
+            'pending' => Order::where('status', 'pending')->count(),
+            'rejected' => Order::where('status', 'rejected')->count()
+        ];
+
+        // return response()->json($orders);
+            return response()->json([
+                'data' => $orders->items(),        // table data
+                'from' => $orders->firstItem(),    // SL start
+                'last_page' => $orders->lastPage(),// total pages
+                'current_page' => $orders->currentPage(), 
+                'total' => $orders->total(),
+                'counts' => $counts
+            ]);
+
     }
 
     public function show($id)
@@ -54,6 +76,7 @@ class OrderController extends Controller
         //dd($order);
         $order->update();
 
+        ///for user notification
         if($order->status == 'approved'){
             $order->user->notify(new OrderStatusNotification('#'.$order->unique_order_id . ' - Your order is approved by admin'));
         }elseif($order->status == 'pending'){
@@ -62,10 +85,18 @@ class OrderController extends Controller
             $order->user->notify(new OrderStatusNotification('#'.$order->unique_order_id  . ' - Your order is rejected by admin'));
         }
 
+        $counts = [
+            'all' => Order::count(),
+            'approved' => Order::where('status','approved')->count(),
+            'pending' => Order::where('status','pending')->count(),
+            'rejected' => Order::where('status','rejected')->count(),
+        ];
+
         return response()->json([
             'status' => 'success',
             'message' => 'Order status update successfully.',
             'order' => $order,
+            'counts' => $counts,
         ]);
         
         // return redirect()->route('admin.order.index')->with('success', 'Order status change successfully.');
