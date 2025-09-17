@@ -172,6 +172,57 @@
 
         </div>
 
+        
+        {{-- Notices Section --}}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-bullhorn me-2"></i>Latest Notices</h5>
+                        <a href="#" class="btn btn-light btn-sm">View All</a>
+                    </div>
+                    <div class="card-body p-3">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>System Maintenance</strong>
+                                    <p class="mb-0 text-muted small">Scheduled maintenance on 20th Sept 2025 from 10 PM to 12 AM.</p>
+                                </div>
+                                <span class="badge bg-warning text-dark">Admin</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>New Course Available</strong>
+                                    <p class="mb-0 text-muted small">“Advanced Laravel” course is now live for all students.</p>
+                                </div>
+                                <span class="badge bg-success">Teacher</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Exam Schedule</strong>
+                                    <p class="mb-0 text-muted small">Mid-term exams will start from 25th Sept 2025.</p>
+                                </div>
+                                <span class="badge bg-info text-dark">Admin</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Update Profile</strong>
+                                    <p class="mb-0 text-muted small">All teachers must update their profile by 22nd Sept.</p>
+                                </div>
+                                <span class="badge bg-primary">Teacher</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>New Feature: Chat</strong>
+                                    <p class="mb-0 text-muted small">Student-teacher chat feature is now available.</p>
+                                </div>
+                                <span class="badge bg-secondary">System</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
         <div class="row">

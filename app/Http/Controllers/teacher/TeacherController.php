@@ -15,7 +15,29 @@ use Illuminate\Support\Facades\Validator;
 class TeacherController extends Controller
 {
     public function index(){
-        return view('teacher.dashboard.index');
+
+        $teacherId = auth()->id(); // Logged in teacher ID
+
+        $query = DB::table('order_items')
+            ->join('orders', 'orders.id', '=', 'order_items.order_id')
+            ->join('users', 'users.id', '=', 'orders.user_id')
+            ->join('courses', 'courses.id', '=', 'order_items.course_id')
+            ->select(
+                'users.id as user_id',
+                'users.name',
+                'users.email',
+                'users.phone',
+                'courses.id as course_id',
+                'courses.title as course_title'
+            )
+            ->where('orders.status', 'approved') // Only approved orders
+            ->where('courses.teacher_id', $teacherId);
+        
+        $students = $query->count();
+
+
+        $assign_courses = Course::where('teacher_id', auth()->user()->id)->count();
+        return view('teacher.dashboard.index', compact('assign_courses', 'students'));
     }
 
     public function profile(){
