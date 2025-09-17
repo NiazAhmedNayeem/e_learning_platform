@@ -107,7 +107,7 @@
             
                 let html = '';
 
-                if(res.data.length > 0){
+                if(res.data && res.data.length > 0){
                     $.each(res.data, function(index, cat){
                         html += `
                             <tr>

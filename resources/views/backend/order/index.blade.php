@@ -64,10 +64,12 @@
 <script>
     $(document).ready(function(){
 
+        let currentSearch = '';
         function loadOrders(page = 1, search = ''){
             let html = '';
             $.get("{{ url('/admin/orders-data') }}?page=" + page + "&search=" + search, function(res){
-                if(res.data.length > 0){
+                currentSearch = search;
+                if(res.data && res.data.length > 0){
                     $.each(res.data, function(index, order){
                         html += `
                         <tr>
@@ -85,7 +87,7 @@
                             <td>${order.payment_method}</td>
                             <td>${order.number}</td>
                             <td>${order.transaction_id}</td>
-                            <td>${order.created_at}</td>
+                            <td>${dayjs(order.created_at).tz('Asia/Dhaka').format('DD MMM YYYY - hh:mm A')}</td>
                             <td>
                                 ${
                                     order.status === 'pending' 
@@ -129,7 +131,7 @@
         $(document).on("click", "#paginationLinks a", function(e){
             e.preventDefault();
             let page = $(this).data("page");
-            if(page) loadOrders(page, search);
+            if(page) loadOrders(page, currentSearch);
         });
 
         //live search

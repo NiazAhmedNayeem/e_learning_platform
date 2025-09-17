@@ -245,7 +245,7 @@
                 $.get("{{ url('/all/admin/data') }}?page=" + page + "&search=" + search, function(res){
                     let html = '';
 
-                    if (res.data.length > 0) {
+                    if (res.data && res.data.length > 0) {
                         $.each(res.data, function(index, admin) {
                             html += `
                                 <tr>

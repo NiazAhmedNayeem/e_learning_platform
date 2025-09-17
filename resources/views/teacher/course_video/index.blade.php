@@ -245,7 +245,7 @@
         function loadVideos(page = 1, search = '') {
             let html = '';
             $.get("{{ url('teacher/course/video-data') }}/" + courseId + "?page=" + page + "&search=" + search, function(res){
-                if(res.data.length > 0){
+                if(res.data && res.data.length > 0){
                     $.each(res.data, function(index, video){
                         html += `<tr>
                             <td>${res.from + index}</td>

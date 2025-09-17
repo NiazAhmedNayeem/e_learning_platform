@@ -60,7 +60,7 @@ $(document).ready(function(){
     function loadStudents(page = 1, search = '', course_id = '') {
         $.get("{{ url('/teacher/course/students-data') }}", { page: page, search: search, course_id: course_id }, function(res){
             let html = '';
-            if(res.data.length > 0){
+            if(res.data && res.data.length > 0){
                 $.each(res.data, function(index, student){
                     html += `<tr>
                         <td>${res.from + index}</td>

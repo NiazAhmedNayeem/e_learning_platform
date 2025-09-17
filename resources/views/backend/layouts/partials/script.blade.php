@@ -1,8 +1,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ asset('public/backend/js/scripts.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-<script src="{{ asset('public/backend/assets/demo/chart-area-demo.js') }}"></script>
-<script src="{{ asset('public/backend/assets/demo/chart-bar-demo.js') }}"></script>
+{{-- <script src="{{ asset('public/backend/assets/demo/chart-area-demo.js') }}"></script>
+<script src="{{ asset('public/backend/assets/demo/chart-bar-demo.js') }}"></script> --}}
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
 <script src="{{ asset('public/backend/js/datatables-simple-demo.js') }}"></script>
 
@@ -20,6 +20,17 @@
 
 <!-- Bootstrap Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Day.js Core -->
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+<!-- Timezone plugin -->
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/timezone.js"></script>
+
+<script>
+    dayjs.extend(dayjs_plugin_utc);
+    dayjs.extend(dayjs_plugin_timezone);
+</script>
 
 <script>
     $(document).ready(function() {

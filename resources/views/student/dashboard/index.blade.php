@@ -70,3 +70,8 @@
 @endif
            
 @endsection
+
+@section('scripts')
+<script src="{{ asset('public/backend/assets/demo/chart-area-demo.js') }}"></script>
+<script src="{{ asset('public/backend/assets/demo/chart-bar-demo.js') }}"></script>
+@endsection
