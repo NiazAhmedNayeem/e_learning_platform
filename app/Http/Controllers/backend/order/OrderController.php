@@ -22,6 +22,14 @@ class OrderController extends Controller
             $query->where('status', $request->filter);
         }
 
+        if ($request->filled('from')) {
+            $query->whereDate('created_at', '>=', $request->from);
+        }
+
+        if ($request->filled('to')) {
+            $query->whereDate('created_at', '<=', $request->to);
+        }
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -31,7 +39,7 @@ class OrderController extends Controller
             });
         }
 
-        $orders = $query->orderBy('id', 'desc')->paginate(4);
+        $orders = $query->orderBy('id', 'desc')->paginate(1);
 
          // Total counts (all pages)
         $counts = [

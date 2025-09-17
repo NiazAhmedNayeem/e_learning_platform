@@ -8,6 +8,9 @@
     <div class="d-flex justify-content-between mb-3">
         <!-- Filter Buttons (left) -->
        <div class="btn-group">
+            <button type="button" class="btn btn-info filterBtn me-2" data-filter="reset">
+                Reset
+            </button>
             <button type="button" class="btn btn-info filterBtn me-2" data-filter="all">
                 All (<span class="filter-count" data-filter="all">0</span>)
             </button>
@@ -20,13 +23,19 @@
             <button type="button" class="btn btn-danger filterBtn" data-filter="rejected">
                 Rejected (<span class="filter-count" data-filter="rejected">0</span>)
             </button>
+
         </div>
 
-
-        <!-- Search Bar (right) -->
-        <div class="w-25">
+        <div class="d-flex align-items-center">
+            <input type="date" id="fromDate" class="form-control me-2" style="max-width: 180px;">
+            <input type="date" id="toDate" class="form-control me-2" style="max-width: 180px;">
             <input type="text" id="searchBox" class="form-control" placeholder="Search by order number...">
         </div>
+
+        <!-- Search Bar (right) -->
+        {{-- <div class="w-25">
+            <input type="text" id="searchBox" class="form-control" placeholder="Search by order number...">
+        </div> --}}
     </div>
 
 
@@ -68,7 +77,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="orderModalBody">
-                <!-- AJAX দিয়ে load হবে -->
+                <!-- load with ajax -->
                 <div class="text-center p-5">Loading...</div>
             </div>
         </div>
@@ -84,21 +93,25 @@
 
         ///when status update
         function updateFilterCounts(counts){
-            $('.filterBtn[data-filter="all"]').text(`All(${counts.all})`);
-            $('.filterBtn[data-filter="approved"]').text(`Approved(${counts.approved})`);
-            $('.filterBtn[data-filter="pending"]').text(`Pending(${counts.pending})`);
-            $('.filterBtn[data-filter="rejected"]').text(`Rejected(${counts.rejected})`);
+            $('.filterBtn[data-filter="all"]').text(`All (${counts.all})`);
+            $('.filterBtn[data-filter="approved"]').text(`Approved (${counts.approved})`);
+            $('.filterBtn[data-filter="pending"]').text(`Pending (${counts.pending})`);
+            $('.filterBtn[data-filter="rejected"]').text(`Rejected (${counts.rejected})`);
         }
 
         let currentSearch = '';
         let currentFilter = 'all';
-        
+        let currentFrom = '';
+        let currentTo = '';
+
         ///Data table
-        function loadOrders(page = 1, search = '', filter = 'all'){
+        function loadOrders(page = 1, search = '', filter = 'all', from = '', to = ''){
             let html = '';
-            $.get("{{ url('/admin/orders-data') }}", {page:page, search:search, filter:filter}, function(res){
+            $.get("{{ url('/admin/orders-data') }}", {page, search, filter, from, to}, function(res){
                 currentSearch = search;
                 currentFilter = filter;
+                currentFrom = from;
+                currentTo = to;
 
                 updateFilterCounts(res.counts);
 
@@ -167,10 +180,10 @@
         $(document).on("click", "#paginationLinks a", function(e){
             e.preventDefault();
             let page = $(this).data("page");
-            if(page) loadOrders(page, currentSearch, currentFilter);
+            if(page) loadOrders(page, currentSearch, currentFilter, currentFrom, currentTo);
         });
 
-        function renderPagination(current, last){
+        function renderPagination(current, last) {
             let pag = '';
 
             // Previous button
@@ -184,11 +197,34 @@
                         </li>`;
             }
 
-            // Page numbers
-            for(let i = 1; i <= last; i++){
+            let start = Math.max(1, current - 2);
+            let end = Math.min(last, current + 2);
+
+            // First page
+            if(start > 1){
+                pag += `<li class="page-item">
+                            <a class="page-link" href="#" data-page="1">1</a>
+                        </li>`;
+                if(start > 2){
+                    pag += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                }
+            }
+
+            // Pages around current
+            for(let i = start; i <= end; i++){
                 let active = i === current ? 'active' : '';
                 pag += `<li class="page-item ${active}">
                             <a class="page-link" href="#" data-page="${i}">${i}</a>
+                        </li>`;
+            }
+
+            // Last page
+            if(end < last){
+                if(end < last - 1){
+                    pag += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                }
+                pag += `<li class="page-item">
+                            <a class="page-link" href="#" data-page="${last}">${last}</a>
                         </li>`;
             }
 
@@ -206,6 +242,13 @@
             $('#paginationLinks').html(pag);
         }
 
+        // Date change
+        $('#fromDate, #toDate').on('change', function(){
+            let from = $('#fromDate').val();
+            let to = $('#toDate').val();
+            loadOrders(1, currentSearch, currentFilter, from, to);
+        });
+
 
         //live search
         let typingTimer;
@@ -218,15 +261,27 @@
         });
 
 
-        // Filter Button click
         $(document).on('click', '.filterBtn', function(){
             let filter = $(this).data('filter');
-            loadOrders(1, currentSearch, filter);
-            
-            // Active button highlight
-            $('.filterBtn').removeClass('active');
-            $(this).addClass('active');
+
+            if(filter === 'reset'){
+                // Reset all
+                $('#searchBox').val('');
+                $('#fromDate').val('');
+                $('#toDate').val('');
+                currentSearch = '';
+                currentFrom = '';
+                currentTo = '';
+                loadOrders(1, '', 'all');
+                $('.filterBtn').removeClass('active');
+                $('.filterBtn[data-filter="all"]').addClass('active');
+            } else {
+                loadOrders(1, currentSearch, filter, currentFrom, currentTo);
+                $('.filterBtn').removeClass('active');
+                $(this).addClass('active');
+            }
         });
+
 
 
         // View Order Click
