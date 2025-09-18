@@ -55,6 +55,12 @@
                             Assign Courses
                         </a>
 
+                    {{-- Add course --}}
+                        <a class="nav-link {{ request()->routeIs('admin.notice.index') ? 'active' : '' }}" href="{{ route('admin.notice.index') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                            Notice
+                        </a>
+
                     {{-- Add students --}}
                         <a class="nav-link {{ request()->routeIs('admin.student.index') ? 'active' : '' }}" href="{{ route('admin.student.index') }}">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-user-graduate"></i></div>

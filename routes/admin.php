@@ -97,6 +97,10 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin', 
     Route::post('/admin/order/status/{id}', [App\Http\Controllers\backend\order\OrderController::class, 'status'])->name('admin.order.status');
 
 
+    ///Notice management route
+    Route::get('/admin/notice/index', [App\Http\Controllers\backend\notice\NoticeController::class, 'index'])->name('admin.notice.index');
+    Route::get('/admin/notice/data', [App\Http\Controllers\backend\notice\NoticeController::class, 'noticeData']);
+    Route::post('/admin/notice/store', [App\Http\Controllers\backend\notice\NoticeController::class, 'store']);
 
 
 
