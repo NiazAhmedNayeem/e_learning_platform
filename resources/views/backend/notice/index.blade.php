@@ -179,12 +179,14 @@
     $(document).ready(function(){
       
       let currentPage = '';
+      let currentSearch = '';
 
-      function loadNotices(page = 1){
+      function loadNotices(page = 1, search = ''){
         currentPage = page;
+        currentSearch = search;
 
         let html = '';
-        $.get("{{ url('/admin/notice/data') }}",{page}, function(res){
+        $.get("{{ url('/admin/notice/data') }}",{page,search}, function(res){
           
           if(res.data && res.data.length > 0){
             $.each(res.data, function(index, notice){
@@ -231,7 +233,8 @@
                       : '<span class="badge bg-secondary">Unknown</span>'}
                   </td>
                   <td>
-                      <button type="button" class="btn btn-info btn-sm editNotice" data-id="${notice.id}">Edit</button>
+                      <button type="button" class="btn btn-info btn-sm editBtn" data-id="${notice.id}">Edit</button>
+                      <button class="btn btn-danger btn-sm deleteBtn" data-id="${notice.id}">Delete</button>
                   </td>
                 </tr>
               `;
@@ -261,7 +264,17 @@
         $(document).on("click", "#paginationLinks a", function(e){
             e.preventDefault();
             let page = $(this).data("page");
-            if(page) loadNotices(page);
+            if(page) loadNotices(page, currentSearch);
+        });
+
+        //live search
+        let typingTimer;
+        $("#searchBox").on("keyup", function(){
+            clearTimeout(typingTimer);
+            let value = $(this).val();
+            typingTimer = setTimeout(function(){
+                loadNotices(1, value); // before search page = 1
+            }, 300); // 300ms delay (user typing)
         });
         
 
@@ -321,6 +334,52 @@
 
 
 
+
+
+
+
+      //Delete category
+        $(document).on('click', '.deleteBtn', function(){
+            let id = $(this).data('id');
+            let tr = $(this).closest('tr');
+
+            
+            $('#editRow').remove();
+            $('#deleteRow').remove();
+
+            // Confirm row HTML
+            let deleteConfirm = `
+                <tr id="deleteRow">
+                    <td colspan="6" class="text-center">
+                        Are you sure you want to delete this notice? 
+                        <button class="btn btn-sm btn-danger confirmDelete" data-id="${id}">Yes</button>
+                        <button class="btn btn-sm btn-secondary cancelDelete">No</button>
+                    </td>
+                </tr>
+            `;
+
+            tr.after(deleteConfirm);
+        });
+
+        $(document).on('click', '.cancelDelete', function(){
+            $('#deleteRow').remove();
+        });
+
+        $(document).on('click', '.confirmDelete', function(){
+            let id = $(this).data('id');
+
+            $.ajax({
+                url: "{{ url('/admin/notice/delete') }}/" + id,
+                method: "DELETE",
+                success: function(res){
+                    if(res.status === 'success'){
+                        $('#deleteRow').remove(); // confirm row remove
+                        loadNotices(currentPage, currentSearch);         // table refresh
+                        toastr.success(res.message, 'Success', {timeOut: 3000});
+                    }
+                }
+            });
+        });
 
 
 

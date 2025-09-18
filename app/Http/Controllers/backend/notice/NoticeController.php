@@ -17,7 +17,11 @@ class NoticeController extends Controller
     }
 
     public function noticeData(Request $request){
-        $notices = Notice::with('user')->orderBy('id', 'desc')->paginate(5);
+        $query = Notice::with('user');
+        if($request->has('search') && $request->search != ''){
+            $query->where('title', 'like', '%'. $request->search. '%');
+        }
+        $notices = $query->orderBy('id', 'desc')->paginate(5);
         return response()->json($notices);
     }
 
@@ -56,7 +60,7 @@ class NoticeController extends Controller
         $attachments = [];
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
-                $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
+                $fileName = $file->getClientOriginalName();
                 $file->move(public_path('upload/notice/attachments/'), $fileName);
                 $attachments[] = $fileName;
             }
@@ -90,6 +94,38 @@ class NoticeController extends Controller
             'status'  => 'success',
             'message' => 'Notice created successfully.',
             'notice'  => $notice,
+        ]);
+    }
+
+
+
+    public function delete($id){
+
+        $notice = Notice::find($id);
+
+        if($notice->image && file_exists(public_path("upload/notice/". $notice->image))){
+            unlink(public_path("upload/notice/". $notice->image));
+        }
+        
+
+        if($notice->attachments){
+            $attachments = json_decode($notice->attachments);
+            if(is_array($attachments)){
+                foreach($attachments as $file){
+                    $filePath = public_path("upload/notice/attachments/". $file);
+                    if(file_exists($filePath)){
+                        unlink($filePath);
+                    }
+                }
+            }
+        }
+
+
+        $notice->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Notice delete successfully.',
         ]);
     }
 

@@ -101,6 +101,9 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin', 
     Route::get('/admin/notice/index', [App\Http\Controllers\backend\notice\NoticeController::class, 'index'])->name('admin.notice.index');
     Route::get('/admin/notice/data', [App\Http\Controllers\backend\notice\NoticeController::class, 'noticeData']);
     Route::post('/admin/notice/store', [App\Http\Controllers\backend\notice\NoticeController::class, 'store']);
+    Route::get('/admin/notice/edit/{id}', [App\Http\Controllers\backend\notice\NoticeController::class, 'edit']);
+    Route::post('/admin/notice/update/{id}', [App\Http\Controllers\backend\notice\NoticeController::class, 'update']);
+    Route::delete('/admin/notice/delete/{id}', [App\Http\Controllers\backend\notice\NoticeController::class, 'delete']);
 
 
 
