@@ -128,6 +128,7 @@
               <label for="status" class="form-label fw-semibold">Status</label>
               <select class="form-select shadow-sm" id="status" name="status">
                 <option value="">Select Status</option>
+                <option value="draft">Draft</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
               </select>
@@ -158,6 +159,129 @@
           </button>
           <button type="submit" class="btn btn-primary">
             <i class="bi bi-save-fill me-1"></i> Create
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- Edit Notice Modal -->
+<!-- Edit Notice Modal -->
+<div class="modal fade" id="editNoticeModal" tabindex="-1" aria-labelledby="editNoticeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-3">
+      <!-- Modal Header -->
+      <div class="modal-header bg-gradient bg-primary text-white">
+        <h5 class="modal-title fw-bold" id="editNoticeModalLabel">
+          <i class="bi bi-megaphone-fill me-2"></i> Edit Notice
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Form -->
+      <form id="editNoticeForm" method="POST" enctype="multipart/form-data">
+        @csrf
+        <input type="hidden" id="editId" name="id">
+
+        <div class="modal-body">
+          <div class="row g-4">
+
+            <!-- Title -->
+            <div class="col-md-12">
+              <label class="form-label fw-semibold">Title <span class="text-danger">*</span></label>
+              <input type="text" name="title" id="editTitle" class="form-control shadow-sm" placeholder="Enter notice title" >
+              <div class="titleEditError" style="color:red;"></div>
+            </div>
+
+            <!-- Description -->
+            <div class="col-md-12">
+              <label class="form-label fw-semibold">Description</label>
+              <textarea name="description" id="editDescription" rows="3" class="form-control shadow-sm" placeholder="Write notice details..."></textarea>
+              <div class="descriptionEditError" style="color:red;"></div>
+            </div>
+
+            <!-- Target Role -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Target Role <span class="text-danger">*</span></label>
+              <select name="target_role" id="editTarget_role" class="form-select shadow-sm" required>
+                <option value="all">All Users</option>
+                <option value="admin">Admins</option>
+                <option value="teacher">Teachers</option>
+                <option value="student">Students</option>
+              </select>
+              <div class="target_roleEditError" style="color:red;"></div>
+            </div>
+
+            <!-- Target Course -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Target Course (Only for Students)</label>
+              <select name="target_course_id" id="editTarget_course_id" class="form-select shadow-sm">
+                <option value="">-- Select Course --</option>
+                @foreach ($courses as $course)
+                <option value="{{ $course->id }}">{{ $course->title }}</option>
+                @endforeach
+              </select>
+            </div>
+
+            <!-- Start Time -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Start Time <span class="text-danger">*</span></label>
+              <input type="datetime-local" name="start_at" id="editStart_at" class="form-control shadow-sm" >
+              <div class="start_atEditError" style="color:red;"></div>
+            </div>
+
+            <!-- End Time -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">End Time</label>
+              <input type="datetime-local" name="end_at" id="editEnd_at" class="form-control shadow-sm">
+            </div>
+
+            <!-- Attachments -->
+            <div class="col-md-12">
+              <label class="form-label fw-semibold">Attachments (Files / Images)</label>
+              <input type="file" name="attachments[]" id="editAttachments" multiple class="form-control shadow-sm">
+              <ul id="existingAttachments" class="list-group mt-2"></ul>
+              <input type="hidden" name="old_attachments" id="oldAttachments">
+            </div>
+
+            <!-- Status -->
+            <div class="col-md-6">
+              <label for="editStatus" class="form-label fw-semibold">Status</label>
+              <select class="form-select shadow-sm" id="editStatus" name="status">
+                <option value="">Select Status</option>
+                <option value="draft">Draft</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+              <div class="statusEditError" style="color:red;"></div>
+            </div>
+
+            <!-- Notice Image -->
+            <div class="col-md-6">
+              <label for="editImage" class="form-label fw-semibold">Notice Image</label>
+              <input type="file" class="form-control shadow-sm" id="editImage" name="image">
+              <div class="imageError" style="color:red;"></div>
+            </div>
+
+            <!-- Preview -->
+            <div class="col-md-12 text-center">
+              <img id="editPreviewImage" src="#" alt="Preview"
+                   class="img-thumbnail mt-2 shadow-sm border"
+                   style="max-height: 120px; display: none;">
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle me-1"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save-fill me-1"></i> Update
           </button>
         </div>
       </form>
@@ -230,6 +354,7 @@
                   <td>
                       ${notice.status === 'active' ? '<span class="badge bg-success">Active</span>'
                       : notice.status === 'inactive' ? '<span class="badge bg-warning">Inactive</span>'
+                      : notice.status === 'draft' ? '<span class="badge bg-secondary">Draft</span>'
                       : '<span class="badge bg-secondary">Unknown</span>'}
                   </td>
                   <td>
@@ -240,7 +365,7 @@
               `;
             });
           }else{
-            html = `<tr><td colspan="5" class="text-center">No Video found</td></tr>`;
+            html = `<tr><td colspan="8" class="text-center">No Notice found</td></tr>`;
           }
           $('#noticeTable').html(html);
 
@@ -279,7 +404,7 @@
         
 
 
-
+      //Add notice
       $('#addNoticeForm').submit(function(e){
           e.preventDefault();
 
@@ -330,6 +455,104 @@
                   }
               }
           });
+      });
+
+
+
+
+
+      // Edit Notice Button Click
+      // Bootstrap 5 modal instance
+      const editModal = new bootstrap.Modal(document.getElementById('editNoticeModal'));
+
+      // Edit button click
+      $(document).on('click', '.editBtn', function(){
+          let id = $(this).data('id');
+
+          $.get("{{ url('/admin/notice/edit') }}/" + id, function(res){
+              if(res.status === 'success'){
+                  const notice = res.data;
+
+                  // Basic fields
+                  $('#editId').val(notice.id);
+                  $('#editTitle').val(notice.title);
+                  $('#editDescription').val(notice.description);
+                  $('#editTarget_role').val(notice.target_role);
+                  $('#editTarget_course_id').val(notice.target_course_id);
+                  $('#editStart_at').val(notice.start_at);
+                  $('#editEnd_at').val(notice.end_at);
+                  $('#editStatus').val(notice.status);
+
+                  // Attachments show
+                  let attachments = notice.attachments || []; // already array
+                  let attachHtml = '';
+                  attachments.forEach(file => {
+                      attachHtml += `
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                          <span>${file}</span>
+                          <button type="button" class="btn btn-sm btn-danger removeAttachment" data-file="${file}">&times;</button>
+                        </li>
+                      `;
+                  });
+                  $('#existingAttachments').html(attachHtml);
+                  $('#oldAttachments').val(JSON.stringify(attachments));
+
+                  // Show modal
+                  editModal.show();
+              }
+          });
+      });
+
+      // Remove attachment
+      $(document).on('click', '.removeAttachment', function(){
+          let file = $(this).data('file');
+          let oldFiles = JSON.parse($('#oldAttachments').val() || '[]');
+          oldFiles = oldFiles.filter(f => f !== file);
+          $('#oldAttachments').val(JSON.stringify(oldFiles));
+          $(this).closest('li').remove();
+      });
+
+
+      // Submit edit form
+      $('#editNoticeForm').submit(function(e){
+          e.preventDefault();
+          let formData = new FormData(this);
+
+          $.ajax({
+              url: "{{ url('/admin/notice/update') }}",
+              method: "POST",
+              data: formData,
+              processData: false,
+              contentType: false,
+              success: function(res){
+                  if(res.status === 'success'){
+                      toastr.success(res.message, 'Success', {timeOut: 3000});
+                      $('#editNoticeModal').modal('hide');
+                      loadNotices(currentPage, currentSearch);
+                      $('#editNoticeForm').trigger('reset');
+                      $('#existingAttachments').html('');
+                  }
+              },
+              error: function(xhr){
+                  if(xhr.status === 422){
+                      let errors = xhr.responseJSON.errors;
+                      $('#titleEditError').html(errors.title ? errors.title[0] : '');
+                      $('#descriptionEditError').html(errors.description ? errors.description[0] : '');
+                      $('#attachmentsEditError').html(errors.attachments ? errors.attachments[0] : '');
+                      $('#statusEditError').html(errors.status ? errors.status[0] : '');
+                      $('#start_atEditError').html(errors.start_at ? errors.start_at[0] : '');
+                  }
+              }
+          });
+      });
+
+      // Remove old attachment
+      $(document).on('click', '.removeAttachment', function(){
+          let file = $(this).data('file');
+          let oldFiles = JSON.parse($('#oldAttachments').val());
+          oldFiles = oldFiles.filter(f => f !== file);
+          $('#oldAttachments').val(JSON.stringify(oldFiles));
+          $(this).closest('li').remove();
       });
 
 
