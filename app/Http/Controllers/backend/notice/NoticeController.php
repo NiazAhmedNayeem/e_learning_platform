@@ -35,7 +35,7 @@ class NoticeController extends Controller
             'target_course_id' => 'nullable|exists:courses,id',
             'start_at'         => 'required|date',
             'end_at'           => 'nullable|date|after_or_equal:start_at',
-            'attachments.*'    => 'nullable|file|max:5120',
+            'attachments.*'    => 'nullable|file|mimes:jpg,jpeg,png,gif,pdf,doc,docx|max:5120',
             'status'           => 'required|in:active,inactive,draft',
             'image'            => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
@@ -60,7 +60,7 @@ class NoticeController extends Controller
         $attachments = [];
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
-                $fileName = $file->getClientOriginalName();
+                $fileName = time().'_'.$file->getClientOriginalName();
                 $file->move(public_path('upload/notice/attachments/'), $fileName);
                 $attachments[] = $fileName;
             }
@@ -115,8 +115,8 @@ class NoticeController extends Controller
                 'description'      => $notice->description,
                 'target_role'      => $notice->target_role,
                 'target_course_id' => $notice->target_course_id,
-                'start_at'         => $notice->start_at,
-                'end_at'           => $notice->end_at,
+                'start_at'         => $notice->start_at ? date('Y-m-d\TH:i', strtotime($notice->start_at)) : null,
+                'end_at'           => $notice->end_at ? date('Y-m-d\TH:i', strtotime($notice->end_at)) : null,
                 'status'           => $notice->status,
                 'attachments'      => $notice->attachments ? json_decode($notice->attachments) : [],
             ],
@@ -132,8 +132,8 @@ class NoticeController extends Controller
             'description'      => 'nullable|string',
             'target_role'      => 'required|in:all,admin,teacher,student',
             'target_course_id' => 'nullable|exists:courses,id',
-            'start_at'         => 'required|date_format:Y-m-d\TH:i',
-            'end_at'           => 'nullable|date_format:Y-m-d\TH:i|after_or_equal:start_at',
+            'start_at'         => 'required|date',
+            'end_at'           => 'nullable|date|after_or_equal:start_at',
             'attachments.*'    => 'nullable|file|mimes:jpg,jpeg,png,gif,pdf,doc,docx|max:5120',
             'status'           => 'required|in:active,inactive,draft',
             'image'            => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
@@ -150,21 +150,53 @@ class NoticeController extends Controller
         
         $notice = Notice::findOrFail($request->id);
 
+
         $notice->title            = $request->title;
         $notice->description      = $request->description;
         $notice->target_role      = $request->target_role;
         $notice->target_course_id = $request->target_course_id;
-        $notice->start_at         = $request->start_at;
-        $notice->end_at           = $request->end_at;
+        $notice->start_at         = date('Y-m-d H:i:s', strtotime($request->start_at));
+        $notice->end_at           = $request->end_at ? date('Y-m-d H:i:s', strtotime($request->end_at)) : null;
         $notice->status           = $request->status;
 
-        // Handle attachments
-        $oldAttachments = $request->old_attachments ? json_decode($request->old_attachments) : [];
-        $newAttachments = [];
+        // slug handle
+        $slug = Str::slug($request->name);
 
+        if ($slug !== $notice->slug) {
+            $originalSlug = $slug;
+            $count = 1;
+
+            while (Notice::where('slug', $slug)
+                ->where('id', '!=', $notice->id)
+                ->exists()) 
+            {
+                $slug = $originalSlug . '-' . $count;
+                $count++;
+            }
+
+            $notice->slug = $slug;
+        }
+
+        // Handle attachments
+        $newAttachments = [];
+        // first database theke old file gula ana hocche
+        $currentAttachments = $notice->attachments ? json_decode($notice->attachments, true) : [];
+        // form theke je glla rakha holo
+        $oldAttachments = $request->old_attachments ? json_decode($request->old_attachments, true) : [];
+        // form theke remove kora file gula ber kora
+        $deletedFiles = array_diff($currentAttachments, $oldAttachments);
+        // form theke remove kora file gula delete kora
+        foreach($deletedFiles as $file){
+            $path = public_path('upload/notice/attachments/'.$file);
+            if(file_exists($path)){
+                unlink($path);
+            }
+        }
+
+        ///new attachments insert
         if($request->hasFile('attachments')){
             foreach($request->file('attachments') as $file){
-                $filename = time().$file->getClientOriginalName();
+                $filename = time().'_'.$file->getClientOriginalName();
                 $file->move(public_path('upload/notice/attachments'), $filename);
                 $newAttachments[] = $filename;
             }

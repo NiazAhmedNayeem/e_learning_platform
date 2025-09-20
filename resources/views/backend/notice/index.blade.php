@@ -114,6 +114,7 @@
             <div class="col-md-6">
               <label class="form-label fw-semibold">End Time</label>
               <input type="datetime-local" name="end_at" class="form-control shadow-sm">
+              <div class="end_atError" style="color:red;"></div>
             </div>
 
             <!-- Attachments -->
@@ -167,7 +168,6 @@
 </div>
 
 
-<!-- Edit Notice Modal -->
 <!-- Edit Notice Modal -->
 <div class="modal fade" id="editNoticeModal" tabindex="-1" aria-labelledby="editNoticeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -236,12 +236,14 @@
             <div class="col-md-6">
               <label class="form-label fw-semibold">End Time</label>
               <input type="datetime-local" name="end_at" id="editEnd_at" class="form-control shadow-sm">
+              <div class="end_atEditError" style="color:red;"></div>
             </div>
 
             <!-- Attachments -->
             <div class="col-md-12">
               <label class="form-label fw-semibold">Attachments (Files / Images)</label>
               <input type="file" name="attachments[]" id="editAttachments" multiple class="form-control shadow-sm">
+              <div class="attachmentsEditError" style="color:red;"></div>
               <ul id="existingAttachments" class="list-group mt-2"></ul>
               <input type="hidden" name="old_attachments" id="oldAttachments">
             </div>
@@ -449,9 +451,21 @@
                       $('.descriptionError').html(errors.description ? errors.description[0] : '');
                       $('.target_roleError').html(errors.target_role ? errors.target_role[0] : '');
                       $('.start_atError').html(errors.start_at ? errors.start_at[0] : '');
-                      $('.attachmentsError').html(errors.attachments ? errors.attachments[0] : '');
+                      $('.end_atError').html(errors.end_at ? errors.end_at[0] : '');
                       $('.statusError').html(errors.status ? errors.status[0] : '');
                       $('.imageError').html(errors.image ? errors.image[0] : '');
+
+                      let attachError = '';
+                      if(errors.attachments){
+                          attachError = errors.attachments[0];
+                      } else {
+                          Object.keys(errors).forEach(function(key){
+                              if(key.startsWith('attachments.')){
+                                  attachError = errors[key][0];
+                              }
+                          });
+                      }
+                      $('.attachmentsError').html(attachError);
                   }
               }
           });
@@ -529,20 +543,34 @@
                       toastr.success(res.message, 'Success', {timeOut: 3000});
                       $('#editNoticeModal').modal('hide');
                       loadNotices(currentPage, currentSearch);
-                      $('#editNoticeForm').trigger('reset');
+                      $('#editNoticeForm')[0].reset();
                       $('#existingAttachments').html('');
+                      $('.titleEditError, .descriptionEditError, .attachmentsEditError, .statusEditError, .start_atEditError, .end_atEditError').html('');
                   }
               },
               error: function(xhr){
                   if(xhr.status === 422){
                       let errors = xhr.responseJSON.errors;
-                      $('#titleEditError').html(errors.title ? errors.title[0] : '');
-                      $('#descriptionEditError').html(errors.description ? errors.description[0] : '');
-                      $('#attachmentsEditError').html(errors.attachments ? errors.attachments[0] : '');
-                      $('#statusEditError').html(errors.status ? errors.status[0] : '');
-                      $('#start_atEditError').html(errors.start_at ? errors.start_at[0] : '');
+                      $('.titleEditError').html(errors.title ? errors.title[0] : '');
+                      $('.descriptionEditError').html(errors.description ? errors.description[0] : '');
+                      $('.statusEditError').html(errors.status ? errors.status[0] : '');
+                      $('.start_atEditError').html(errors.start_at ? errors.start_at[0] : '');
+                      $('.end_atEditError').html(errors.end_at ? errors.end_at[0] : '');
+
+                      let attachError = '';
+                      if(errors.attachments){
+                          attachError = errors.attachments[0];
+                      } else {
+                          Object.keys(errors).forEach(function(key){
+                              if(key.startsWith('attachments.')){
+                                  attachError = errors[key][0];
+                              }
+                          });
+                      }
+                      $('.attachmentsEditError').html(attachError);
+
                   }
-              }
+              },
           });
       });
 
@@ -561,7 +589,7 @@
 
 
 
-      //Delete category
+      //Delete Notice
         $(document).on('click', '.deleteBtn', function(){
             let id = $(this).data('id');
             let tr = $(this).closest('tr');
