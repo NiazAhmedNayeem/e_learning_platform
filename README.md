@@ -105,7 +105,30 @@ Main tables include:
     ```bash
     php artisan migrate --seed
     
-5. You don’t need to run the php artisan serve command.
+---
+
+## ⚡ How to Run the Project
+
+5.  You don’t need to run the `php artisan serve` command.  
+    👉 Just open your browser and go to:  
     ```bash
-    Just open your browser and navigate to the following URL: 
-    http://localhost/e_learning_platform ("e_learning_platform" your project folder name).
+    http://localhost/e_learning_platform
+
+*(Here, `e_learning_platform` is your project folder name.)*  
+
+---
+
+## 📂 Project Location Requirement
+
+6. The project **must be placed** inside the `XAMPP/htdocs/` directory.  
+
+   Example: XAMPP/htdocs/e_learning_platform
+
+
+7. This is important because XAMPP’s **Apache server** serves projects only from the `htdocs` folder.  
+   If the project is not inside `htdocs`, you won’t be able to access it through the browser using:  
+
+
+
+
+
