@@ -73,7 +73,7 @@ Main tables include:
 
 ## 📷 Database Diagram
 
-![Database Diagram](.docs/images/database.png)
+![Database Diagram](docs/images/database.png)
 
 ---
 
