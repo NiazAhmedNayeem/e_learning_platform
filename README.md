@@ -89,3 +89,23 @@ Main tables include:
    ```bash
    git clone https://github.com/NiazAhmedNayeem/e_learning_platform.git
    cd e_learning_platform
+
+
+2. Install dependencies:
+    ```bash
+    composer install
+    npm install && npm run dev
+
+3. Setup environment:
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+
+4. Run migrations:
+    ```bash
+    php artisan migrate --seed
+    
+5. You don’t need to run the php artisan serve command.
+    ```bash
+    Just open your browser and navigate to the following URL: 
+    http://localhost/e_learning_platform ("e_learning_platform" your project folder name).
