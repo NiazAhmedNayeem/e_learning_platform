@@ -114,7 +114,7 @@ Main tables include:
     ```bash
     http://localhost/e_learning_platform
 
-*(Here, `e_learning_platform` is your project folder name.)*  
+    *(Here, `e_learning_platform` is your project folder name.)*  
 
 ---
 
