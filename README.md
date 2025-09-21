@@ -71,6 +71,12 @@ Main tables include:
 
 ---
 
+## 📷 Admin Dashboard
+
+![Admin Dashboard](docs/images/admin_dashboard.png)
+
+---
+
 ## 📷 Database Diagram
 
 ![Database Diagram](docs/images/database.png)

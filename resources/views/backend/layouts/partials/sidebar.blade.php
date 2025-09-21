@@ -58,7 +58,7 @@
                     {{-- Add course --}}
                         <a class="nav-link {{ request()->routeIs('admin.notice.index') ? 'active' : '' }}" href="{{ route('admin.notice.index') }}">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-bullhorn"></i></div>
-                            Notice
+                            Notices
                         </a>
 
                     {{-- Add students --}}
@@ -82,7 +82,7 @@
                     @endif
                         
                     {{-- Add User --}}
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                        {{-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                             <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                             All Users
                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
@@ -95,7 +95,7 @@
                                 <a class="nav-link" href="#">Students</a>
                                 <a class="nav-link" href="#">Parents</a>
                             </nav>
-                        </div>
+                        </div> --}}
                 
 
 

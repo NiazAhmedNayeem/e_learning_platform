@@ -6,7 +6,7 @@
     <!-- Navbar Brand-->
     <a class="navbar-brand ps-3" href="{{ route('dashboard') }}">
         {{-- <img src="{{ auth()->user()->image_show }}" height="40" width="100"/> --}}
-        Student Management
+        E-Learning
     </a>
 
     <!-- Sidebar Toggle-->
