@@ -118,11 +118,22 @@
             </div>
 
             <!-- Attachments -->
-            <div class="col-md-12">
+            {{-- <div class="col-md-12">
               <label class="form-label fw-semibold">Attachments (Files / Images)</label>
-              <input type="file" name="attachments[]" multiple class="form-control shadow-sm">
+              <input type="file" name="attachments[]" id="attachmentsInput" multiple class="form-control shadow-sm">
               <div class="attachmentsError" style="color:red;"></div>
+              <!-- File list -->
+              <ul id="attachmentsList" class="list-group mt-2"></ul>
+            </div> --}}
+
+
+            <div class="col-md-12">
+                <label class="form-label fw-semibold">Attachments (Files / Images)</label>
+                <input type="file" name="attachments[]" id="attachmentsInput" multiple class="form-control shadow-sm">
+                <div class="attachmentsError" style="color:red;"></div>
+                <ul id="attachmentsList" class="list-group mt-2"></ul>
             </div>
+
 
             <!-- Status -->
             <div class="col-md-6">
@@ -244,9 +255,12 @@
               <label class="form-label fw-semibold">Attachments (Files / Images)</label>
               <input type="file" name="attachments[]" id="editAttachments" multiple class="form-control shadow-sm">
               <div class="attachmentsEditError" style="color:red;"></div>
+              <ul id="editAttachmentsList" class="list-group mt-2"></ul>
               <ul id="existingAttachments" class="list-group mt-2"></ul>
               <input type="hidden" name="old_attachments" id="oldAttachments">
             </div>
+
+                
 
             <!-- Status -->
             <div class="col-md-6">
@@ -445,38 +459,123 @@
 
               error: function(xhr){
                   if(xhr.status == 422){
-                        console.log(xhr.responseText);
-                      let errors = xhr.responseJSON.errors;
-                      $('.titleError').html(errors.title ? errors.title[0] : '');
-                      $('.descriptionError').html(errors.description ? errors.description[0] : '');
-                      $('.target_roleError').html(errors.target_role ? errors.target_role[0] : '');
-                      $('.start_atError').html(errors.start_at ? errors.start_at[0] : '');
-                      $('.end_atError').html(errors.end_at ? errors.end_at[0] : '');
-                      $('.statusError').html(errors.status ? errors.status[0] : '');
-                      $('.imageError').html(errors.image ? errors.image[0] : '');
+                    console.log(xhr.responseText);
+                    let errors = xhr.responseJSON.errors;
+                    $('.titleError').html(errors.title ? errors.title[0] : '');
+                    $('.descriptionError').html(errors.description ? errors.description[0] : '');
+                    $('.target_roleError').html(errors.target_role ? errors.target_role[0] : '');
+                    $('.start_atError').html(errors.start_at ? errors.start_at[0] : '');
+                    $('.end_atError').html(errors.end_at ? errors.end_at[0] : '');
+                    $('.statusError').html(errors.status ? errors.status[0] : '');
+                    $('.imageError').html(errors.image ? errors.image[0] : '');
 
-                      let attachError = '';
-                      if(errors.attachments){
-                          attachError = errors.attachments[0];
-                      } else {
-                          Object.keys(errors).forEach(function(key){
-                              if(key.startsWith('attachments.')){
-                                  attachError = errors[key][0];
-                              }
-                          });
-                      }
-                      $('.attachmentsError').html(attachError);
+
+                    // Clear previous errors
+                    $('.attachmentsError').html('');
+                    document.querySelectorAll("#attachmentsList .file-error").forEach(el=>{
+                        el.innerText = "";
+                        el.style.display = "none";
+                    });
+                    // Show attachments errors
+                    Object.keys(errors).forEach(function(key){
+                        if(key.startsWith("attachments.")){
+                            let index = key.split(".")[1]; // attachments.0, attachments.1 ...
+                            let fileError = errors[key][0];
+
+                            // find li by file name
+                            let li = Array.from(document.querySelectorAll("#attachmentsList li")).find(li=>{
+                                return li.getAttribute("data-file") === dt.items[index].getAsFile().name;
+                            });
+
+                            if(li){
+                                let errDiv = li.querySelector(".file-error");
+                                errDiv.innerText = fileError;
+                                errDiv.style.display = "block";
+                            }
+                        }
+                    });
+                  }
+              },
+          });
+      });
+
+
+      let dt = new DataTransfer();
+ 
+      // File input change when add notice
+      document.getElementById("attachmentsInput").addEventListener("change", function(e){
+          let files = e.target.files;
+
+          for(let i=0; i<files.length; i++){
+              let file = files[i];
+
+              // 🔹 Check if file already exists
+              let alreadyExists = false;
+              for(let j=0; j<dt.items.length; j++){
+                  if(dt.items[j].getAsFile().name === file.name){
+                      alreadyExists = true;
+                      break;
                   }
               }
-          });
+              if(alreadyExists) continue;
+
+              dt.items.add(file);
+
+              // create list item
+              let li = document.createElement("li");
+              li.className = "list-group-item d-flex flex-column align-items-start mb-1";
+              li.setAttribute("data-file", file.name);
+              li.innerHTML = `
+                  <div class="d-flex w-100 justify-content-between align-items-center">
+                      <span>${file.name}</span>
+                      <button type="button" class="btn btn-sm btn-danger">&times;</button>
+                  </div>
+                  <small class="text-danger file-error" style="display:none;"></small>
+              `;
+
+              // remove file
+              li.querySelector("button").addEventListener("click", function(){
+                  for(let j=0; j<dt.items.length; j++){
+                      if(dt.items[j].getAsFile().name === file.name){
+                          dt.items.remove(j);
+                          break;
+                      }
+                  }
+                  document.getElementById("attachmentsInput").files = dt.files;
+                  li.remove();
+              });
+
+              document.getElementById("attachmentsList").appendChild(li);
+
+              // 🔹 File validation (Laravel rule)
+              let allowedTypes = [
+                  "image/jpeg",
+                  "image/jpg",
+                  "image/png",
+                  "image/gif",
+                  "application/pdf",
+                  "application/msword", // .doc
+                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document" // .docx
+              ];
+
+              let errorEl = li.querySelector(".file-error");
+
+              if(file.size > 5 * 1024 * 1024){ // > 5MB
+                  errorEl.textContent = "File size must be less than 5MB.";
+                  errorEl.style.display = "block";
+              } else if(!allowedTypes.includes(file.type)){
+                  errorEl.textContent = "Invalid file type (only jpg, jpeg, png, gif, pdf, doc, docx allowed).";
+                  errorEl.style.display = "block";
+              }
+          }
+
+          this.files = dt.files;
       });
 
 
 
 
-
       // Edit Notice Button Click
-      // Bootstrap 5 modal instance
       const editModal = new bootstrap.Modal(document.getElementById('editNoticeModal'));
 
       // Edit button click
@@ -545,46 +644,134 @@
                       loadNotices(currentPage, currentSearch);
                       $('#editNoticeForm')[0].reset();
                       $('#existingAttachments').html('');
-                      $('.titleEditError, .descriptionEditError, .attachmentsEditError, .statusEditError, .start_atEditError, .end_atEditError').html('');
-                  }
+                      // $('.titleEditError, .descriptionEditError, .attachmentsEditError, .statusEditError, .start_atEditError, .end_atEditError').html('');
+                     
+                    dt = new DataTransfer();
+                    $('#editAttachments')[0].files = dt.files;
+                    // এখানে clear করো
+                    $('.titleEditError, .descriptionEditError, .attachmentsEditError, .statusEditError, .start_atEditError, .end_atEditError').html('');
+
+                    
+                    
+                    }
               },
               error: function(xhr){
                   if(xhr.status === 422){
-                      let errors = xhr.responseJSON.errors;
-                      $('.titleEditError').html(errors.title ? errors.title[0] : '');
-                      $('.descriptionEditError').html(errors.description ? errors.description[0] : '');
-                      $('.statusEditError').html(errors.status ? errors.status[0] : '');
-                      $('.start_atEditError').html(errors.start_at ? errors.start_at[0] : '');
-                      $('.end_atEditError').html(errors.end_at ? errors.end_at[0] : '');
+                    let errors = xhr.responseJSON.errors;
+                    $('.titleEditError').html(errors.title ? errors.title[0] : '');
+                    $('.descriptionEditError').html(errors.description ? errors.description[0] : '');
+                    $('.statusEditError').html(errors.status ? errors.status[0] : '');
+                    $('.start_atEditError').html(errors.start_at ? errors.start_at[0] : '');
+                    $('.end_atEditError').html(errors.end_at ? errors.end_at[0] : '');
 
-                      let attachError = '';
-                      if(errors.attachments){
-                          attachError = errors.attachments[0];
-                      } else {
-                          Object.keys(errors).forEach(function(key){
-                              if(key.startsWith('attachments.')){
-                                  attachError = errors[key][0];
-                              }
-                          });
-                      }
-                      $('.attachmentsEditError').html(attachError);
+                  
+                    $('.attachmentsEditError').html('');
+                    document.querySelectorAll("#editAttachmentsList .file-error").forEach(el=>{
+                        el.innerText = "";
+                        el.style.display = "none";
+                    });
+                    // Show attachments errors
+                    Object.keys(errors).forEach(function(key){
+                        if(key.startsWith("attachments.")){
+                            let index = key.split(".")[1]; // attachments.0, attachments.1 ...
+                            let fileError = errors[key][0];
 
+                            // find li by file name
+                            let li = Array.from(document.querySelectorAll("#editAttachmentsList li")).find(li=>{
+                                return li.getAttribute("data-file") === dt.items[index].getAsFile().name;
+                            });
+
+                            if(li){
+                                let errDiv = li.querySelector(".file-error");
+                                errDiv.innerText = fileError;
+                                errDiv.style.display = "block";
+                            }
+                        }
+                    });
                   }
               },
           });
       });
 
-      // Remove old attachment
-      $(document).on('click', '.removeAttachment', function(){
-          let file = $(this).data('file');
-          let oldFiles = JSON.parse($('#oldAttachments').val());
-          oldFiles = oldFiles.filter(f => f !== file);
-          $('#oldAttachments').val(JSON.stringify(oldFiles));
-          $(this).closest('li').remove();
+
+      // Modal completely closed than reset
+      $('#editNoticeModal').on('hidden.bs.modal', function () {
+          $('#editNoticeForm')[0].reset();
+          $('#editAttachmentsList').html('');
+          $('#oldAttachments').val('');
+          dt = new DataTransfer();
+          $('#editAttachments')[0].files = dt.files;
+       });
+
+
+      document.getElementById("editAttachments").addEventListener("change", function(e){
+          let files = e.target.files;
+
+          for(let i=0; i<files.length; i++){
+              let file = files[i];
+
+              // check duplicate
+              let alreadyExists = false;
+              for(let j=0; j<dt.items.length; j++){
+                  if(dt.items[j].getAsFile().name === file.name){
+                      alreadyExists = true;
+                      break;
+                  }
+              }
+              if(alreadyExists) continue;
+
+              dt.items.add(file);
+
+              // create list item
+              let li = document.createElement("li");
+              li.className = "list-group-item d-flex flex-column align-items-start mb-1";
+              li.setAttribute("data-file", file.name);
+              li.innerHTML = `
+                  <div class="d-flex w-100 justify-content-between align-items-center">
+                      <span>${file.name}</span>
+                      <button type="button" class="btn btn-sm btn-danger">&times;</button>
+                  </div>
+                  <small class="text-danger file-error" style="display:none;"></small>
+              `;
+
+              // remove file
+              li.querySelector("button").addEventListener("click", function(){
+                  for(let j=0; j<dt.items.length; j++){
+                      if(dt.items[j].getAsFile().name === file.name){
+                          dt.items.remove(j);
+                          break;
+                      }
+                  }
+                  document.getElementById("editAttachments").files = dt.files;
+                  li.remove();
+              });
+
+              document.getElementById("editAttachmentsList").appendChild(li);
+
+              // validate file based on Laravel rule
+              let allowedTypes = [
+                  'image/jpeg',
+                  'image/jpg',
+                  'image/png',
+                  'image/gif',
+                  'application/pdf',
+                  'application/msword', // .doc
+                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document' // .docx
+              ];
+
+              let errorEl = li.querySelector(".file-error");
+
+              if(file.size > 5 * 1024 * 1024){ // 5MB limit
+                  errorEl.textContent = "File size must be less than 5MB.";
+                  errorEl.style.display = "block";
+              } else if(!allowedTypes.includes(file.type)){
+                  errorEl.textContent = "Invalid file type (only jpg, jpeg, png, gif, pdf, doc, docx allowed).";
+                  errorEl.style.display = "block";
+              }
+          }
+
+          this.files = dt.files;
       });
-
-
-
 
 
 
