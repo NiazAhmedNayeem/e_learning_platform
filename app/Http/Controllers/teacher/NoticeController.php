@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\teacher;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendNoticeJob;
 use App\Models\Course;
 use App\Models\Notice;
 use Illuminate\Http\Request;
@@ -91,6 +92,15 @@ class NoticeController extends Controller
             $notice->image = $fileName;
             $notice->save();
         }
+
+        ///send users notification
+        $startTime = \Carbon\Carbon::parse($notice->start_at, config('app.timezone'));
+        if ($startTime->isPast()) {
+            SendNoticeJob::dispatch($notice->id);
+        } else {
+            SendNoticeJob::dispatch($notice->id)->delay($startTime);
+        }
+
 
         return response()->json([
             'status'  => 'success',

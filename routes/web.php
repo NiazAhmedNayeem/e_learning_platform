@@ -112,8 +112,11 @@ Route::middleware(['auth'])->group(function () {
 
 
         
-
-
+///test job
+Route::get('/test-job', function () {
+    \App\Jobs\TestJob::dispatch();
+    return "Job dispatched!";
+});
 
 
 

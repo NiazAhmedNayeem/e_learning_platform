@@ -331,7 +331,7 @@
                     </div>
                   </td>
                   
-                  <td>${notice.course?.title}</td>
+                  <td>${notice.course?.title ?? 'N/A'}</td>
                   <td>
                       ${notice.target_role === 'all' ? '<span class="badge bg-info">All</span>'
                       : notice.target_role === 'admin' ? '<span class="badge bg-warning">Admin</span>'
