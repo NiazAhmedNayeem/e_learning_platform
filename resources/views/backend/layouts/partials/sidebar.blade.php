@@ -136,6 +136,13 @@
                         Students
                     </a>
 
+                {{-- Add Notice --}}
+                    <a class="nav-link {{ request()->routeIs('teacher.notice.index') ? 'active' : '' }}" href="{{ route('teacher.notice.index') }}">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                        Notices
+                    </a>
+
+
                 @endif
     {{-- Teacher Dashboard sidebar end here --}}
 

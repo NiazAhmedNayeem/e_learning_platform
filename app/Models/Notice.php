@@ -14,6 +14,9 @@ class Notice extends Model
     public function user(){
         return $this->belongsTo(User::class, 'creator_id');
     }
+    public function course(){
+        return $this->belongsTo(Course::class, 'target_course_id');
+    }
 
     protected $appends = ['image_show'];
     public function getImageShowAttribute(){

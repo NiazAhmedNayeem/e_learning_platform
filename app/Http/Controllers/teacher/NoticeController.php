@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\backend\notice;
+namespace App\Http\Controllers\teacher;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
@@ -12,16 +12,18 @@ use Illuminate\Support\Facades\Validator;
 class NoticeController extends Controller
 {
     public function index(){
-        $courses = Course::where('status', 1)->get();
-        return view('backend.notice.index',  compact('courses'));
+        $teacherId = auth()->user()->id;
+        $courses = Course::where('teacher_id', $teacherId)->where('status', 1)->get();
+        return view('teacher.notice.index',  compact('courses'));
     }
 
     public function noticeData(Request $request){
+        $teacherId = auth()->user()->id;
         $query = Notice::with('user','course');
         if($request->has('search') && $request->search != ''){
             $query->where('title', 'like', '%'. $request->search. '%');
         }
-        $notices = $query->orderBy('id', 'desc')->paginate(5);
+        $notices = $query->where('creator_id', $teacherId)->orderBy('id', 'desc')->paginate(5);
         return response()->json($notices);
     }
 
@@ -31,8 +33,8 @@ class NoticeController extends Controller
         $validator = Validator::make($request->all(), [
             'title'            => 'required|string|max:255',
             'description'      => 'nullable|string',
-            'target_role'      => 'required|in:all,admin,teacher,student',
-            'target_course_id' => 'nullable|exists:courses,id',
+            'target_role'      => 'required|in:student',
+            'target_course_id' => 'required|exists:courses,id',
             'start_at'         => 'required|date',
             'end_at'           => 'nullable|date|after_or_equal:start_at',
             'attachments.*'    => 'nullable|file|mimes:jpg,jpeg,png,gif,pdf,doc,docx|max:5120',
@@ -130,8 +132,8 @@ class NoticeController extends Controller
             'id'               => 'required|exists:notices,id',
             'title'            => 'required|string|max:255',
             'description'      => 'nullable|string',
-            'target_role'      => 'required|in:all,admin,teacher,student',
-            'target_course_id' => 'nullable|exists:courses,id',
+            'target_role'      => 'required|in:student',
+            'target_course_id' => 'required|exists:courses,id',
             'start_at'         => 'required|date',
             'end_at'           => 'nullable|date|after_or_equal:start_at',
             'attachments.*'    => 'nullable|file|mimes:jpg,jpeg,png,gif,pdf,doc,docx|max:5120',

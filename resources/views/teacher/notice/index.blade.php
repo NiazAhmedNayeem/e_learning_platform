@@ -27,9 +27,8 @@
             <tr>
                 <th>SL</th>
                 <th>Notice Title</th>
-                <th>Creator</th>
+                <th>Course</th>
                 <th>Targeted User</th>
-                <th>Targeted Course</th>
                 <th>State Time</th>
                 <th>End Time</th>
                 <th>Status</th>
@@ -85,9 +84,6 @@
             <div class="col-md-6">
               <label class="form-label fw-semibold">Target Role <span class="text-danger">*</span></label>
               <select name="target_role" class="form-select shadow-sm" required>
-                <option value="all">All Users</option>
-                <option value="admin">Admins</option>
-                <option value="teacher">Teachers</option>
                 <option value="student">Students</option>
               </select>
               <div class="target_roleError" style="color:red;"></div>
@@ -102,6 +98,7 @@
                 <option value="{{ $course->id }}">{{ $course->title }}</option>
                 @endforeach
               </select>
+              <div class="target_course_idError" style="color:red;"></div>
             </div>
 
             <!-- Start Time -->
@@ -119,15 +116,6 @@
             </div>
 
             <!-- Attachments -->
-            {{-- <div class="col-md-12">
-              <label class="form-label fw-semibold">Attachments (Files / Images)</label>
-              <input type="file" name="attachments[]" id="attachmentsInput" multiple class="form-control shadow-sm">
-              <div class="attachmentsError" style="color:red;"></div>
-              <!-- File list -->
-              <ul id="attachmentsList" class="list-group mt-2"></ul>
-            </div> --}}
-
-
             <div class="col-md-12">
                 <label class="form-label fw-semibold">Attachments (Files / Images)</label>
                 <input type="file" name="attachments[]" id="attachmentsInput" multiple class="form-control shadow-sm">
@@ -327,7 +315,7 @@
         currentSearch = search;
 
         let html = '';
-        $.get("{{ url('/admin/notice/data') }}",{page,search}, function(res){
+        $.get("{{ url('/teacher/notice/data') }}",{page,search}, function(res){
           
           if(res.data && res.data.length > 0){
             $.each(res.data, function(index, notice){
@@ -342,22 +330,8 @@
                         <span>${notice.title}</span>
                     </div>
                   </td>
-                  <td>
-                    ${notice.user 
-                        ? (() => {
-                            let roleName = '';
-                            if(notice.user.role === 'admin'){
-                                roleName = (notice.user.is_super == 1) ? 'Super Admin' : 'Admin';
-                            } else if(notice.user.role === 'teacher'){
-                                roleName = 'Teacher';
-                            } else {
-                                roleName = notice.user.role.charAt(0).toUpperCase() + notice.user.role.slice(1);
-                            }
-                            return `${notice.user.name} (${roleName})`;
-                        })()
-                        : 'N/A'
-                    }
-                  </td>
+                  
+                  <td>${notice.course?.title}</td>
                   <td>
                       ${notice.target_role === 'all' ? '<span class="badge bg-info">All</span>'
                       : notice.target_role === 'admin' ? '<span class="badge bg-warning">Admin</span>'
@@ -366,7 +340,6 @@
                       : '<span class="badge bg-secondary">Unknown</span>'}
                   
                   </td>
-                  <td>${notice.course?.title ?? 'N/A'}</td>
                   <td>${dayjs(notice.start_at).tz('Asia/Dhaka').format('DD MMM YYYY - hh:mm A')}</td>
                   <td>${notice.end_at ? dayjs(notice.end_at).tz('Asia/Dhaka').format('DD MMM YYYY - hh:mm A') : 'N/A'}</td>
                   <td>
@@ -429,7 +402,7 @@
           let formData = new FormData(this);
 
           $.ajax({
-              url: "{{ url('/admin/notice/store') }}",
+              url: "{{ url('/teacher/notice/store') }}",
               method: "POST",
               data: formData,
               processData: false,
@@ -466,6 +439,7 @@
                     $('.titleError').html(errors.title ? errors.title[0] : '');
                     $('.descriptionError').html(errors.description ? errors.description[0] : '');
                     $('.target_roleError').html(errors.target_role ? errors.target_role[0] : '');
+                    $('.target_course_idError').html(errors.target_course_id ? errors.target_course_id[0] : '');
                     $('.start_atError').html(errors.start_at ? errors.start_at[0] : '');
                     $('.end_atError').html(errors.end_at ? errors.end_at[0] : '');
                     $('.statusError').html(errors.status ? errors.status[0] : '');
@@ -584,7 +558,7 @@
       $(document).on('click', '.editBtn', function(){
           let id = $(this).data('id');
 
-          $.get("{{ url('/admin/notice/edit') }}/" + id, function(res){
+          $.get("{{ url('/teacher/notice/edit') }}/" + id, function(res){
               if(res.status === 'success'){
                   const notice = res.data;
 
@@ -634,7 +608,7 @@
           let formData = new FormData(this);
 
           $.ajax({
-              url: "{{ url('/admin/notice/update') }}",
+              url: "{{ url('/teacher/notice/update') }}",
               method: "POST",
               data: formData,
               processData: false,
@@ -650,8 +624,8 @@
                      
                     dt = new DataTransfer();
                     $('#editAttachments')[0].files = dt.files;
-                    // এখানে clear করো
-                    $('.titleEditError, .descriptionEditError, .attachmentsEditError, .statusEditError, .start_atEditError, .end_atEditError').html('');
+                    
+                    $('.titleEditError, .descriptionEditError, .attachmentsEditError, .target_course_idError, .statusEditError, .start_atEditError, .end_atEditError').html('');
 
                     
                     
@@ -665,6 +639,7 @@
                     $('.statusEditError').html(errors.status ? errors.status[0] : '');
                     $('.start_atEditError').html(errors.start_at ? errors.start_at[0] : '');
                     $('.end_atEditError').html(errors.end_at ? errors.end_at[0] : '');
+                    $('.target_course_idError').html(errors.target_course_id ? errors.target_course_id[0] : '');
 
                   
                     $('.attachmentsEditError').html('');
@@ -809,7 +784,7 @@
             let id = $(this).data('id');
 
             $.ajax({
-                url: "{{ url('/admin/notice/delete') }}/" + id,
+                url: "{{ url('/teacher/notice/delete') }}/" + id,
                 method: "DELETE",
                 success: function(res){
                     if(res.status === 'success'){

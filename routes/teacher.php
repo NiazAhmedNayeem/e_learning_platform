@@ -30,6 +30,18 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':teacher'
     ///video player route
     Route::get('teacher/course/video/{id}', [App\Http\Controllers\teacher\TeacherController::class, 'videoPlayer'])->name('teacher.course.video-player')->middleware([CheckStatus::class]);
 
+
+
+    ///Notice management route
+    Route::get('/teacher/notice/index', [App\Http\Controllers\teacher\NoticeController::class, 'index'])->name('teacher.notice.index');
+    Route::get('/teacher/notice/data', [App\Http\Controllers\teacher\NoticeController::class, 'noticeData']);
+    Route::post('/teacher/notice/store', [App\Http\Controllers\teacher\NoticeController::class, 'store']);
+    Route::get('/teacher/notice/edit/{id}', [App\Http\Controllers\teacher\NoticeController::class, 'edit']);
+    Route::post('/teacher/notice/update', [App\Http\Controllers\teacher\NoticeController::class, 'update']);
+    Route::delete('/teacher/notice/delete/{id}', [App\Http\Controllers\teacher\NoticeController::class, 'delete']);
+
+
+
 }); 
 
 
