@@ -39,7 +39,7 @@ class NoticeController extends Controller
             'start_at'         => 'required|date',
             'end_at'           => 'nullable|date|after_or_equal:start_at',
             'attachments.*'    => 'nullable|file|mimes:jpg,jpeg,png,gif,pdf,doc,docx|max:5120',
-            'status'           => 'required|in:active,inactive,draft',
+            'status'           => 'required|in:active,inactive,draft,schedule',
             'image'            => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
@@ -148,7 +148,7 @@ class NoticeController extends Controller
             'start_at'         => 'required|date',
             'end_at'           => 'nullable|date|after_or_equal:start_at',
             'attachments.*'    => 'nullable|file|mimes:jpg,jpeg,png,gif,pdf,doc,docx|max:5120',
-            'status'           => 'required|in:active,inactive,draft',
+            'status'           => 'required|in:active,inactive,draft,schedule',
             'image'            => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 

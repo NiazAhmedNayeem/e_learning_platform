@@ -130,6 +130,7 @@
               <select class="form-select shadow-sm" id="status" name="status">
                 <option value="">Select Status</option>
                 <option value="draft">Draft</option>
+                <option value="schedule">Schedule</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
               </select>
@@ -257,6 +258,7 @@
               <select class="form-select shadow-sm" id="editStatus" name="status">
                 <option value="">Select Status</option>
                 <option value="draft">Draft</option>
+                <option value="schedule">Schedule</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
               </select>
@@ -344,6 +346,7 @@
                   <td>${notice.end_at ? dayjs(notice.end_at).tz('Asia/Dhaka').format('DD MMM YYYY - hh:mm A') : 'N/A'}</td>
                   <td>
                       ${notice.status === 'active' ? '<span class="badge bg-success">Active</span>'
+                      : notice.status === 'schedule' ? '<span class="badge bg-info">Schedule</span>'
                       : notice.status === 'inactive' ? '<span class="badge bg-warning">Inactive</span>'
                       : notice.status === 'draft' ? '<span class="badge bg-secondary">Draft</span>'
                       : '<span class="badge bg-secondary">Unknown</span>'}

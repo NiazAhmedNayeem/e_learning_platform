@@ -10,12 +10,12 @@ use Illuminate\Support\Facades\Log;
 class CheckNotices extends Command
 {
     protected $signature = 'notices:check';
-    protected $description = 'Check inactive notices and dispatch jobs';
+    protected $description = 'Check schedule notices and dispatch jobs';
 
     public function handle()
     {
         try {
-            $notices = Notice::where('status', 'inactive')
+            $notices = Notice::where('status', 'schedule')
                              ->where('start_at', '<=', now())
                              ->get();
 
@@ -30,11 +30,11 @@ class CheckNotices extends Command
                                     ->get();
 
             foreach ($expiredNotices as $notice) {
-                $notice->update(['status' => 'draft']);
-                Log::info("Notice ID {$notice->id} has expired. Status changed to draft.");
+                $notice->update(['status' => 'inactive']);
+                Log::info("Notice ID {$notice->id} has expired. Status changed to inactive.");
             }
 
-            $this->info('Inactive notices checked, jobs dispatched, and expired notices updated.');
+            $this->info('Schedule notices checked, jobs dispatched, and expired notices updated.');
 
         } catch (\Exception $e) {
             // Log the error for debugging
