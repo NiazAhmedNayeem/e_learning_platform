@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\SendNoticeJob;
 use App\Models\Course;
 use App\Models\Notice;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
@@ -91,12 +92,15 @@ class NoticeController extends Controller
             $notice->save();
         }
 
-        ///send users notification
+        // get target students
+        //$students = $this->getTargetStudents($notice);
+
         $startTime = \Carbon\Carbon::parse($notice->start_at, config('app.timezone'));
         if ($startTime->isPast()) {
             SendNoticeJob::dispatch($notice->id);
         } else {
-            SendNoticeJob::dispatch($notice->id)->delay($startTime);
+            $delayInSeconds = now()->diffInSeconds($startTime, false);
+            SendNoticeJob::dispatch($notice->id)->delay($delayInSeconds);
         }
 
         //SendNoticeJob::dispatch($notice->id)->delay(now()->addSeconds(10));
@@ -106,8 +110,45 @@ class NoticeController extends Controller
             'status'  => 'success',
             'message' => 'Notice created successfully.',
             'notice'  => $notice,
+            //'students' => $students,
         ]);
     }
+
+
+// getTargetStudents function
+// protected function getTargetStudents(Notice $notice)
+// {
+//     if ($notice->target_course_id) {
+
+//         return User::whereHas('orders.orderItems', function ($q) use ($notice) {
+//                 $q->where('course_id', $notice->target_course_id)
+//                 ->whereHas('order', function ($query) {
+//                     $query->where('status','approved');
+//                 });
+//             })->get();
+
+//     }
+
+//     return User::where('role', 'student')->get();
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function edit($id){
         $notice = Notice::find($id);

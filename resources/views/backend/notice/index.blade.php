@@ -383,7 +383,7 @@
               `;
             });
           }else{
-            html = `<tr><td colspan="8" class="text-center">No Notice found</td></tr>`;
+            html = `<tr><td colspan="9" class="text-center">No Notice found</td></tr>`;
           }
           $('#noticeTable').html(html);
 
@@ -436,6 +436,10 @@
               contentType: false,
               success: function(res) {
                 if(res.status === 'success') {
+
+                  // console.log("Notice:", res.notice);
+                  // console.log("Target Students:", res.students);
+
                     loadNotices();
                     let modalEl = document.getElementById('addNoticeModal');
                     let modal = bootstrap.Modal.getInstance(modalEl);

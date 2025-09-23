@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SendNoticeJob implements ShouldQueue
@@ -51,17 +52,21 @@ class SendNoticeJob implements ShouldQueue
         Log::info("Notice ID {$notice->id} active and {$users->count()} user get notified.");
     }
 
+
     protected function getTargetStudents(Notice $notice)
     {
         if ($notice->target_course_id) {
+
             return User::whereHas('orders.orderItems', function ($q) use ($notice) {
-                $q->where('course_id', $notice->target_course_id)
-                ->whereHas('order', function ($query) {
-                    $query->where('status', 'approved');
-                });
-            })->get();
+                    $q->where('course_id', $notice->target_course_id)
+                    ->whereHas('order', function ($query) {
+                        $query->where('status','approved');
+                    });
+                })->get();
+
         }
 
         return User::where('role', 'student')->get();
     }
+
 }

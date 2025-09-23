@@ -98,7 +98,8 @@ class NoticeController extends Controller
         if ($startTime->isPast()) {
             SendNoticeJob::dispatch($notice->id);
         } else {
-            SendNoticeJob::dispatch($notice->id)->delay($startTime);
+            $delayInSeconds = now()->diffInSeconds($startTime, false);
+            SendNoticeJob::dispatch($notice->id)->delay($delayInSeconds);
         }
 
 
