@@ -84,7 +84,7 @@
             <!-- Target Role -->
             <div class="col-md-6">
               <label class="form-label fw-semibold">Target Role <span class="text-danger">*</span></label>
-              <select name="target_role" class="form-select shadow-sm" required>
+              <select name="target_role" id="#" class="form-select shadow-sm target_role" required>
                 <option value="all">All Users</option>
                 <option value="admin">Admins</option>
                 <option value="teacher">Teachers</option>
@@ -96,7 +96,7 @@
             <!-- Target Course -->
             <div class="col-md-6">
               <label class="form-label fw-semibold">Target Course (Only for Students)</label>
-              <select name="target_course_id" class="form-select shadow-sm">
+              <select name="target_course_id" id="#" class="form-select shadow-sm target_course">
                 <option value="">-- Select Course --</option>
                 @foreach ($courses as $course)
                 <option value="{{ $course->id }}">{{ $course->title }}</option>
@@ -104,6 +104,7 @@
               </select>
             </div>
 
+             
             <!-- Start Time -->
             <div class="col-md-6">
               <label class="form-label fw-semibold">Start Time <span class="text-danger">*</span></label>
@@ -310,8 +311,43 @@
 
 @section('scripts')
 
+{{-- <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    let roleDropdown = document.getElementById("target_role");
+    let courseDropdown = document.getElementById("target_course");
+
+    roleDropdown.addEventListener("change", function() {
+      if (this.value === "student") {
+        courseDropdown.disabled = false;  // Enable
+      } else {
+        courseDropdown.disabled = true;   // Disable
+        courseDropdown.value = "";        // Reset value
+      }
+    });
+  });
+</script> --}}
+
 <script>
     $(document).ready(function(){
+
+
+      ///by default course disable, when select student, than course will be active
+      $('#addNoticeModal').on('shown.bs.modal', function () {
+        $(".target_course").prop("disabled", true).val("");
+        $(".target_role").val("all"); 
+      });
+
+      $(document).on("change", ".target_role", function () {
+        let role = $(this).val();
+        let courseDropdown = $(this).closest(".row").find(".target_course");
+
+        if (role === "student") {
+            courseDropdown.prop("disabled", false);
+        } else {
+            courseDropdown.prop("disabled", true).val("");
+        }
+      });
+
       
       let currentPage = '';
       let currentSearch = '';
