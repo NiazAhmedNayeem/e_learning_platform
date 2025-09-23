@@ -23,7 +23,19 @@ class CheckNotices extends Command
                 SendNoticeJob::dispatch($notice);
             }
 
-            $this->info('Inactive notices checked and jobs dispatched.');
+            // Active notices expired end_at cross
+            $expiredNotices = Notice::where('status', 'active')
+                                    ->whereNotNull('end_at')
+                                    ->where('end_at', '<', now())
+                                    ->get();
+
+            foreach ($expiredNotices as $notice) {
+                $notice->update(['status' => 'draft']);
+                Log::info("Notice ID {$notice->id} has expired. Status changed to draft.");
+            }
+
+            $this->info('Inactive notices checked, jobs dispatched, and expired notices updated.');
+
         } catch (\Exception $e) {
             // Log the error for debugging
             Log::error('Error in CheckNotices command: ' . $e->getMessage());
