@@ -110,6 +110,35 @@ class NoticeController extends Controller
         ]);
     }
 
+    public function details($id){
+        $notice = Notice::find($id);
+        if(!$notice){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Notice not found.',
+            ]);
+        }
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'id'               => $notice->id,
+                'title'            => $notice->title,
+                'description'      => $notice->description,
+                'target_role'      => $notice->target_role,
+                'target_course_id' => $notice->target_course_id,
+                'course'           => $notice->course ? [
+                                                            'id'    => $notice->course->id,
+                                                            'title' => $notice->course->title,
+                                                        ] : null,
+                'start_at'         => $notice->start_at ? $notice->start_at : null,
+                'end_at'           => $notice->end_at ? $notice->end_at : null,
+                'status'           => $notice->status,
+                'image_show'       => $notice->image_show,
+                'attachments'      => $notice->attachments ? json_decode($notice->attachments) : [],
+            ],
+        ]);
+    }
+
     public function edit($id){
         $notice = Notice::find($id);
 

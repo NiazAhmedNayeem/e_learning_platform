@@ -75,8 +75,8 @@ Route::middleware('auth')->group(function() {
 
     Route::post('/order', [App\Http\Controllers\frontend\payment\PaymentController::class, 'order'])->name('frontend.order.store');
 
-
-
+    ///notice attachment download
+    Route::get('/notice/download/{filename}', [App\Http\Controllers\backend\notice\NoticeController::class, 'download'])->name('notice.download');
 
 
 

@@ -161,7 +161,7 @@
 
         <!-- Modal Footer -->
         <div class="modal-footer border-0">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">
             <i class="bi bi-x-circle me-1"></i> Cancel
           </button>
           <button type="submit" class="btn btn-primary">
@@ -289,7 +289,7 @@
 
         <!-- Modal Footer -->
         <div class="modal-footer border-0">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">
             <i class="bi bi-x-circle me-1"></i> Cancel
           </button>
           <button type="submit" class="btn btn-primary">
@@ -297,6 +297,93 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- View Notice Modal -->
+<div class="modal fade" id="viewNoticeModal" tabindex="-1" aria-labelledby="viewNoticeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+      <!-- Header -->
+      <div class="modal-header bg-primary bg-gradient text-white py-3">
+        <h5 class="modal-title fw-bold d-flex align-items-center" id="viewNoticeModalLabel">
+          <i class="bi bi-megaphone-fill me-2 fs-4"></i> Notice Details
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body bg-light">
+
+        <!-- Image -->
+        <div class="text-center mb-4">
+          <img id="viewImage" src="" alt="Notice Image" 
+               class="img-fluid rounded-3 shadow border" 
+               style="max-height:220px; object-fit:cover;">
+        </div>
+
+        <!-- Title & Description -->
+        <div class="text-center mb-4">
+          <h3 id="viewTitle" class="fw-bold text-dark mb-2"></h3>
+          <p id="viewDescription" class="text-muted fs-6"></p>
+        </div>
+
+        <!-- One-Line Info Row -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center text-center bg-white rounded-3 shadow-sm p-3 mb-4">
+
+          <div class="flex-fill px-2">
+            <small class="text-muted d-block"><i class="bi bi-activity me-1"></i> Status</small>
+            <span id="viewStatus" class="badge rounded-pill fs-6 px-3 py-2"></span>
+          </div> 
+
+          <div class="vr mx-3 d-none d-md-block"></div>
+
+          <div class="flex-fill px-2">
+            <small class="text-muted d-block"><i class="bi bi-person-badge me-1"></i> Role</small>
+            <span id="viewTarget_role" class="fw-semibold text-dark"></span>
+          </div>
+
+          <div class="vr mx-3 d-none d-md-block"></div>
+
+          <div class="flex-fill px-2">
+            <small class="text-muted d-block"><i class="bi bi-journal-bookmark me-1"></i> Course</small>
+            <span id="viewTarget_course_id" class="fw-semibold text-dark"></span>
+          </div>
+
+          <div class="vr mx-3 d-none d-md-block"></div>
+
+          <div class="flex-fill px-2">
+            <small class="text-muted d-block"><i class="bi bi-calendar-event me-1"></i> Start</small>
+            <span id="viewStart_at" class="fw-semibold text-dark"></span>
+          </div>
+
+          <div class="vr mx-3 d-none d-md-block"></div>
+
+          <div class="flex-fill px-2">
+            <small class="text-muted d-block"><i class="bi bi-calendar-check me-1"></i> End</small>
+            <span id="viewEnd_at" class="fw-semibold text-dark"></span>
+          </div>
+        </div>
+
+        <!-- Attachments -->
+        <div>
+          <h6 class="text-uppercase text-muted small mb-2">
+            <i class="bi bi-paperclip me-1"></i> Attachments
+          </h6>
+          <ul id="viewAttachments" class="list-group list-group-flush rounded shadow-sm"></ul>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle me-1"></i> Cancel
+          </button>
+        </div>
+
+      </div>
     </div>
   </div>
 </div>
@@ -311,21 +398,6 @@
 
 @section('scripts')
 
-{{-- <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    let roleDropdown = document.getElementById("target_role");
-    let courseDropdown = document.getElementById("target_course");
-
-    roleDropdown.addEventListener("change", function() {
-      if (this.value === "student") {
-        courseDropdown.disabled = false;  // Enable
-      } else {
-        courseDropdown.disabled = true;   // Disable
-        courseDropdown.value = "";        // Reset value
-      }
-    });
-  });
-</script> --}}
 
 <script>
     $(document).ready(function(){
@@ -407,6 +479,7 @@
                       : '<span class="badge bg-secondary">Unknown</span>'}
                   </td>
                   <td>
+                      <button type="button" class="btn btn-success btn-sm viewBtn" data-id="${notice.id}">View</button>
                       <button type="button" class="btn btn-info btn-sm editBtn" data-id="${notice.id}">Edit</button>
                       <button class="btn btn-danger btn-sm deleteBtn" data-id="${notice.id}">Delete</button>
                   </td>
@@ -609,6 +682,75 @@
           this.files = dt.files;
       });
 
+
+
+      // Bootstrap Modal instance
+      const viewModal = new bootstrap.Modal(document.getElementById('viewNoticeModal'));
+
+      $(document).on('click', '.viewBtn', function(){
+          let id = $(this).data('id');
+
+          $.get("{{ url('/admin/notice/details') }}/" + id, function(res){
+              if(res.status === 'success'){
+                  const notice = res.data;
+
+                  // Image
+                  $('#viewImage').attr('src', notice.image_show);
+
+                  // Basic fields
+                  $('#viewTitle').text(notice.title || "Untitled");
+                  $('#viewDescription').text(notice.description || "No description available");
+                  $('#viewTarget_role').text(notice.target_role || "N/A");
+                  $('#viewTarget_course_id').text(notice.course?.title || "N/A");
+
+                  $('#viewStart_at').text(
+                      notice.start_at 
+                          ? dayjs(notice.start_at).tz("Asia/Dhaka").format("DD MMM YYYY - hh:mm A") 
+                          : "Not Set"
+                  );
+
+                  $('#viewEnd_at').text(
+                      notice.end_at 
+                          ? dayjs(notice.end_at).tz("Asia/Dhaka").format("DD MMM YYYY - hh:mm A") 
+                          : "Not Set"
+                  );
+
+                  // Status badge
+                  let statusBadge = $("#viewStatus");
+                  statusBadge.text(notice.status);
+                  statusBadge.removeClass("bg-success bg-secondary bg-danger bg-warning");
+                  if (notice.status === "active") {
+                      statusBadge.addClass("bg-success");
+                  } else if (notice.status === "inactive") {
+                      statusBadge.addClass("bg-warning");
+                  } else if (notice.status === "schedule") {
+                      statusBadge.addClass("bg-info");
+                  } else {
+                      statusBadge.addClass("bg-secondary");
+                  }
+
+                  // Attachments
+                  let attachList = $("#viewAttachments");
+                  attachList.empty();
+                  if(notice.attachments.length > 0){
+                      notice.attachments.forEach(file => {
+                          attachList.append(
+                              `<li class="list-group-item">
+                                  <a href="{{ url('/notice/download') }}/${file}" class="text-decoration-none">
+                                    <i class="bi bi-download me-2"></i>${file}
+                                  </a>
+                              </li>`
+                          );
+                      });
+                  } else {
+                      attachList.append(`<li class="list-group-item text-muted">No attachments</li>`);
+                  }
+
+                  // Show modal
+                  viewModal.show();
+              }
+          });
+      });
 
 
 
