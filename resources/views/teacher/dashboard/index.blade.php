@@ -63,12 +63,12 @@
 
         
         <div class="col-xl-3 col-md-6 mb-4">
-            <a class="text-decoration-none" href="{{ route('admin.order.index') }}">
+            <a class="text-decoration-none" href="{{ route('teacher.notice.index') }}">
                 <div class="card text-white shadow-lg border-0 card-hover" style="background: linear-gradient(135deg, #f12711, #f5af19);">
                     <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
-                        <i class="fas fa-times-circle fa-2x mb-2"></i>
-                        <h6 class="text-uppercase fw-bold mb-1">Total Reject Orders</h6>
-                        <h2 class="fw-bold rejectOrder">00</h2>
+                        <i class="fa-solid fa-bullhorn fa-2x mb-2"></i>
+                        <h6 class="text-uppercase fw-bold mb-1">Total Active Notice</h6>
+                        <h2 class="fw-bold notices">{{ $notices }}</h2>
                     </div>
                 </div>
             </a>

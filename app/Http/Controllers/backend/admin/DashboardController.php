@@ -5,9 +5,11 @@ namespace App\Http\Controllers\backend\admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\Notice;
 use App\Models\Order;
 use App\Models\Skill;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -23,9 +25,17 @@ class DashboardController extends Controller
         $rejectOrder = Order::where('status', 'rejected')->count();
         $totalAmount = Order::where('status', 'approved')->sum('amount');
         $assigned_courses = Course::whereNotNull('teacher_id')->where('status', 1)->count();
+
+        $notices = Notice::where('status', 'active')
+                                ->where('start_at', '<=', Carbon::now())
+                                ->where(function($q){
+                                    $q->whereNull('end_at')
+                                    ->orWhere('end_at', '>=', Carbon::now());
+                                })->count();
+
         return view('backend.dashboard.index', 
         compact('students','teachers','admins','courses','assigned_courses','categories',
-        'completeOrder', 'pendingOrder', 'rejectOrder', 'totalAmount'));
+        'completeOrder', 'pendingOrder', 'rejectOrder', 'totalAmount', 'notices'));
     }
 
 
@@ -105,6 +115,15 @@ class DashboardController extends Controller
     $applyDateFilter($queryAssignedCourses);
     $assigned_courses = $queryAssignedCourses->whereNotNull('teacher_id')->where('status',1)->count();
 
+    $queryNotice = Notice::query();
+    $applyDateFilter($queryNotice);
+    $notices = $queryNotice->where('status', 'active')
+                                ->where('start_at', '<=', Carbon::now())
+                                ->where(function($q){
+                                    $q->whereNull('end_at')
+                                    ->orWhere('end_at', '>=', Carbon::now());
+                                })->count();
+
 
     // $students = User::where('role','student')->where('status',1)->count();
     // $teachers = User::where('role','teacher')->where('status',1)->count();
@@ -123,7 +142,8 @@ class DashboardController extends Controller
         'admins' => $admins,
         'categories' => $categories,
         'courses' => $courses,
-        'assigned_courses' => $assigned_courses
+        'assigned_courses' => $assigned_courses,
+        'notices' => $notices,
     ]);
 }
 

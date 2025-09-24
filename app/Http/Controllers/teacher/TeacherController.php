@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\CourseVideo;
+use App\Models\Notice;
 use App\Models\User;
 use App\Notifications\NewVideoUploaded;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -36,8 +38,18 @@ class TeacherController extends Controller
         $students = $query->count();
 
 
-        $assign_courses = Course::where('teacher_id', auth()->user()->id)->count();
-        return view('teacher.dashboard.index', compact('assign_courses', 'students'));
+        $assign_courses = Course::where('teacher_id', $teacherId)->count();
+
+        $notices = Notice::where('creator_id', $teacherId)
+                            ->where('status', 'active')
+                            ->where('start_at', '<=', Carbon::now())
+                            ->where(function($q){
+                                $q->whereNull('end_at')
+                                ->orWhere('end_at', '>=', Carbon::now());
+                            })
+                            ->count();
+
+        return view('teacher.dashboard.index', compact('assign_courses', 'students', 'notices'));
     }
 
     public function profile(){
