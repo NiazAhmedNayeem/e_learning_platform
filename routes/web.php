@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\backend\admin\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Category;
 use App\Models\User;
