@@ -119,6 +119,9 @@ Route::get('/test-job', function () {
     return "Job dispatched!";
 });
 
+///yajra data table test for user
+Route::get('/admin/users', [DashboardController::class, 'usersYajraDatatable']);
+
 
 
 

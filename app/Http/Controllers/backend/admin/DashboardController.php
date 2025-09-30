@@ -11,6 +11,7 @@ use App\Models\Skill;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class DashboardController extends Controller
 {
@@ -208,6 +209,36 @@ class DashboardController extends Controller
         
     }
 
+
+
+
+
+
+
+
+
+    ///yyajra data table test for user 
+    public function usersYajraDatatable(Request $request){
+        
+        if($request->ajax()){
+            $data = User::select('id','name', 'email', 'phone', 'role', 'created_at');
+             return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
+                    // '.route('#',$row->id).'
+                    $btn = '<a href="" class="edit btn btn-sm btn-primary me-1">Edit</a>';
+                    $btn .= '<form action="" method="POST" style="display:inline-block;">
+                                '.csrf_field().method_field('DELETE').'
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                             </form>';
+                    return $btn;
+                })
+                ->rawColumns(['action','role']) 
+                ->make(true);
+        }
+     
+        return view('ajax.yajra_users_datatable');
+    }
 
 
 }
