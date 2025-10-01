@@ -55,5 +55,54 @@
                 ]
             });
         });
+
+
+
+        // Delete with SweetAlert
+        $(document).on('click', '.deleteUser', function(){
+            let userId = $(this).data('id');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/admin/users/'+userId,
+                        type: 'DELETE',
+                        
+                        success: function(response){
+                            Swal.fire(
+                                'Deleted!',
+                                response.success,
+                                'success'
+                            )
+                            $('#users-table').DataTable().ajax.reload(); // refresh table
+                        },
+                        error: function(xhr){
+                            Swal.fire(
+                                'Error!',
+                                'Something went wrong.',
+                                'error'
+                            )
+                        }
+                    });
+                }
+            })
+        });
+
+
+
+
+
+
+
+
+
     </script>
 @endsection

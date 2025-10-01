@@ -227,10 +227,7 @@ class DashboardController extends Controller
                 ->addColumn('action', function($row){
                     // '.route('#',$row->id).'
                     $btn = '<a href="" class="edit btn btn-sm btn-primary me-1">Edit</a>';
-                    $btn .= '<form action="" method="POST" style="display:inline-block;">
-                                '.csrf_field().method_field('DELETE').'
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</button>
-                             </form>';
+                    $btn .= '<button type="button" class="btn btn-sm btn-danger deleteUser" data-id="'.$row->id.'">Delete</button>';
                     return $btn;
                 })
                 ->rawColumns(['action','role']) 
