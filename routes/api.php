@@ -15,6 +15,7 @@ Route::prefix('v1')->group(function(){
     Route::post('/create-user', [App\Http\Controllers\api\backend\admin\ApiUserController::class, 'store']);
     Route::get('/show-user/{id}', [App\Http\Controllers\api\backend\admin\ApiUserController::class, 'show']);
     Route::put('/update-user/{id}', [App\Http\Controllers\api\backend\admin\ApiUserController::class, 'update']);
+    Route::patch('/update-user/{id}', [App\Http\Controllers\api\backend\admin\ApiUserController::class, 'update']);
     Route::delete('/delete-user/{id}', [App\Http\Controllers\api\backend\admin\ApiUserController::class, 'delete']);
 
     ///Category Management Route

@@ -120,31 +120,60 @@ class ApiUserController extends Controller
         ]);
 
 
+        if($request->isMethod('PUT')){
+            $data = [
+                'name'      => $request->name,
+                'email'     => $request->email,
+                'phone'     => $request->phone,
+                'image'     => $request->image ?? null,
+                'expertise_category_id' => $request->expertise_category_id,
+                'profession'=> $request->profession,
+                'gender'    => $request->gender,
+                'bio'       => $request->bio,
+                'address'   => $request->address,
+                'status'    => $request->status ?? 1,
+            ];
 
-        $data = [
-            'name'      => $request->name,
-            'email'     => $request->email,
-            'phone'     => $request->phone,
-            'image'     => $request->image ?? null,
-            'expertise_category_id' => $request->expertise_category_id,
-            'profession'=> $request->profession,
-            'gender'    => $request->gender,
-            'bio'       => $request->bio,
-            'address'   => $request->address,
-            'status'    => $request->status ?? 1,
-        ];
 
+            if($request->filled('password')){
+                $data['password'] = bcrypt($request->password);
+            }
 
-        if($request->filled('password')){
-            $data['password'] = bcrypt($request->password);
+            $user->update($data);
+
+            return response()->json([
+                'message' => 'User update successfully.',
+                'user' => $user,
+            ], 201);
         }
 
-        $user->update($data);
+        if($request->isMethod('PATCH')){
+            $data = $request->only([
+                'name', 
+                'email', 
+                'phone',  
+                'image',  
+                'expertise_category_id',
+                'profession',
+                'gender',   
+                'bio',  
+                'address', 
+                'status',   
+            ]);
 
-        return response()->json([
-            'message' => 'User update successfully.',
-            'user' => $user,
-        ], 201);
+            if($request->filled('password')){
+                $data['password'] = bcrypt($request->password);
+            }
+
+            $user->update($data);
+
+            return response()->json([
+                'message' => 'User data update successfully.',
+                'user' => $user
+            ], 201);
+        }
+
+        
     }
 
     
