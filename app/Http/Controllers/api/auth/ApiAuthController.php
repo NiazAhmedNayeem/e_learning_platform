@@ -43,5 +43,37 @@ class ApiAuthController extends Controller
         ], 201);
     }
 
-    
+    public function login(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors(),
+            ], 422);
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if(!$user || ! Hash::check($request->password, $user->password)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid Credential',
+            ], 401);
+        }
+
+        $user->tokens()->delete();
+        
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Login successfully.',
+            'token' => $token,
+            'user' => $user,
+        ], 200);
+    }
 }
