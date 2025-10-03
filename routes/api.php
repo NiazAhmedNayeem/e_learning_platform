@@ -10,8 +10,10 @@ Route::get('/test', function(){
 
 //Auth Route
 Route::prefix('v1')->group(function(){
+    
     Route::post('/register', [App\Http\Controllers\api\auth\ApiAuthController::class, 'register']);
     Route::post('/login', [App\Http\Controllers\api\auth\ApiAuthController::class, 'login']);
+    Route::post('/logout', [App\Http\Controllers\api\auth\ApiAuthController::class, 'logout'])->middleware('auth:sanctum');
 });
 
 
