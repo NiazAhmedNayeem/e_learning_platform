@@ -10,10 +10,21 @@ Route::get('/test', function(){
 
 //Auth Route
 Route::prefix('v1')->group(function(){
-    
+    //URL be like-  http://localhost/e_learning_platform/api/v1/register
     Route::post('/register', [App\Http\Controllers\api\auth\ApiAuthController::class, 'register']);
     Route::post('/login', [App\Http\Controllers\api\auth\ApiAuthController::class, 'login']);
     Route::post('/logout', [App\Http\Controllers\api\auth\ApiAuthController::class, 'logout'])->middleware('auth:sanctum');
+});
+
+
+//User profile route
+Route::prefix('v1')->middleware('auth:sanctum')->group(function(){
+    ///Teacher profile
+    Route::get('/teacher/profile', [App\Http\Controllers\api\profile\ApiTeacherProfileController::class, 'profile']);
+    Route::patch('/teacher/profile', [App\Http\Controllers\api\profile\ApiTeacherProfileController::class, 'update']);
+    ///Student profile
+    Route::get('/student/profile', [App\Http\Controllers\api\profile\ApiStudentProfileController::class, 'profile']);
+    Route::patch('/student/profile', [App\Http\Controllers\api\profile\ApiStudentProfileController::class, 'update']);
 });
 
 
