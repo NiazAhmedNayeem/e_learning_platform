@@ -28,7 +28,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function(){
 });
 
 
-Route::prefix('v1')->group(function(){
+Route::prefix('v1')->middleware('auth:sanctum')->group(function(){
     ///User Management Route
     Route::get('/user', [App\Http\Controllers\api\backend\admin\ApiUserController::class, 'index']);
     Route::post('/create-user', [App\Http\Controllers\api\backend\admin\ApiUserController::class, 'store']);
