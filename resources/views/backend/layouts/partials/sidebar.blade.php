@@ -73,11 +73,16 @@
                             Teachers
                         </a>
 
-                    {{-- Add Admin --}}
+                    {{-- Admin and site settings --}}
                     @if (auth()->user()->is_super == 1)
                         <a class="nav-link {{ request()->routeIs('user.admin.index') ? 'active' : '' }}" href="{{ route('user.admin.index') }}">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-user-gear"></i></div>
                             Admin
+                        </a>
+
+                        <a class="nav-link {{ request()->routeIs('admin.site_setting') ? 'active' : '' }}" href="{{ route('admin.site_setting') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-gear"></i></div>
+                            Setting
                         </a>
                     @endif
                         

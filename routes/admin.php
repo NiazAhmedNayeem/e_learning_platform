@@ -140,5 +140,14 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin',
     });
 });
 
+////Site Setting Management Route 
+Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin', 
+                            \App\Http\Middleware\CheckSuper::class,
+                            \App\Http\Middleware\CheckStatus::class])->group(function(){
+
+    Route::get('/admin/site-setting', [App\Http\Controllers\siteSetting\SiteSettingController::class, 'index'])->name('admin.site_setting');
+
+});
+
 
 
