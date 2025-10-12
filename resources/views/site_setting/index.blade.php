@@ -63,7 +63,7 @@
                               <div id="logoPreview" class="border rounded-3 d-flex align-items-center justify-content-center" style="width:120px;height:80px;background:#f8f9fa;">
                                 @php $logo = $settings['site_logo'] ?? null; @endphp
 
-                                <img id="logoImg" src="{{ $logo ? asset('public/upload/site/'.$logo) : '' }}" 
+                                <img id="logoImg" src="{{ site_logo_url() }}" 
                                     style="max-width:100%;max-height:100%;{{ $logo ? '' : 'display:none;' }}">
                                 <span id="logoText" class="text-muted small">{{ $logo ? '' : 'No logo' }}</span>
                                 
