@@ -21,6 +21,7 @@
             <a class="nav-link text-white active mb-1" data-bs-toggle="pill" href="#tab-general" role="tab"><i class="bi bi-house-gear me-2"></i>General</a>
             <a class="nav-link text-white mb-1" data-bs-toggle="pill" href="#tab-header" role="tab"><i class="bi bi-layout-text-window-reverse me-2"></i>Header</a>
             <a class="nav-link text-white mb-1" data-bs-toggle="pill" href="#tab-footer" role="tab"><i class="bi bi-window me-2"></i>Footer</a>
+            <a class="nav-link text-white mb-1" data-bs-toggle="pill" href="#tab-payment" role="tab"><i class="bi bi-cash-coin me-2"></i>Payment</a>
             <a class="nav-link text-white mb-1" data-bs-toggle="pill" href="#tab-privacy" role="tab"><i class="bi bi-shield-lock me-2"></i>Privacy</a>
             <a class="nav-link text-white mb-1" data-bs-toggle="pill" href="#tab-terms" role="tab"><i class="bi bi-file-earmark-text me-2"></i>Terms</a>
             <a class="nav-link text-white mb-1" data-bs-toggle="pill" href="#tab-seo" role="tab"><i class="bi bi-search me-2"></i>SEO</a>
@@ -185,6 +186,88 @@
                   </div>
                 </div>
               </div>
+
+              <!-- PAYMENT TAB -->
+              <div class="tab-pane fade" id="tab-payment" role="tabpanel">
+                <div class="card border-0 shadow">
+                  <div class="card-body">
+                    <h6 class="fw-bold mb-3">Payment Settings</h6>
+
+                    <form class="ajaxForm" enctype="multipart/form-data">
+                      @csrf
+                      <div id="payment-methods-wrapper">
+
+                        {{-- Old Payment Methods show --}}
+                        @if(!empty($settings['payment_methods']))
+                          @foreach($settings['payment_methods'] as $method)
+                            <div class="payment-method border rounded p-3 mb-3 position-relative bg-light">
+                              <div class="row g-2 align-items-center">
+                                <div class="col-md-4">
+                                  <label class="form-label small mb-1">Payment Method Name</label>
+                                  <input type="text" name="payment_method_name[]" class="form-control form-control-sm"
+                                    value="{{ $method['name'] ?? '' }}">
+                                </div>
+                                <div class="col-md-4">
+                                  <label class="form-label small mb-1">Payment Method Icon</label>
+                                  <input type="file" name="payment_method_icon[]" class="form-control form-control-sm payment-icon-input" accept="image/*">
+                                  <input type="hidden" name="old_payment_icon[]" value="{{ $method['icon'] ?? '' }}">
+                                </div>
+                                <div class="col-md-3 text-center">
+                                  @if(!empty($method['icon']))
+                                    <img src="{{ asset('public/upload/site/payment/'.$method['icon']) }}" class="img-preview rounded border" width="60" height="60" alt="Preview">
+                                  @else
+                                    <img src="" class="img-preview d-none rounded border" width="60" height="60" alt="Preview">
+                                  @endif
+                                </div>
+                                <div class="col-md-1 text-end">
+                                  <button type="button" class="btn btn-sm btn-danger remove-payment"><i class="bi bi-x-lg"></i></button>
+                                </div>
+                              </div>
+                            </div>
+                          @endforeach
+                        @else
+                          {{-- if have not any payment method, than show a blank form --}}
+                          <div class="payment-method border rounded p-3 mb-3 position-relative bg-light">
+                            <div class="row g-2 align-items-center">
+                              <div class="col-md-4">
+                                <label class="form-label small mb-1">Payment Method Name</label>
+                                <input type="text" name="payment_method_name[]" class="form-control form-control-sm" placeholder="e.g. bKash, Nagad">
+                              </div>
+                              <div class="col-md-4">
+                                <label class="form-label small mb-1">Payment Method Icon</label>
+                                <input type="file" name="payment_method_icon[]" class="form-control form-control-sm payment-icon-input" accept="image/*">
+                                <input type="hidden" name="old_payment_icon[]" value="">
+                              </div>
+                              <div class="col-md-3 text-center">
+                                <img src="" class="img-preview d-none rounded border" width="60" height="60" alt="Preview">
+                              </div>
+                              <div class="col-md-1 text-end">
+                                <button type="button" class="btn btn-sm btn-danger remove-payment"><i class="bi bi-x-lg"></i></button>
+                              </div>
+                            </div>
+                          </div>
+                        @endif
+
+                      </div>
+
+                      <!-- Add New Payment Method -->
+                      <div class="text-start mt-2">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="add-payment">
+                          <i class="bi bi-plus-circle me-1"></i> Add Payment Method
+                        </button>
+                      </div>
+
+                      <!-- Save Button -->
+                      <div class="text-end mt-4">
+                        <button type="submit" class="btn btn-sm btn-dark">
+                          <i class="bi bi-save me-1"></i> Save Payment
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
 
               <!-- PRIVACY TAB -->
               <div class="tab-pane fade" id="tab-privacy" role="tabpanel">
@@ -395,6 +478,63 @@
     img.style.display = 'block';
     text.style.display = 'none';
   }
+
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const wrapper = document.getElementById('payment-methods-wrapper');
+    const addBtn = document.getElementById('add-payment');
+
+    // Add new payment form
+    addBtn.addEventListener('click', function() {
+      const newMethod = document.createElement('div');
+      newMethod.classList.add('payment-method', 'border', 'rounded', 'p-3', 'mb-3', 'position-relative', 'bg-light');
+      newMethod.innerHTML = `
+        <div class="row g-2 align-items-center">
+          <div class="col-md-4">
+            <label class="form-label small mb-1">Payment Method Name</label>
+            <input type="text" name="payment_method_name[]" class="form-control form-control-sm" placeholder="e.g. bKash, Nagad">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small mb-1">Payment Method Icon</label>
+            <input type="file" name="payment_method_icon[]" class="form-control form-control-sm payment-icon-input" accept="image/*">
+            <input type="hidden" name="old_payment_icon[]" value="">
+          </div>
+          <div class="col-md-3 text-center">
+            <img src="" class="img-preview d-none rounded border" width="60" height="60" alt="Preview">
+          </div>
+          <div class="col-md-1 text-end">
+            <button type="button" class="btn btn-sm btn-danger remove-payment"><i class="bi bi-x-lg"></i></button>
+          </div>
+        </div>
+      `;
+      wrapper.appendChild(newMethod);
+    });
+
+    // Remove payment form
+    wrapper.addEventListener('click', function(e) {
+      if (e.target.closest('.remove-payment')) {
+        e.target.closest('.payment-method').remove();
+      }
+    });
+
+    // Image preview
+    wrapper.addEventListener('change', function(e) {
+      if (e.target.classList.contains('payment-icon-input')) {
+        const fileInput = e.target;
+        const file = fileInput.files[0];
+        const preview = fileInput.closest('.row').querySelector('.img-preview');
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            preview.src = event.target.result;
+            preview.classList.remove('d-none');
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+    });
+  });
 
 
   // Toast function

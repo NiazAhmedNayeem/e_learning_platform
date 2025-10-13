@@ -18,7 +18,7 @@ class SiteSettingController extends Controller
     {
         $data = $request->except('_token');
 
-        ///fav icon
+        /// -------------------- FAVICON --------------------
         $oldIcon = SiteSetting::where('key', 'favicon')->value('value');
 
         if ($request->hasFile('favicon')) {
@@ -31,7 +31,7 @@ class SiteSettingController extends Controller
             $data['favicon'] = $fileName;
         }
         
-        ///site logo
+        /// -------------------- SITE LOGO --------------------
         $oldLogo = SiteSetting::where('key', 'site_logo')->value('value');
 
         if ($request->hasFile('site_logo')) {
@@ -44,6 +44,57 @@ class SiteSettingController extends Controller
             $data['site_logo'] = $fileName;
         }
 
+        /// -------------------- PAYMENT METHODS --------------------
+        $paymentMethods = [];
+
+        $names = $request->payment_method_name ?? [];
+        $newIcons = $request->file('payment_method_icon') ?? [];
+        $oldIcons = $request->old_payment_icon ?? [];
+
+        // old data for unlink
+        $existing = SiteSetting::where('key', 'payment_methods')->value('value');
+        $existing = $existing ? json_decode($existing, true) : [];
+
+        if (count($names) > 0) {
+            foreach ($names as $index => $name) {
+                if (!$name) continue;
+
+                $iconName = $oldIcons[$index] ?? null;
+
+                // if give new icon 
+                if (isset($newIcons[$index])) {
+                    // old icon unlink
+                    if (!empty($iconName) && file_exists(public_path('upload/site/payment/' . $iconName))) {
+                        @unlink(public_path('upload/site/payment/' . $iconName));
+                    }
+
+                    $file = $newIcons[$index];
+                    $fileName = time() . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $file->move(public_path('upload/site/payment/'), $fileName);
+                    $iconName = $fileName;
+                }
+
+                // new data push
+                $paymentMethods[] = [
+                    'name' => $name,
+                    'icon' => $iconName,
+                ];
+            }
+
+            // remove icon when remove button click
+            if (!empty($existing)) {
+                foreach ($existing as $old) {
+                    $stillExists = collect($paymentMethods)->contains('icon', $old['icon']);
+                    if (!$stillExists && !empty($old['icon']) && file_exists(public_path('upload/site/payment/' . $old['icon']))) {
+                        @unlink(public_path('upload/site/payment/' . $old['icon']));
+                    }
+                }
+            }
+
+            $data['payment_methods'] = json_encode($paymentMethods);
+        }
+
+        
         // Save each field into site_settings table
         foreach ($data as $key => $value) {
             SiteSetting::updateOrCreate(
@@ -61,8 +112,13 @@ class SiteSettingController extends Controller
         $settings = SiteSetting::all();
         $arr = [];
         foreach($settings as $set){
-            $arr[$set->key] = $set->value;
+            if ($set->key === 'payment_methods') {
+                $arr[$set->key] = json_decode($set->value, true);
+            } else {
+                $arr[$set->key] = $set->value;
+            }
         }
         return $arr;
     }
+
 }
