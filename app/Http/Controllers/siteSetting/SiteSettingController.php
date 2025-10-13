@@ -18,7 +18,20 @@ class SiteSettingController extends Controller
     {
         $data = $request->except('_token');
 
+        ///fav icon
+        $oldIcon = SiteSetting::where('key', 'favicon')->value('value');
+
+        if ($request->hasFile('favicon')) {
+            if (!empty($oldIcon) && file_exists(public_path('upload/site/' . $oldIcon))) {
+                @unlink(public_path('upload/site/' . $oldIcon));
+            }
+            $file = $request->file('favicon');
+            $fileName = time() . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('upload/site/'), $fileName);
+            $data['favicon'] = $fileName;
+        }
         
+        ///site logo
         $oldLogo = SiteSetting::where('key', 'site_logo')->value('value');
 
         if ($request->hasFile('site_logo')) {

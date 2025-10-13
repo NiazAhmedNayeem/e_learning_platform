@@ -58,7 +58,27 @@
                         <form class="ajaxForm" enctype="multipart/form-data">
                           @csrf
                           <div class="mb-3">
-                            <label class="form-label small">Logo</label>
+                            <label class="form-label small">Favicon</label>
+                            <div class="d-flex gap-3 align-items-center">
+                              <div id="logoPreview" class="border rounded-3 d-flex align-items-center justify-content-center" style="width:120px;height:80px;background:#f8f9fa;">
+                                @php $favicon = $settings['favicon'] ?? null; @endphp
+
+                                <img id="favIcon" src="{{ favicon_url() }}" 
+                                    style="max-width:100%;max-height:100%;{{ $favicon ? '' : 'display:none;' }}">
+                                <span id="favText" class="text-muted small">{{ $favicon ? '' : 'No logo' }}</span>
+                                
+                              </div>
+                              <div class="flex-fill">
+                                <input type="file" name="favicon" class="form-control form-control-sm" accept="image/*" onchange="previewFavIcon(event)">
+                                <small class="text-muted">Recommended: 100x100 px, PNG or SVG</small>
+                              </div>
+                            </div>
+                          </div>
+
+
+
+                          <div class="mb-3">
+                            <label class="form-label small">Site Logo</label>
                             <div class="d-flex gap-3 align-items-center">
                               <div id="logoPreview" class="border rounded-3 d-flex align-items-center justify-content-center" style="width:120px;height:80px;background:#f8f9fa;">
                                 @php $logo = $settings['site_logo'] ?? null; @endphp
@@ -74,6 +94,9 @@
                               </div>
                             </div>
                           </div>
+
+
+
                           <div class="mb-3">
                             <label class="form-label small">Site Name</label>
                             <input name="site_name" value="{{ $settings['site_name'] ?? '' }}" type="text" class="form-control form-control-sm">
@@ -98,6 +121,8 @@
                           <dd class="col-sm-8 small"><strong>{{ $settings['site_name'] ?? '—' }}</strong></dd>
                           <dt class="col-sm-4 small text-muted">Tagline</dt>
                           <dd class="col-sm-8 small">{{ $settings['site_tagline'] ?? '—' }}</dd>
+                          <dt class="col-sm-4 small text-muted">Fav Icon</dt>
+                          <dd class="col-sm-8 small">{{ empty($settings['favicon']) ? 'No favicon' : 'Uploaded' }}</dd>
                           <dt class="col-sm-4 small text-muted">Logo</dt>
                           <dd class="col-sm-8 small">{{ empty($settings['site_logo']) ? 'No logo' : 'Uploaded' }}</dd>
                         </dl>
@@ -349,6 +374,17 @@
     });
   });
 
+  // FavIcon Preview
+  function previewFavIcon(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const img = document.getElementById('favIcon');
+    const text = document.getElementById('favText');
+    img.src = URL.createObjectURL(file);
+    img.style.display = 'block';
+    text.style.display = 'none';
+  }
+
   // Logo Preview
   function previewLogo(e){
     const file = e.target.files[0];
@@ -359,6 +395,7 @@
     img.style.display = 'block';
     text.style.display = 'none';
   }
+
 
   // Toast function
   function showToast(message, type='success'){

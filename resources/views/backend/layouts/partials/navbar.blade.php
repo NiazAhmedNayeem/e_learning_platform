@@ -5,8 +5,8 @@
     </style>
     <!-- Navbar Brand-->
     <a class="navbar-brand ps-3" href="{{ route('dashboard') }}">
-        {{-- <img src="{{ auth()->user()->image_show }}" height="40" width="100"/> --}}
-        E-Learning
+        <img src="{{ site_logo_url() }}" alt="logo" height="45" width="100"/>
+        {{-- E-Learning --}}
     </a>
 
     <!-- Sidebar Toggle-->

@@ -8,7 +8,7 @@
 <title>@yield('title')</title>
 
 <!-- favicon -->
-<link rel=icon href="{{ asset('public/upload/fav.png') }}" sizes="16x16" type="icon/png">
+<link rel=icon href="{{ favicon_url() }}" sizes="16x16" type="icon/png">
 <!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
