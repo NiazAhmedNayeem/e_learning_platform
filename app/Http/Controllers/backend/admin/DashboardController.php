@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Course;
 use App\Models\Notice;
 use App\Models\Order;
+use App\Models\SiteSetting;
 use App\Models\Skill;
 use App\Models\User;
 use Carbon\Carbon;
@@ -16,27 +17,26 @@ use Yajra\DataTables\Facades\DataTables;
 class DashboardController extends Controller
 {
     public function index(){
-        $students = User::where('role', 'student')->where('status', 1)->count();
-        $teachers = User::where('role', 'teacher')->where('status', 1)->count();
-        $categories = Category::where('status', 1)->count();
-        $admins = User::where('role', 'admin')->where('status', 1)->count();
-        $courses = Course::where('status', 1)->count();
-        $completeOrder = Order::where('status', 'approved')->count();
-        $pendingOrder = Order::where('status', 'pending')->count();
-        $rejectOrder = Order::where('status', 'rejected')->count();
-        $totalAmount = Order::where('status', 'approved')->sum('amount');
-        $assigned_courses = Course::whereNotNull('teacher_id')->where('status', 1)->count();
+        $data['students'] = User::where('role', 'student')->where('status', 1)->count();
+        $data['teachers'] = User::where('role', 'teacher')->where('status', 1)->count();
+        $data['categories'] = Category::where('status', 1)->count();
+        $data['admins'] = User::where('role', 'admin')->where('status', 1)->count();
+        $data['courses'] = Course::where('status', 1)->count();
+        $data['completeOrder'] = Order::where('status', 'approved')->count();
+        $data['pendingOrder'] = Order::where('status', 'pending')->count();
+        $data['rejectOrder'] = Order::where('status', 'rejected')->count();
+        $data['totalAmount'] = Order::where('status', 'approved')->sum('amount');
+        $data['assigned_courses'] = Course::whereNotNull('teacher_id')->where('status', 1)->count();
+        $data['settings'] = SiteSetting::pluck('value', 'key')->toArray();
 
-        $notices = Notice::where('status', 'active')
+        $data['notices'] = Notice::where('status', 'active')
                                 ->where('start_at', '<=', Carbon::now())
                                 ->where(function($q){
                                     $q->whereNull('end_at')
                                     ->orWhere('end_at', '>=', Carbon::now());
                                 })->count();
 
-        return view('backend.dashboard.index', 
-        compact('students','teachers','admins','courses','assigned_courses','categories',
-        'completeOrder', 'pendingOrder', 'rejectOrder', 'totalAmount', 'notices'));
+        return view('backend.dashboard.index', $data);
     }
 
 

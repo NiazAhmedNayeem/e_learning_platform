@@ -258,6 +258,60 @@
                 </div>
             </div>
         </div>
+
+        {{-- Payment Method --}}
+        <h5 class="fw-bold mb-3 mt-3">
+            <i class="bi bi-credit-card me-2"></i> Payment Methods
+        </h5>
+
+        <style>
+            .payment-methods {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0rem;
+            }
+
+            .payment-card {
+                width: 100px;
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+            .payment-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+            .payment-icon {
+                height: 45px;
+                width: 80px;
+                /* object-fit: contain; */
+            }
+        </style>
+
+        @php
+            $paymentMethod = !empty($settings['payment_methods'])
+                ? json_decode($settings['payment_methods'], true)
+                : [];
+        @endphp
+
+        @if (!empty($paymentMethod))
+            <div class="d-flex flex-wrap align-items-center gap-1 mt-3 payment-methods mb-3">
+                @foreach ($paymentMethod as $method)
+                    @if (!empty($method['icon']))
+                        <div class="payment-card text-center p-2 bg-white rounded shadow-sm border position-relative">
+                            <img src="{{ asset('public/upload/site/payment/' . $method['icon']) }}" 
+                                alt="{{ $method['name'] ?? 'Payment' }}"
+                                class="img-fluid payment-icon">
+                            {{-- <div class="small text-muted fw-semibold">
+                                {{ $method['name'] ?? 'Payment' }}
+                            </div> --}}
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        @else
+            <p class="text-muted small fst-italic">No payment methods added yet.</p>
+        @endif
+
         
 @else
         
