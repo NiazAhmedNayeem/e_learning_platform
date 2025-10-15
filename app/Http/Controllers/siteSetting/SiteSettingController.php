@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\siteSetting;
 
 use App\Http\Controllers\Controller;
+use App\Models\Menu;
 use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -10,8 +11,9 @@ use Illuminate\Support\Facades\Validator;
 class SiteSettingController extends Controller
 {
     public function index(){
-        $settings = SiteSettingController::getSettings();
-        return view('site_setting.index', compact('settings'));
+        $data['settings'] = SiteSettingController::getSettings();
+        $data['menus'] = Menu::all();
+        return view('site_setting.index', $data);
     }
 
     public function ajaxSave(Request $request)

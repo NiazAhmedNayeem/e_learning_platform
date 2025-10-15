@@ -21,6 +21,7 @@
             <a class="nav-link text-white active mb-1" data-bs-toggle="pill" href="#tab-general" role="tab"><i class="bi bi-house-gear me-2"></i>General</a>
             <a class="nav-link text-white mb-1" data-bs-toggle="pill" href="#tab-header" role="tab"><i class="bi bi-layout-text-window-reverse me-2"></i>Header</a>
             <a class="nav-link text-white mb-1" data-bs-toggle="pill" href="#tab-footer" role="tab"><i class="bi bi-window me-2"></i>Footer</a>
+            <a class="nav-link text-white mb-1" data-bs-toggle="pill" href="#tab-menu" role="tab"><i class="bi bi-menu-down me-2"></i>Menu Management</a>
             <a class="nav-link text-white mb-1" data-bs-toggle="pill" href="#tab-payment" role="tab"><i class="bi bi-cash-coin me-2"></i>Payment</a>
             <a class="nav-link text-white mb-1" data-bs-toggle="pill" href="#tab-privacy" role="tab"><i class="bi bi-shield-lock me-2"></i>Privacy</a>
             <a class="nav-link text-white mb-1" data-bs-toggle="pill" href="#tab-terms" role="tab"><i class="bi bi-file-earmark-text me-2"></i>Terms</a>
@@ -186,6 +187,92 @@
                   </div>
                 </div>
               </div>
+
+
+
+              <!-- MENU TAB -->
+              <div class="tab-pane fade" id="tab-menu" role="tabpanel">
+                <div class="card border-0 shadow">
+                  <div class="card-body">
+                    <h6 class="fw-bold mb-3">Menu Management</h6>
+                    
+
+                    <div class="card-body">
+                      <form id="menuForm" class="row g-3 mb-4">
+                        @csrf
+                        <input type="hidden" name="id" id="menu_id">
+                          <div class="row">
+                            <div class="col-md-6 mb-2">
+                              <input type="text" name="title" class="form-control" placeholder="Menu Title" required>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                              <input type="text" name="url" class="form-control" placeholder="Menu URL (e.g. /about)">
+                            </div>
+
+                            <div class="col-md-3">
+                              <select name="location" class="form-select">
+                                <option value="header">Header</option>
+                                <option value="footer_left">Footer Left</option>
+                                <option value="footer_right">Footer Right</option>
+                              </select>
+                            </div>
+                            <div class="col-md-3">
+                              <select name="parent_id" class="form-select">
+                                <option value="">No Parent</option>
+                                @foreach($menus->where('parent_id', null) as $m)
+                                  <option value="{{ $m->id }}">{{ $m->title }}</option>
+                                @endforeach
+                              </select>
+                            </div>
+                            <div class="col-md-3">
+                              <input type="number" name="order" class="form-control" placeholder="Order">
+                            </div>
+                            <div class="col-md-3">
+                              <button type="submit" class="btn btn-dark w-100">Save</button>
+                            </div>
+                            
+                          </div>
+                          
+                      </form>
+
+                      <table class="table table-bordered table-hover align-middle">
+                        <thead class="table-dark">
+                          <tr>
+                            <th>Title</th>
+                            <th>URL</th>
+                            <th>Location</th>
+                            <th>Parent</th>
+                            <th>Order</th>
+                            <th width="80">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @foreach($menus as $menu)
+                          <tr>
+                            <td>{{ $menu->title }}</td>
+                            <td>{{ $menu->url }}</td>
+                            <td><span class="badge bg-secondary">{{ ucfirst(str_replace('_', ' ', $menu->location)) }}</span></td>
+                            <td>{{ $menu->parent?->title ?? '-' }}</td>
+                            <td>{{ $menu->order }}</td>
+                            <td>
+                              <button class="btn btn-sm btn-danger deleteMenu" data-id="{{ $menu->id }}"><i class="bi bi-trash"></i></button>
+                            </td>
+                          </tr>
+                          @endforeach
+                        </tbody>
+                      </table>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </div>
+
+
+
+
+
 
               <!-- PAYMENT TAB -->
               <div class="tab-pane fade" id="tab-payment" role="tabpanel">
