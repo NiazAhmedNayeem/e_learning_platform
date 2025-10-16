@@ -514,6 +514,43 @@
 @section('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
+  $(document).on('submit', '#menuForm', function(e){
+    e.preventDefault();
+    let form = $(this);
+    let formData = new FormData(this);
+    $.ajax({
+      url: "{{ route('admin.setting.menu.save') }}",
+      type: "POST",
+      data: formData,
+      contentType: false,
+      processData: false,
+      beforeSend: function(){
+        form.find('button[type=submit]').prop('disabled', true).html('Saving...');
+      },
+      success: function(res){
+        form.find('button[type=submit]').prop('disabled', false).html('Save');
+        if(res.status === 'success'){
+          showToast(res.message, 'success');
+          form.trigger('reset');
+        }else{
+          showToast('Something went wrong!', 'danger');
+        }
+      },
+      error: function(err){
+        form.find('button[type=submit]').prop('disabled', false).html('Save');
+        if (err.responseJSON && err.responseJSON.errors) {
+            // Laravel validation errors
+            let messages = Object.values(err.responseJSON.errors).flat().join('<br>');
+            showToast(messages, 'danger');
+        } else {
+            showToast('Server error occurred!', 'danger');
+        }
+      },
+    });
+  });
+
+
   // Universal AJAX Save for any form
   $(document).on('submit', '.ajaxForm', function(e){
     e.preventDefault();

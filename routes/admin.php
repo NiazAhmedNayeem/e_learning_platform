@@ -145,10 +145,12 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin',
                             \App\Http\Middleware\CheckSuper::class,
                             \App\Http\Middleware\CheckStatus::class])->group(function(){
 
+    //Site Settings Route
     Route::get('/admin/site-setting', [App\Http\Controllers\siteSetting\SiteSettingController::class, 'index'])->name('admin.site_setting');
-    //General Route
-    // Route::post('/admin/setting/general', [App\Http\Controllers\siteSetting\SiteSettingController::class, 'generalUpdate'])->name('admin.setting.general.update');
     Route::post('/admin/settings/ajax-save', [App\Http\Controllers\siteSetting\SiteSettingController::class, 'ajaxSave'])->name('settings.ajax.save');
+
+    //Menu Management Route
+    Route::post('/admin/settings/menu-save', [App\Http\Controllers\siteSetting\MenuController::class, 'menuSave'])->name('admin.setting.menu.save');
 });
 
 
