@@ -39,13 +39,37 @@ class MenuController extends Controller
             'order'     => $request->order,
         ];
 
-        $menu = Menu::create($data);
+        if($request->id){
+            //update menu
+            $menu = Menu::find($request->id);
+            $menu->update($data);
+        }else{
+            //create menu
+            $menu = Menu::create($data);
+        }
+        
 
         return response()->json([
             'status'    => 'success',
-            'message'   => 'Menu create successfully',
+            'message'   => $request->id ? 'Menu updated successfully' : 'Menu created successfully',
             'data'      => $menu,
         ], 201);
+    }
+
+    public function menuUpdate($id)
+    {
+        $menu = Menu::with('parent')->find($id);
+        if(!$menu){
+            return response()->json([
+                'status'=>'error',
+                'message'=>'Menu not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'status'=>'success',
+            'menu'=>$menu
+        ]);
     }
 
     public function menuDelete($id){

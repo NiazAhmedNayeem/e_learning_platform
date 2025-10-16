@@ -591,6 +591,7 @@
         if(res.status === 'success'){
           showToast(res.message, 'success');
           form.trigger('reset');
+          $('#menu_id').val('');
           loadMenu();
         }else{
           showToast('Something went wrong!', 'danger');
@@ -610,6 +611,29 @@
   });
 
   ///Update menu
+  $(document).on('click', '.editBtn', function(){
+    let id = $(this).data('id');
+
+    $.get("{{ url('admin/settings/menu-update') }}/" + id, function(res){
+        if(res.status === 'success'){
+            let menu = res.menu;
+            
+            // Form fields fill
+            $('#menu_id').val(menu.id);
+            $('input[name=title]').val(menu.title);
+            $('input[name=url]').val(menu.url);
+            $('select[name=location]').val(menu.location);
+            $('select[name=parent_id]').val(menu.parent_id);
+            $('input[name=order]').val(menu.order);
+
+            // Scroll to form if needed
+            $('html, body').animate({scrollTop: $('#menuForm').offset().top - 100}, 500);
+        } else {
+            toastr.error('Menu data not found', 'Error');
+        }
+    });
+});
+
 
   //Delete menu
   $(document).on('click', '.deleteBtn', function(){
