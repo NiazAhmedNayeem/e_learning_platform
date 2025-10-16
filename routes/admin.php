@@ -150,7 +150,9 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin',
     Route::post('/admin/settings/ajax-save', [App\Http\Controllers\siteSetting\SiteSettingController::class, 'ajaxSave'])->name('settings.ajax.save');
 
     //Menu Management Route
+    Route::get('/admin/settings/menu-data', [App\Http\Controllers\siteSetting\MenuController::class, 'menuData'])->name('admin.setting.menu.data');
     Route::post('/admin/settings/menu-save', [App\Http\Controllers\siteSetting\MenuController::class, 'menuSave'])->name('admin.setting.menu.save');
+    Route::post('/admin/settings/menu-delete/{id}', [App\Http\Controllers\siteSetting\MenuController::class, 'menuDelete']);
 });
 
 

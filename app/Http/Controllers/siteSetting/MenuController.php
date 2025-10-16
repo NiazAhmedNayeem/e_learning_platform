@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Validator;
 
 class MenuController extends Controller
 {
+    public function menuData(){
+        $menu = Menu::latest()->paginate(7);
+        $menu->load('parent');
+        return response()->json($menu);
+    }
     public function menuSave(Request $request){
 
         $validator = Validator::make($request->all(), [
@@ -39,7 +44,25 @@ class MenuController extends Controller
         return response()->json([
             'status'    => 'success',
             'message'   => 'Menu create successfully',
-            'menu'      => $menu,
+            'data'      => $menu,
         ], 201);
+    }
+
+    public function menuDelete($id){
+        $menu = Menu::find($id);
+        if(!$menu){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Menu not fond.',
+            ], 404);
+        }
+
+        $menu->delete();
+        Menu::where('parent_id', $id)->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Menu delete successfully.',
+        ], 200);
     }
 }

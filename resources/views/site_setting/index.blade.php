@@ -238,6 +238,7 @@
                       <table class="table table-bordered table-hover align-middle">
                         <thead class="table-dark">
                           <tr>
+                            <th>SL</th>
                             <th>Title</th>
                             <th>URL</th>
                             <th>Location</th>
@@ -246,21 +247,15 @@
                             <th width="80">Action</th>
                           </tr>
                         </thead>
-                        <tbody>
-                          @foreach($menus as $menu)
-                          <tr>
-                            <td>{{ $menu->title }}</td>
-                            <td>{{ $menu->url }}</td>
-                            <td><span class="badge bg-secondary">{{ ucfirst(str_replace('_', ' ', $menu->location)) }}</span></td>
-                            <td>{{ $menu->parent?->title ?? '-' }}</td>
-                            <td>{{ $menu->order }}</td>
-                            <td>
-                              <button class="btn btn-sm btn-danger deleteMenu" data-id="{{ $menu->id }}"><i class="bi bi-trash"></i></button>
-                            </td>
-                          </tr>
-                          @endforeach
+                        <tbody id="menus">
+
                         </tbody>
                       </table>
+
+                      <nav>
+                          <ul class="pagination" id="paginationLinks"></ul>
+                      </nav>
+
                     </div>
 
 
@@ -515,6 +510,69 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 
+  ///menu management section
+  let currentPage;
+  function loadMenu(page = 1){
+    currentPage = page;
+      $.get("{{ route('admin.setting.menu.data') }}?page=" + page, function(res){
+      
+          let html = '';
+
+          if(res.data && res.data.length > 0){
+              $.each(res.data, function(index, menu){
+                  html += `
+                      <tr>
+                          <td>${res.from + index}</td>
+                          <td>${menu.title}</td>
+                          <td>${menu.url}</td>
+                          <td>
+                            <span class="badge bg-secondary">
+                              ${menu.location
+                                  .replace(/_/g, ' ')      // underscore → space
+                                  .replace(/\b\w/g, l => l.toUpperCase())}  <!-- capitalize words -->
+                            </span>
+                          </td>
+                          <td>${menu.parent?.title ?? '-'}</td>
+                          <td>${menu.order}</td>
+                          <td>
+                              <button class="btn btn-info btn-sm editBtn" data-id="${menu.id}"><i class="bi bi-pencil-square"></i></button>
+                              <button class="btn btn-danger btn-sm deleteBtn" data-id="${menu.id}"><i class="bi bi-trash3-fill"></i></button>
+                          </td>
+                      </tr>
+                  `;
+              });
+          } else {
+              html = `<tr><td colspan="7" class="text-center">No menu found</td></tr>`;
+          }
+
+          $("#menus").html(html);
+
+          // pagination links making
+          let links = '';
+          $.each(res.links, function(index, link){
+              let active = link.active ? 'active' : '';
+              links += `<li class="page-item ${active}">
+                  <a class="page-link" href="#" data-page="${link.url ? link.url.split('page=')[1] : ''}">
+                      ${link.label}
+                  </a>
+              </li>`;
+          });
+          $("#paginationLinks").html(links);
+      });
+  }
+
+  // first time load
+  loadMenu();
+
+  // Pagination new data load 
+  $(document).on("click", "#paginationLinks a", function(e){
+      e.preventDefault();
+      let page = $(this).data("page");
+      if(page) loadMenu(page);
+  });
+
+
+  ///Add menu form 
   $(document).on('submit', '#menuForm', function(e){
     e.preventDefault();
     let form = $(this);
@@ -533,6 +591,7 @@
         if(res.status === 'success'){
           showToast(res.message, 'success');
           form.trigger('reset');
+          loadMenu();
         }else{
           showToast('Something went wrong!', 'danger');
         }
@@ -549,6 +608,56 @@
       },
     });
   });
+
+  ///Update menu
+
+  //Delete menu
+  $(document).on('click', '.deleteBtn', function(){
+      let id = $(this).data('id');
+      let tr = $(this).closest('tr');
+
+      
+      $('#deleteRow').remove();
+
+      // Confirm row HTML
+      let deleteConfirm = `
+          <tr id="deleteRow">
+              <td colspan="6" class="text-center">
+                  Are you sure you want to delete this menu? 
+                  <button class="btn btn-sm btn-danger confirmDelete" data-id="${id}">Yes</button>
+                  <button class="btn btn-sm btn-secondary cancelDelete">No</button>
+              </td>
+          </tr>
+      `;
+
+      tr.after(deleteConfirm);
+  });
+
+  $(document).on('click', '.cancelDelete', function(){
+      $('#deleteRow').remove();
+  });
+
+  $(document).on('click', '.confirmDelete', function(){
+      let id = $(this).data('id');
+
+      $.ajax({
+          url: "{{ url('/admin/settings/menu-delete') }}/" + id,
+          method: "POST",
+          data: {
+              _token: $('meta[name="csrf-token"]').attr('content') // CSRF token
+          },
+          success: function(res){
+              if(res.status === 'success'){
+                  $('#deleteRow').remove(); // confirm row remove
+                  if(typeof loadMenu === 'function'){
+                      loadMenu(currentPage); // table refresh
+                  }
+                  toastr.success(res.message, 'Success', {timeOut: 3000});
+              }
+          }
+      });
+  });
+  ///end menu management section
 
 
   // Universal AJAX Save for any form
