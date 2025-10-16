@@ -14,6 +14,13 @@ class MenuController extends Controller
         $menu->load('parent');
         return response()->json($menu);
     }
+
+    //Ajax parent menu list
+    public function menuList(){
+        $menus = Menu::where('parent_id', null)->get();
+        return response()->json($menus);
+    }
+
     public function menuSave(Request $request){
 
         $validator = Validator::make($request->all(), [

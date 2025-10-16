@@ -154,6 +154,7 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin',
     Route::post('/admin/settings/menu-save', [App\Http\Controllers\siteSetting\MenuController::class, 'menuSave'])->name('admin.setting.menu.save');
     Route::get('/admin/settings/menu-update/{id}', [App\Http\Controllers\siteSetting\MenuController::class, 'menuUpdate'])->name('admin.setting.menu.update');
     Route::post('/admin/settings/menu-delete/{id}', [App\Http\Controllers\siteSetting\MenuController::class, 'menuDelete']);
+    Route::get('/admin/settings/menu-list', [App\Http\Controllers\siteSetting\MenuController::class, 'menuList']);
 });
 
 

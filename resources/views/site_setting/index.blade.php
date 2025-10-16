@@ -216,11 +216,8 @@
                               </select>
                             </div>
                             <div class="col-md-3">
-                              <select name="parent_id" class="form-select">
+                              <select name="parent_id" class="form-select" id="parentMenuDropdown">
                                 <option value="">No Parent</option>
-                                @foreach($menus->where('parent_id', null) as $m)
-                                  <option value="{{ $m->id }}">{{ $m->title }}</option>
-                                @endforeach
                               </select>
                             </div>
 
@@ -515,6 +512,30 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 
+  ///menu list 
+  function loadParentMenus() {
+      $.ajax({
+          url: "{{ url('/admin/settings/menu-list') }}",
+          type: "GET",
+          dataType: "json",
+          success: function (data) {
+              let options = '<option value="">No Parent</option>';
+              data.forEach(function(menu) {
+                  options += `<option value="${menu.id}">${menu.title}</option>`;
+              });
+              $('#parentMenuDropdown').html(options);
+          },
+          error: function() {
+              console.error("Failed to load parent menus");
+          }
+      });
+  }
+
+  //DOM Ready
+  $(document).ready(function () {
+      loadParentMenus(); // auto load on page load
+  });
+
   ///menu management section
   let currentPage;
   function loadMenu(page = 1){
@@ -598,6 +619,7 @@
           form.trigger('reset');
           $('#menu_id').val('');
           loadMenu();
+          loadParentMenus();
         }else{
           showToast('Something went wrong!', 'danger');
         }
@@ -646,10 +668,10 @@ $(document).on('click', '#cancelBtn', function(){
     // Form reset
     form[0].reset();
 
-    // Hidden menu_id reset (Edit mode এর জন্য)
+    // Hidden menu_id reset (Edit mode)
     $('#menu_id').val('');
 
-    // Save button text ফিরিয়ে দাও
+    // Save button text back
     $('#menuForm button[type="submit"]').text('Save');
 });
 
