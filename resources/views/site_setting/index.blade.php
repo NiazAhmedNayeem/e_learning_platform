@@ -42,8 +42,7 @@
         <div class="card-body p-0">
           <div class="d-flex justify-content-between align-items-center px-4 py-3 border-bottom text-white">
             <div>
-              <h5 class="mb-0 fw-bold">Settings</h5>
-              <small class="text-muted">Configure site-wide options</small>
+              <h5 class="mb-0 fw-bold" id="tabTitle">General</h5>
             </div>
           </div>
 
@@ -224,11 +223,17 @@
                                 @endforeach
                               </select>
                             </div>
-                            <div class="col-md-3">
+
+                            <div class="col-md-2">
                               <input type="number" name="order" class="form-control" placeholder="Order">
                             </div>
-                            <div class="col-md-3">
+
+                            <div class="col-md-2">
                               <button type="submit" class="btn btn-dark w-100">Save</button>
+                            </div>
+
+                            <div class="col-md-2">
+                              <button type="button" id="cancelBtn" class="btn btn-danger w-100">Cancel</button>
                             </div>
                             
                           </div>
@@ -634,6 +639,20 @@
     });
 });
 
+// Cancel button click
+$(document).on('click', '#cancelBtn', function(){
+    let form = $('#menuForm');
+
+    // Form reset
+    form[0].reset();
+
+    // Hidden menu_id reset (Edit mode এর জন্য)
+    $('#menu_id').val('');
+
+    // Save button text ফিরিয়ে দাও
+    $('#menuForm button[type="submit"]').text('Save');
+});
+
 
   //Delete menu
   $(document).on('click', '.deleteBtn', function(){
@@ -790,6 +809,16 @@
           reader.readAsDataURL(file);
         }
       }
+    });
+  });
+
+
+  //tab name 
+  document.querySelectorAll('#settingsSidebar .nav-link').forEach(link => {
+    link.addEventListener('shown.bs.tab', function (e) {
+        const targetId = e.target.getAttribute('href').substring(1); // remove #
+        const name = e.target.textContent.trim();
+        document.getElementById('tabTitle').textContent = name;
     });
   });
 
