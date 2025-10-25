@@ -6,21 +6,43 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class StudentController extends Controller
 {
 public function index(Request $request) {
-        $search = $request->input('search');
+        // $search = $request->input('search');
 
-        $students = User::where('role', 'student')
-            ->where(function($query) use ($search){
-            $query->where('name', 'like', "%{$search}%")
-            ->orWhere('email', 'like', "%{$search}%")
-            ->orWhere('unique_id', 'like', "%{$search}%");
-        })->paginate(10);
+        // $students = User::where('role', 'student')
+        //     ->where(function($query) use ($search){
+        //     $query->where('name', 'like', "%{$search}%")
+        //     ->orWhere('email', 'like', "%{$search}%")
+        //     ->orWhere('unique_id', 'like', "%{$search}%");
+        // })->paginate(10);
 
+        if($request->ajax()){
+            $data = User::where('role', 'student')->select('id', 'image', 'unique_id', 'name', 'email', 'phone', 'gender');
+            return DataTables::of($data)->addIndexColumn()
+            ->addColumn('image', function($row){
 
-        return view('backend.users.student.index', compact('students', 'search'));
+                if (!$row->image || $row->image == "N/A") {
+                    $default = "https://ui-avatars.com/api/?name=" . urlencode($row->name) . "&size=160";
+                    return '<img src="' . $default . '" width="50" height="50" class="rounded-circle" />';
+                }
+
+                $image = asset('public/upload/students/'.$row->image);
+                return '<img src="' . $image . '" width="50" height="50" class="rounded-circle" />';
+            })
+            ->addColumn('action', function($row){
+                $btn = '<a href="" class="edit btn btn-sm btn-primary me-1">Edit</a>';
+                $btn .= '<button type="button" class="btn btn-sm btn-danger deleteUser" data-id="'.$row->id.'">Delete</button>';
+                return $btn;
+            })->rawColumns(['image', 'action'])
+            ->make(true);
+        }
+
+        return view('backend.users.student.index');
+        // return view('backend.users.student.index', compact('students', 'search'));
     }
 
     public function create(){
