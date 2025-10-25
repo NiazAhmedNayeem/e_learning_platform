@@ -69,7 +69,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: 'admin/student/delete/'+userId,
+                        url: "{{ url('/admin/student/delete') }}/"+userId,
                         type: 'DELETE',
                         
                         success: function(response){

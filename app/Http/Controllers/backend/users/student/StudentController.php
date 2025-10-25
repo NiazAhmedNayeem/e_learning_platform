@@ -178,7 +178,8 @@ public function index(Request $request) {
 
         $student->delete();
 
-        return redirect()->route('admin.student.index')->with('success', 'Student deleted successfully.');
+        return response()->json(['success' => 'Student deleted successfully.']);
+        // return redirect()->route('admin.student.index')->with('success', 'Student deleted successfully.');
     }
 }
 
