@@ -24,7 +24,7 @@ public function index(Request $request) {
             $data = User::where('role', 'student')->select('id', 'image', 'unique_id', 'name', 'email', 'phone', 'gender');
             return DataTables::of($data)->addIndexColumn()
             ->addColumn('image', function($row){
-
+                
                 if (!$row->image || $row->image == "N/A") {
                     $default = "https://ui-avatars.com/api/?name=" . urlencode($row->name) . "&size=160";
                     return '<img src="' . $default . '" width="50" height="50" class="rounded-circle" />';
@@ -34,7 +34,10 @@ public function index(Request $request) {
                 return '<img src="' . $image . '" width="50" height="50" class="rounded-circle" />';
             })
             ->addColumn('action', function($row){
-                $btn = '<a href="" class="edit btn btn-sm btn-primary me-1">Edit</a>';
+                
+                $editUrl = route('admin.student.edit', $row->id);
+
+                $btn = '<a href="'.$editUrl.'" class="edit btn btn-sm btn-primary me-1">Edit</a>';
                 $btn .= '<button type="button" class="btn btn-sm btn-danger deleteUser" data-id="'.$row->id.'">Delete</button>';
                 return $btn;
             })->rawColumns(['image', 'action'])
