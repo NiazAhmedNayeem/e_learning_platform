@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Update\SystemUpdateController;
 use App\Http\Middleware\ChackStatus;
 use Illuminate\Support\Facades\Route;
 
@@ -155,6 +156,18 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin',
     Route::get('/admin/settings/menu-update/{id}', [App\Http\Controllers\siteSetting\MenuController::class, 'menuUpdate'])->name('admin.setting.menu.update');
     Route::post('/admin/settings/menu-delete/{id}', [App\Http\Controllers\siteSetting\MenuController::class, 'menuDelete']);
     Route::get('/admin/settings/menu-list', [App\Http\Controllers\siteSetting\MenuController::class, 'menuList']);
+});
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('update', [SystemUpdateController::class, 'index'])->name('admin.update.index');
+    Route::post('update/upload', [SystemUpdateController::class, 'upload'])->name('admin.update.upload');
+    Route::post('update/backup', [SystemUpdateController::class, 'backup'])->name('admin.update.backup');
+    Route::get('update/backups/{file}', [SystemUpdateController::class, 'downloadBackup'])->name('admin.update.backup.download');
+    Route::post('update/run', [SystemUpdateController::class, 'run'])->name('admin.update.run');
+    ///delete old backup
+    Route::delete('update/backups/{file}', [SystemUpdateController::class, 'deleteBackup'])->name('admin.update.backup.delete');
+
 });
 
 
