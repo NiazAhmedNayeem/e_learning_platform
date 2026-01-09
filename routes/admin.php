@@ -70,11 +70,7 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin', 
     
 
 
-
-
     Route::get('admin/course/video/{id}', [App\Http\Controllers\backend\course\CourseVideoController::class, 'videoPlayer'])->name('admin.course.video-player');
-
-
 
 
 
@@ -87,7 +83,6 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin', 
     //Ajax route
     Route::get('get-teachers-by-category', [App\Http\Controllers\backend\course\AssignCourseController::class, 'getTeachersByCategory'])
     ->name('admin.getTeachersByCategory');
-
 
 
     ///Admin order management Route
@@ -107,9 +102,6 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin', 
     Route::post('/admin/notice/update', [App\Http\Controllers\backend\notice\NoticeController::class, 'update']);
     Route::delete('/admin/notice/delete/{id}', [App\Http\Controllers\backend\notice\NoticeController::class, 'delete']);
     
-
-
-
 
 
 }); //Admin middleware Route End
