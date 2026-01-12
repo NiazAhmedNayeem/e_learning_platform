@@ -83,11 +83,6 @@ class UpdaterService
             return ['ok' => false, 'message' => 'Failed to create backup before update.'];
         }
 
-        // extract to a unique tmp dir
-        // $extractPath = $this->tmpDir . '/' . Str::random(8);
-        // if (!mkdir($extractPath, 0755, true)) {
-        //     return ['ok' => false, 'message' => 'Failed to create temp directory.'];
-        // }
 
         $extractPath = $this->tmpDir;
         if (!file_exists($extractPath)) mkdir($extractPath, 0755, true);
@@ -96,9 +91,6 @@ class UpdaterService
         foreach (glob($extractPath.'/*') as $fileOrDir) {
             $this->rrmdir($fileOrDir);
         }
-
-
-
 
 
         $zip = new ZipArchive();
@@ -173,17 +165,6 @@ class UpdaterService
         closedir($dir);
         return true;
     }
-
-    // protected function rrmdir($dir)
-    // {
-    //     if (!file_exists($dir)) return;
-    //     $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
-    //     $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
-    //     foreach ($files as $file) {
-    //         if ($file->isDir()) rmdir($file->getRealPath()); else unlink($file->getRealPath());
-    //     }
-    //     rmdir($dir);
-    // }
 
 
     protected function rrmdir($dir)
